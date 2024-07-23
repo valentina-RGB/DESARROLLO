@@ -26,13 +26,18 @@ const {request , response} = require('express');
                 const sql = 'SELECT * FROM productos WHERE ID_producto = ?';
 
                 db.query(sql, [id], (err, results) => {
+                  
                   if (err) {
                     console.error('Error fetching product:', err);
                     return reject({ status: 500, message: 'Error fetching product' });
                   }
+
                   if (results.length > 0) {
+
                     return resolve({ status: 200, data: results[0] }); // Devuelve el primer resultado
+
                   } else {
+
                     return resolve({ status: 404, message: 'Product not found' }); // No se encontró el producto
                   }
                 });
@@ -40,8 +45,27 @@ const {request , response} = require('express');
         } ,
 
         postProduct = (product) => {
-            const sql = 'INSERT INTO productos(descripcion,precio_neto,estado_producto,ID_tipo_productos,ID_categoria,imagen) VALUES (?,?,?,?,?,?)'
-            const {descripcion,precio_neto,estado_producto,ID_tipo_productos,ID_categoria,imagen}=product
+            return new Promise((resolve, reject) => {
+                if (!product) {
+                    return reject(new Error('Product data is required'));
+                }
+        
+                const {descripcion = '', precio_neto = 0, estado_producto = '', ID_tipo_productos = 0, ID_categoria = 0, imagen = '' } = product;
+        
+                // Verificación de campos requeridos
+                if (!descripcion || !precio_neto) {
+                    return reject(new Error('Missing required fields'));
+                  }
+        
+                const query = 'INSERT INTO productos (descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen) VALUES (?, ?, ?, ?, ?, ?)';
+        
+                db.query(query, [descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen], (err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(results); // Asegúrate de que la variable `results` está definida
+                });
+            });
         } ,
         
         patchProduct = () => {} ,

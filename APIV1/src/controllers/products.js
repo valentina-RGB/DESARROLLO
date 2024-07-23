@@ -20,14 +20,16 @@ const
     } ,  
 
     postProduct = async  (req = request, res= response) => {
-        
-        const Newdata = req.body;
-        try{
-            const createproduct = productService.postProduct(Newdata)
-            return res.status(createproduct.status).json(createproduct.data); 
-        }catch(err){
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
+        try {
+            const product = req.body;
+            const result = await productService.postProduct(product); // Suponiendo que `postProductService` es tu función de servicio
+            res.status(201).json({ message: 'Product created successfully', result });
+        } catch (error) {
+            // Verifica que el error tenga un código de estado válido o usa un código por defecto
+            const statusCode = error.status || 500;
+            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
         }
+    
     } ,
 
     patchProduct = (req = request, res= response) =>{
