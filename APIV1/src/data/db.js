@@ -2,9 +2,9 @@ const mysql = require('mysql');
 
 const db = mysql.createConnection(
     {
-         host: 'http://mysql-3c01adc3-creamysoft.h.aivencloud.com', 
-        user: 'ravnadmin',   
-        password: 'AVNS_jw_tWB4q26vSZMF5Rdg', 
+         host: 'localhost', 
+        user: 'admin',   
+        password: '', 
         database: 'creamy'
     });
 
