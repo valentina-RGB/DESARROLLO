@@ -34,11 +34,11 @@ const {request , response} = require('express');
 
                   if (results.length > 0) {
 
-                    return resolve({ status: 200, data: results[0] }); 
+                    return resolve({ status: 200, data: results[0] }); // Devuelve el primer resultado
 
                   } else {
 
-                    return resolve({ status: 404, message: 'Product not found' }); 
+                    return resolve({ status: 404, message: 'Product not found' }); // No se encontró el producto
                   }
                 });
               });
@@ -63,27 +63,14 @@ const {request , response} = require('express');
                     if (err) {
                         return reject(err);
                     }
-                    resolve(results); 
+                    resolve(results); // Asegúrate de que la variable `results` está definida
                 });
             });
-        } 
+        } ,
         
-        const patchProduct = async (id, productData) => {
-          const product = await Product.findByPk(id);
-          if (!product) {
-              throw { status: 404, message: 'Product not found' };
-          }
-          await product.update(productData);
-          return product;
-      };
+        patchProduct = () => {} ,
 
-        const deleteProduct = async (id) => {
-          const product = await Product.findByPk(id);
-          if (!product) {
-              throw { status: 404, message: 'Product not found' };
-          }
-          await product.destroy();
-      };
+        deleteProduct = () => {} 
 
 module.exports = {
     getProduct,
