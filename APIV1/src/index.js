@@ -1,6 +1,7 @@
 const express = require('express');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
+const routerInsumo = require('./v1/routers/insumos');
 const body = require('body-parser');
 class server {
 
@@ -34,6 +35,13 @@ class server {
             .post('/categories',routerCategories)
             .patch('/categories/:id',routerCategories)
             .delete('/categories/:id',routerCategories)
+
+             //INSUMOS
+             .get('/', (req,res)=>{res.send("Welcome")})         
+             .get('/insumo',routerInsumo)
+             .get('/insumo/:id',routerInsumo)
+             .post('/insumo',routerInsumo)
+             .post('/entrada',routerInsumo)
 
    }
 
