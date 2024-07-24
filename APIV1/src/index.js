@@ -31,6 +31,7 @@ class server {
             .get('/insumo',routerInsumo)
             .get('/insumo/:id',routerInsumo)
             .post('/insumo',routerInsumo)
+            .post('/entrada',routerInsumo)
    }
 
    Listen (){

@@ -16,6 +16,17 @@ const getInsumoByID = async (req = request, res = response) => {
     }
 };
 
+const agregarEntrada = async (req, res) => {
+    try {
+        const entrada = req.body;
+        const result = await insumosService.agregarEntrada(entrada);
+        res.status(result.status).json({ message: result.message });
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+    }
+};
+
 const postInsumo = async (req = request, res = response) => {
     try {
         const insumo = req.body;
@@ -50,6 +61,7 @@ const deleteInsumo = async (req = request, res = response) => {
 module.exports = {
     getInsumos,
     getInsumoByID,
+    agregarEntrada,
     postInsumo,
     patchInsumo,
     deleteInsumo

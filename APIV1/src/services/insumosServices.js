@@ -38,6 +38,31 @@ const getInsumoByID = (id) => {
     });
 };
 
+const agregarEntrada = (entrada) => {
+    return new Promise((resolve, reject) => {
+        const { ID_insumo, cantidad } = entrada;      
+        getInsumoById(ID_insumo).then(insumo => {
+            if (insumo.status === 200) {
+                const stockActual = insumo.data.stock_actual || 0;
+                const nuevoStock = stockActual + cantidad;               
+                const sql = 'UPDATE Stock_insumos SET stock_actual = ? WHERE ID_porcion = (SELECT ID_porcion FROM Insumos WHERE ID_insumo = ?)';
+                db.query(sql, [nuevoStock, ID_insumo], (err, result) => {
+                    if (err) {
+                        console.error('Error updating stock:', err);
+                        return reject({ status: 500, message: 'Error updating stock' });
+                    }
+                    
+                    resolve({ status: 200, message: 'Stock updated successfully' });
+                });
+            } else {
+                reject({ status: 404, message: 'Insumo not found' });
+            }
+        }).catch(error => {
+            reject(error);
+        });
+    });
+};
+
 const postInsumo = (insumo) => {
     return new Promise((resolve, reject) => {
         if (!insumo) {
@@ -99,5 +124,6 @@ module.exports = {
     getInsumoByID,
     postInsumo,
     patchInsumo,
-    deleteInsumo
+    deleteInsumo,
+    agregarEntrada
 };
