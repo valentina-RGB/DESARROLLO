@@ -1,5 +1,6 @@
 const express = require('express');
 const routerProduct = require('./v1/routers/products');
+const routerInsumo = require('./v1/routers/insumos');
 const body = require('body-parser');
 class server {
 
@@ -25,6 +26,11 @@ class server {
             .get('/product/:id',routerProduct)
             .post('/product',routerProduct)
 
+            //INSUMOS
+            .get('/', (req,res)=>{res.send("Welcome")})         
+            .get('/insumo',routerInsumo)
+            .get('/insumo/:id',routerInsumo)
+            .post('/insumo',routerInsumo)
    }
 
    Listen (){
