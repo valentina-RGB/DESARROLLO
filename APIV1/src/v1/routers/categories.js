@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const {request,response} = require('express');
+const controllerCategories = require('../../controllers/categories');
 
 router
-    .get('/categories', (request,response) => {})
-    .get('/categories:id', (request,response) => {})
-    .post('/categories:id', (request,response) =>{})
-    .patch('/categories:id', (request,response) =>{})
-    .delete('/categories:id', (request,response) =>{})
+    .get('/categories', controllerCategories.getCategorie)
+    .get('/categories/:id', controllerCategories.getCategorieID)
+    .post('/categories', controllerCategories.postCategorie)
+    .patch('/categories/:id', controllerCategories.patchCategorie)
+    .delete('/categories/:id', controllerCategories.deleteCategorie)
 
 
 module.exports = router;

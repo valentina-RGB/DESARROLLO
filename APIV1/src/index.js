@@ -1,5 +1,6 @@
 const express = require('express');
 const routerProduct = require('./v1/routers/products');
+const routerCategories = require('./v1/routers/categories');
 const body = require('body-parser');
 class server {
 
@@ -24,6 +25,15 @@ class server {
             .get('/product',routerProduct)
             .get('/product/:id',routerProduct)
             .post('/product',routerProduct)
+            .patch('/product/:id',routerProduct)
+            .delete('/product/:id',routerProduct)
+
+            //Categor       
+            .get('/categories', routerCategories)
+            .get('/categories/:id',routerCategories)
+            .post('/categories',routerCategories)
+            .patch('/categories/:id',routerCategories)
+            .delete('/categories/:id',routerCategories)
 
    }
 

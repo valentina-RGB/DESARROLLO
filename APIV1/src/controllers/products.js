@@ -32,12 +32,34 @@ const
     
     } ,
 
-    patchProduct = (req = request, res= response) =>{
-        const updateproduct = productService.patchProduct(req.params.id)
+    patchProduct = async (req = request, res= response) =>{
+        try {
+            const productId = req.params.id;
+            const product = req.body; 
+            const updateproduct = await productService.patchProduct(productId, product);
+
+            res.status(200).json({ message: 'Product updated successfully',updateproduct });
+            
+        } catch (error) {
+            const statusCode = error.status || 500;
+            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+        }
     } ,
 
-    deleteProduct = (req = request, res= response) =>{
-        const deleteproduct = productService.deleteProduct(req.params.id)
+    deleteProduct = async (req = request, res= response) =>{
+        try {
+            const productId = req.params.id; 
+            const result = await productService.deleteProduct(productId);
+            
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            
+            res.status(200).json({ message: 'Product deleted successfully' });
+        } catch (error) {
+            const statusCode = error.status || 500;
+            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+        } 
     }
 
 
