@@ -38,11 +38,10 @@ class server {
             .delete('/categories/:id',routerCategories)
 
              //INSUMOS
-             .get('/', (req,res)=>{res.send("Welcome")})         
-             .get('/insumo',routerInsumo)
-             .get('/insumo/:id',routerInsumo)
-             .post('/insumo',routerInsumo)
-             .post('/entrada',routerInsumo)
+             .get('/insumos',routerInsumo)
+             .get('/insumos/:id',routerInsumo)
+             .post('/insumos',routerInsumo)
+             .post('/entradas',routerInsumo)
 
              //CLIENTES
              .get('/clients', routerClients)
