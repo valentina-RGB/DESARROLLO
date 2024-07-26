@@ -3,11 +3,11 @@ const router = express.Router();
 const controllerClient = require('../../controllers/clients');
 
 router
-    .get('/client', controllerClient.getClient)
-    .get('/client/:id', controllerClient.getClientID)
-    .post ('/client', controllerClient.postClient )
-    .patch('/client/:id', controllerClient.patchClient)
-    .delete('/client/:id', controllerClient.deleteClient)
+    .get('/clients', controllerClient.getClient)
+    .get('/clients/:id', controllerClient.getClientID)
+    .post ('/clients', controllerClient.postClient )
+    .patch('/clients/:id', controllerClient.patchClient)
+    .delete('/clients/:id', controllerClient.deleteClient)
 
 
     module.exports = router;

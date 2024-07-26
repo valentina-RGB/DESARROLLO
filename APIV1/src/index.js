@@ -3,6 +3,7 @@ const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const routerInsumo = require('./v1/routers/insumos');
 const body = require('body-parser');
+const routerClients = require('./v1/routers/clients');
 class server {
 
    constructor(){
@@ -42,6 +43,15 @@ class server {
              .get('/insumo/:id',routerInsumo)
              .post('/insumo',routerInsumo)
              .post('/entrada',routerInsumo)
+
+             //CLIENTES
+             .get('/clients', routerClients)
+            .get('/clients/:id',routerClients)
+            .post('/clients',routerClients)
+            .patch('/clients/:id',routerClients)
+            .delete('/clients/:id',routerClients)
+
+
 
    }
 
