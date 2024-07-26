@@ -89,7 +89,7 @@ const postInsumo = (insumo) => {
 const patchInsumo = (id, insumoData) => {
     return new Promise((resolve, reject) => {
         const { ID_tipo_insumo, descripcion_insumo, estado_insumo, precio } = insumoData;
-        const query = 'UPDATE Insumos SET ID_tipo_insumo = ?, descripcion_insumo = ?, estado_insumo = ?, precio = ? WHERE ID_insumo = ?';
+        const query = 'UPDATE insumos SET ID_tipo_insumo = ?, descripcion_insumo = ?, estado_insumo = ?, precio = ? WHERE ID_insumo = ?';
 
         db.query(query, [ID_tipo_insumo, descripcion_insumo, estado_insumo, precio, id], (err, results) => {
             if (err) {

@@ -40,6 +40,8 @@ class server {
              //INSUMOS
              .get('/insumos',routerInsumo)
              .get('/insumos/:id',routerInsumo)
+             .delete('/insumos/:id',routerInsumo)
+             .patch('/insumos/:id',routerInsumo)
              .post('/insumos',routerInsumo)
              .post('/entradas',routerInsumo)
 
