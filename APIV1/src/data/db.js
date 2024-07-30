@@ -1,12 +1,10 @@
-const mysql = require('mysql');
+const { Sequelize } = require('sequelize');
 
-const db = mysql.createConnection(
-    {
-        host: 'localhost', 
-        user: 'root',   
-        password: '', 
-        database: 'creamy' 
-    });
+const db = new Sequelize('database_name', 'username', 'password', {
+    host: 'localhost',
+    dialect: 'mysql',
+    logging: false
+});
 
 
 db.connect((err) => {

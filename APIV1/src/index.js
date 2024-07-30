@@ -1,7 +1,7 @@
 const express = require('express');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
-const routerInsumo = require('./v1/routers/insumos');
+const insumosRoutes = require('./v1/routers/insumos');
 const body = require('body-parser');
 class server {
 
@@ -37,11 +37,7 @@ class server {
             .delete('/categories/:id',routerCategories)
 
              //INSUMOS
-             .get('/', (req,res)=>{res.send("Welcome")})         
-             .get('/insumo',routerInsumo)
-             .get('/insumo/:id',routerInsumo)
-             .post('/insumo',routerInsumo)
-             .post('/entrada',routerInsumo)
+             app.use('insumos', insumosRoutes);
 
    }
 

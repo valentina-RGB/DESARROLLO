@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const controllerInsumo = require('../../controllers/insumos');
+const insumosController = require('../controllers/insumos');
 
-router
-    .get('/insumos', controllerInsumo.getInsumos)
-    .get('/insumos/:id', controllerInsumo.getInsumoByID)
-    .post('/entrada', controllerInsumo.agregarEntrada)
-    .post('/insumos', controllerInsumo.postInsumo)
-    .patch('/insumos/:id', controllerInsumo.patchInsumo)
-    .delete('/insumos/:id', controllerInsumo.deleteInsumo);
-    
+router.get('/', insumosController.getAllInsumos);
+
+router.get('/:id', insumosController.getInsumoById);
+
+router.post('/', insumosController.createInsumo);
+
+router.put('/:id', insumosController.updateInsumo);
+
+router.delete('/:id', insumosController.deleteInsumo);
+
+router.post('/entrada', insumosController.agregarEntrada);
 
 module.exports = router;

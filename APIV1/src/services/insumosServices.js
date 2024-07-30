@@ -1,129 +1,96 @@
-const express = require('express');
-const db = require('../data/db.js');
-const { request, response } = require('express');
+const Insumo = require('../models/insumos');
+const StockInsumo = require('../models/StockInsumo');
 
-const getInsumos = (req = request, res = response) => {
-    const sql = 'SELECT * FROM Insumos';
 
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Error fetching insumos:', err);
-            if (!res.headersSent) {
-                return res.status(500).json({ error: 'Database error' });
-            }
-        }
-
-        if (!res.headersSent) {
-            return res.json(results);
-        }
-    });
-};
-
-const getInsumoByID = (id) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM Insumos WHERE ID_insumo = ?';
-
-        db.query(sql, [id], (err, results) => {
-            if (err) {
-                console.error('Error fetching insumo:', err);
-                return reject({ status: 500, message: 'Error fetching insumo' });
-            }
-
-            if (results.length > 0) {
-                return resolve({ status: 200, data: results[0] });
-            } else {
-                return resolve({ status: 404, message: 'Insumo not found' });
-            }
-        });
-    });
-};
-
-const agregarEntrada = (entrada) => {
-    return new Promise((resolve, reject) => {
-        const { ID_insumo, cantidad } = entrada;      
-        getInsumoById(ID_insumo).then(insumo => {
-            if (insumo.status === 200) {
-                const stockActual = insumo.data.stock_actual || 0;
-                const nuevoStock = stockActual + cantidad;               
-                const sql = 'UPDATE Stock_insumos SET stock_actual = ? WHERE ID_porcion = (SELECT ID_porcion FROM Insumos WHERE ID_insumo = ?)';
-                db.query(sql, [nuevoStock, ID_insumo], (err, result) => {
-                    if (err) {
-                        console.error('Error updating stock:', err);
-                        return reject({ status: 500, message: 'Error updating stock' });
-                    }
-                    
-                    resolve({ status: 200, message: 'Stock updated successfully' });
-                });
-            } else {
-                reject({ status: 404, message: 'Insumo not found' });
-            }
-        }).catch(error => {
-            reject(error);
-        });
-    });
-};
-
-const postInsumo = (insumo) => {
-    return new Promise((resolve, reject) => {
+const getInsumoById = async (id) => {
+    try {
+        const insumo = await Insumo.findByPk(id);
         if (!insumo) {
-            return reject(new Error('Insumo data is required'));
+            throw { status: 404, message: 'Insumo not found' };
         }
-
-        const { ID_tipo_insumo = 0, descripcion_insumo = '', estado_insumo = 'D', precio = 0.0 } = insumo;
-
-        if (!ID_tipo_insumo || !descripcion_insumo) {
-            return reject(new Error('Missing required fields'));
-        }
-
-        const query = 'INSERT INTO Insumos (ID_tipo_insumo, descripcion_insumo, estado_insumo, precio) VALUES (?, ?, ?, ?)';
-
-        db.query(query, [ID_tipo_insumo, descripcion_insumo, estado_insumo, precio], (err, results) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve(results);
-        });
-    });
+        return { status: 200, data: insumo };
+    } catch (error) {
+        throw { status: 500, message: 'Error fetching insumo' };
+    }
 };
 
-const patchInsumo = (id, insumoData) => {
-    return new Promise((resolve, reject) => {
-        const { ID_tipo_insumo, descripcion_insumo, estado_insumo, precio } = insumoData;
-        const query = 'UPDATE Insumos SET ID_tipo_insumo = ?, descripcion_insumo = ?, estado_insumo = ?, precio = ? WHERE ID_insumo = ?';
 
-        db.query(query, [ID_tipo_insumo, descripcion_insumo, estado_insumo, precio, id], (err, results) => {
-            if (err) {
-                return reject(err);
-            }
-            if (results.affectedRows === 0) {
-                return reject({ status: 404, message: 'Insumo not found' });
-            }
-            resolve(results);
-        });
-    });
+const getAllInsumos = async () => {
+    try {
+        const insumos = await Insumo.findAll();
+        return { status: 200, data: insumos };
+    } catch (error) {
+        throw { status: 500, message: 'Error fetching insumos' };
+    }
 };
 
-const deleteInsumo = (id) => {
-    return new Promise((resolve, reject) => {
-        const query = 'DELETE FROM Insumos WHERE ID_insumo = ?';
 
-        db.query(query, [id], (err, results) => {
-            if (err) {
-                return reject(err);
-            }
-            if (results.affectedRows === 0) {
-                return reject({ status: 404, message: 'Insumo not found' });
-            }
-            resolve(results);
-        });
-    });
+const createInsumo = async (insumoData) => {
+    try {
+        const newInsumo = await Insumo.create(insumoData);
+        return { status: 201, data: newInsumo };
+    } catch (error) {
+        throw { status: 500, message: 'Error creating insumo' };
+    }
+};
+
+
+const updateInsumo = async (id, insumoData) => {
+    try {
+        const insumo = await Insumo.findByPk(id);
+        if (!insumo) {
+            throw { status: 404, message: 'Insumo not found' };
+        }
+        await insumo.update(insumoData);
+        return { status: 200, data: insumo };
+    } catch (error) {
+        throw { status: 500, message: 'Error updating insumo' };
+    }
+};
+
+
+const deleteInsumo = async (id) => {
+    try {
+        const insumo = await Insumo.findByPk(id);
+        if (!insumo) {
+            throw { status: 404, message: 'Insumo not found' };
+        }
+        await insumo.destroy();
+        return { status: 200, message: 'Insumo deleted successfully' };
+    } catch (error) {
+        throw { status: 500, message: 'Error deleting insumo' };
+    }
+};
+
+
+const agregarEntrada = async (entrada) => {
+    const { ID_insumo, cantidad } = entrada;
+
+    try {
+        const insumo = await Insumo.findByPk(ID_insumo);
+        if (!insumo) {
+            throw { status: 404, message: 'Insumo not found' };
+        }
+
+        const stock = await StockInsumo.findOne({ where: { ID_porcion: ID_insumo } });
+        if (!stock) {
+            throw { status: 404, message: 'Stock not found for the insumo' };
+        }
+
+        stock.stock_actual = (stock.stock_actual || 0) + cantidad;
+        await stock.save();
+
+        return { status: 200, message: 'Stock updated successfully' };
+    } catch (error) {
+        throw { status: 500, message: 'Error updating stock' };
+    }
 };
 
 module.exports = {
-    getInsumos,
-    getInsumoByID,
-    postInsumo,
-    patchInsumo,
+    getInsumoById,
+    getAllInsumos,
+    createInsumo,
+    updateInsumo,
     deleteInsumo,
     agregarEntrada
 };
