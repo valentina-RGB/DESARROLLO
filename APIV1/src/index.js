@@ -43,6 +43,20 @@ class server {
             .patch('/clients/:id', routerClients)
             .delete('/clients/:id', routerClients)
 
+            //ROLES
+            .get('/roles', routerRoles)
+            .get('/roles/:id', routerRoles)
+            .post('/roles', routerRoles)
+            .patch('/roles/:id', routerRoles)
+            .delete('/roles/:id', routerRoles)
+
+            //ACCESS
+            .get('/access', routerAccess)
+            .get('/access/:id', routerAccess)
+            .post('/access', routerAccess)
+            .patch('/access/:id', routerAccess)
+            .delete('/access/:id', routerAccess)
+
    }
 
    Listen (){
