@@ -1,6 +1,7 @@
 const express = require('express');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
+const routerClients = require('./v1/routers/clients');
 const body = require('body-parser');
 class server {
 
@@ -34,6 +35,13 @@ class server {
             .post('/categories',routerCategories)
             .patch('/categories/:id',routerCategories)
             .delete('/categories/:id',routerCategories)
+
+            //CLIENTS
+            .get('/clients', routerClients)
+            .get('/clients/:id', routerClients)
+            .post('/clients', routerClients)
+            .patch('/clients/:id', routerClients)
+            .delete('/clients/:id', routerClients)
 
    }
 
