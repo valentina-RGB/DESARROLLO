@@ -3,6 +3,7 @@ const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const routerClients = require('./v1/routers/clients');
 const body = require('body-parser');
+const routerClients = require('./v1/routers/clients');
 class server {
 
    constructor(){
