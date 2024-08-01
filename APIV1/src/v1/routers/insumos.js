@@ -1,17 +1,13 @@
+// routes/insumos.js
 const express = require('express');
 const router = express.Router();
-const insumosController = require('../controllers/insumos');
+const InsumosController = require('../../controllers/insumos');
 
-router.get('/', insumosController.getAllInsumos);
-
-router.get('/:id', insumosController.getInsumoById);
-
-router.post('/', insumosController.createInsumo);
-
-router.put('/:id', insumosController.updateInsumo);
-
-router.delete('/:id', insumosController.deleteInsumo);
-
-router.post('/entrada', insumosController.agregarEntrada);
+router.get('/', InsumosController.obtenerInsumos);
+router.get('/:id', InsumosController.obtenerInsumoPorId);
+router.post('/', InsumosController.crearInsumo);
+router.put('/:id', InsumosController.actualizarInsumo);
+router.delete('/:id', InsumosController.eliminarInsumo);
+router.post('/:id/adiciones', InsumosController.agregarAdicion);
 
 module.exports = router;

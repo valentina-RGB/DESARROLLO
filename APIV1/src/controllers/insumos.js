@@ -1,74 +1,105 @@
-const insumosService = require('../services/insumosServices');
+// controllers/InsumosController.js
+const db = require('../models');
 
-const getInsumoById = async (req, res) => {
-    const insumoId = req.params.id;
+const Insumos = db.Insumos;
+const HistorialStock = db.HistorialStock;
 
-    try {
-        const insumo = await insumosService.getInsumoById(insumoId);
-        return res.status(insumo.status).json(insumo.data || { message: insumo.message });
-    } catch (error) {
-        return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-    }
+const obtenerInsumos = async (req, res) => {
+  try {
+    const insumos = await Insumos.findAll();
+    res.status(200).json(insumos);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const getAllInsumos = async (req, res) => {
-    try {
-        const insumos = await insumosService.getAllInsumos();
-        return res.status(insumos.status).json(insumos.data || { message: insumos.message });
-    } catch (error) {
-        return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
+const obtenerInsumoPorId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const insumo = await Insumos.findByPk(id);
+    if (insumo) {
+      res.status(200).json(insumo);
+    } else {
+      res.status(404).json({ message: 'Insumo no encontrado' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const createInsumo = async (req, res) => {
-    try {
-        const insumoData = req.body;
-        const result = await insumosService.createInsumo(insumoData);
-        return res.status(result.status).json(result.data || { message: result.message });
-    } catch (error) {
-        return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-    }
+const crearInsumo = async (req, res) => {
+  try {
+    const insumo = await Insumos.create(req.body);
+    res.status(201).json(insumo);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
-const updateInsumo = async (req, res) => {
-    const insumoId = req.params.id;
-
-    try {
-        const insumoData = req.body;
-        const result = await insumosService.updateInsumo(insumoId, insumoData);
-        return res.status(result.status).json(result.data || { message: result.message });
-    } catch (error) {
-        return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
+const actualizarInsumo = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [updated] = await Insumos.update(req.body, {
+      where: { ID_insumo: id },
+    });
+    if (updated) {
+      const updatedInsumo = await Insumos.findByPk(id);
+      res.status(200).json(updatedInsumo);
+    } else {
+      res.status(404).json({ message: 'Insumo no encontrado' });
     }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
-const deleteInsumo = async (req, res) => {
-    const insumoId = req.params.id;
-
-    try {
-        const result = await insumosService.deleteInsumo(insumoId);
-        return res.status(result.status).json({ message: result.message });
-    } catch (error) {
-        return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
+const eliminarInsumo = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleted = await Insumos.destroy({
+      where: { ID_insumo: id },
+    });
+    if (deleted) {
+      res.status(204).json();
+    } else {
+      res.status(404).json({ message: 'Insumo no encontrado' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const agregarEntrada = async (req, res) => {
-    try {
-        const entrada = req.body;
-        const result = await insumosService.agregarEntrada(entrada);
-        res.status(result.status).json({ message: result.message });
-    } catch (error) {
-        const statusCode = error.status || 500;
-        res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+const agregarAdicion = async (req, res) => {
+  const { id } = req.params; // ID del insumo
+  try {
+    const insumo = await Insumos.findByPk(id);
+    if (!insumo) {
+      return res.status(404).json({ message: 'Insumo no encontrado' });
     }
+    const { cantidad, descripcion } = req.body;
+
+    // Registrar la entrada en el historial
+    await HistorialStock.create({
+      ID_insumo: id,
+      cantidad,
+      descripcion,
+      fecha: new Date(),
+    });
+
+    // Opcional: Si tienes una tabla Stock_insumos, aquí actualizarías el stock_actual
+    // por ejemplo: await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
+
+    res.status(201).json({ message: 'Adición registrada y stock actualizado' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {
-    getInsumoById,
-    getAllInsumos,
-    createInsumo,
-    updateInsumo,
-    deleteInsumo,
-    agregarEntrada
+  obtenerInsumos,
+  obtenerInsumoPorId,
+  crearInsumo,
+  actualizarInsumo,
+  eliminarInsumo,
+  agregarAdicion,
 };

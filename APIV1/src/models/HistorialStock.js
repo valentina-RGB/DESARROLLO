@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       ID_insumo: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
           model: 'Insumos',
           key: 'ID_insumo',
@@ -43,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'Stock_insumos',
       timestamps: false,
     });
+  
+    StockInsumos.associate = function(models) {
+      StockInsumos.belongsTo(models.Insumos, { foreignKey: 'ID_insumo' });
+    };
   
     return StockInsumos;
   };
