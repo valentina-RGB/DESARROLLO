@@ -59,7 +59,7 @@ class server {
 }
 async function syncDatabase() {
    try {
-     await db.sequelize.sync({ force: true }); 
+    // await db.sequelize.sync({ force: true }); 
      await db.sequelize.sync({ alter: true })
      console.log('Todas las tablas han sido sincronizadas o creadas.');
  
