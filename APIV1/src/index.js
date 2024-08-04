@@ -1,6 +1,6 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
-const db = require('/models');
+const db = require('./../models');
 const routerClients = require('./v1/routers/clients');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
@@ -57,5 +57,16 @@ class server {
    }
 
 }
-
+async function syncDatabase() {
+   try {
+     await db.sequelize.sync({ force: true }); 
+     await db.sequelize.sync({ alter: true })
+     console.log('Todas las tablas han sido sincronizadas o creadas.');
+ 
+   } catch (error) {
+     console.error('Error al sincronizar la base de datos:', error);
+   }
+ }
+ 
+ syncDatabase();
 module.exports = server;

@@ -1,5 +1,5 @@
 // controllers/InsumosController.js
-const db = require('../models');
+const db = require('../../models');
 
 const Insumos = db.Insumos;
 const HistorialStock = db.HistorialStock;

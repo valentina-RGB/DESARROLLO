@@ -1,9 +1,10 @@
 const { Sequelize } = require('sequelize');
 
-const db = new Sequelize('database_name', 'username', 'password', {
+const db = new Sequelize('api_final', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
-  logging: false 
+  logging: false ,
+  logging: console.log
 });
 
 
