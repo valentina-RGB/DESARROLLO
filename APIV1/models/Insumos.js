@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   
     Insumos.associate = function(models) {
-      Insumos.hasMany(models.HistorialStock, { foreignKey: 'ID_insumo' });
+      Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' });
     };
   
     return Insumos;

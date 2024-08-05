@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Historial_entradasController = require('../../controllers/HistoryEntrada');
+const { 
+    getAllEntriesHandler, 
+    getEntriesByInsumoIdHandler, 
+    addStockEntryHandler 
+  }= require('../../controllers/HistoryEntrada');
 
-router.post('/historial_stock', Historial_entradasController.addStockEntry);
+router.post('/historial_stock', addStockEntryHandler);
+router.get('/entries', getAllEntriesHandler);
+router.get('/entries/:ID_insumo', getEntriesByInsumoIdHandler);
 
 module.exports = router;

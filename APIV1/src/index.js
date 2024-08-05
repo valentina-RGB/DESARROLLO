@@ -6,6 +6,7 @@ const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const insumosRoutes = require('./v1/routers/insumos');
 const stockInsumosRoutes = require('./v1/routers/stockInsumos');
+const History_entradasRoutes = require('./v1/routers/History_entradas');
 const body = require('body-parser');
 
 
@@ -43,7 +44,9 @@ class server {
       // Rutas de insumos
       .use('/insumos', insumosRoutes)
       // Rutas de stock de insumos
-      .use('/stock_insumos', stockInsumosRoutes);
+      .use('/stock_insumos', stockInsumosRoutes)
+      // Rutas de historial de entradas
+      .use('/historial_entradas', History_entradasRoutes);
 
       this.app.get('/', (req, res) => {
          res.send("Welcome");
@@ -59,7 +62,7 @@ class server {
 }
 async function syncDatabase() {
    try {
-    // await db.sequelize.sync({ force: true }); 
+     //await db.sequelize.sync({ force: true }); 
      await db.sequelize.sync({ alter: true })
      console.log('Todas las tablas han sido sincronizadas o creadas.');
  

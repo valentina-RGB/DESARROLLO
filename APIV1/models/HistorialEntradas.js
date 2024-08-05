@@ -1,7 +1,6 @@
-// models/HistorialStock.js
 module.exports = (sequelize, DataTypes) => {
-  const HistorialStock = sequelize.define('HistorialStock', {
-    ID_historial: {
+  const HistorialEntradas = sequelize.define('HistorialEntradas', {
+    ID_entrada: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
@@ -14,25 +13,23 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_insumo',
       },
     },
-    fecha: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
     cantidad: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    descripcion: {
-      type: DataTypes.STRING(255),
+    fecha: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   }, {
-    tableName: 'Historial_stock',
+    tableName: 'HistorialEntradas',
     timestamps: false,
   });
 
-  HistorialStock.associate = function(models) {
-    HistorialStock.belongsTo(models.Insumos, { foreignKey: 'ID_insumo' });
+  HistorialEntradas.associate = function(models) {
+    HistorialEntradas.belongsTo(models.Insumos, { foreignKey: 'ID_insumo' });
   };
 
-  return HistorialStock;
+  return HistorialEntradas;
 };
