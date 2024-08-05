@@ -9,6 +9,9 @@ const insumosRoutes = require('./v1/routers/insumos');
 const stockInsumosRoutes = require('./v1/routers/stockInsumos');
 const History_entradasRoutes = require('./v1/routers/History_entradas');
 const Estado_pedidoRoutes = require('./v1/routers/estado_pedido');
+const AccesoRoutes = require('./v1/routers/access');
+const clientsRoutes = require('./v1/routers/clients');
+const rolRoutes = require('./v1/routers/roles');
 const body = require('body-parser');
 const Joi = require('joi');
 
@@ -38,6 +41,12 @@ class server {
       .use('/historial_entradas', History_entradasRoutes)
       //Rutas de estado del pedido
       .use('/Estado',Estado_pedidoRoutes)
+
+      .use('/Acceso', AccesoRoutes)
+
+      .use('/clientes', clientsRoutes)
+
+      .use('/rol', rolRoutes)
 
       this.app.get('/', (req, res) => {
          res.send("Welcome");

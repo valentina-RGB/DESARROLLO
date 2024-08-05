@@ -3,6 +3,7 @@ const { DataTypes, Model } = require('sequelize');
 module.exports = (sequelize) => {
   const Clientes = sequelize.define('Clientes', {
     id: {
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },

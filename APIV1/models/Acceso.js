@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     contrasena: {
-      ttype: DataTypes.STRING(100),
+      type: DataTypes.STRING(100),
       unique: true,
       allowNull: false,
     },

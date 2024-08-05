@@ -3,11 +3,11 @@ const router = express.Router();
 const controllerAccess = require('../../controllers/access');
 
 router
-    .get('/Access', controllerAccess.getAccess)
-    .get('/Access/:id', controllerAccess.getAccessID)
-    .post('/Access', controllerAccess.postAccess)
-    .patch('/Access/:id', controllerAccess.patchAccess)
-    .delete('/Access/:id', controllerAccess.deleteAccess)
+    .get('/', controllerAccess.obtenerAcceso)
+    .get('/:id', controllerAccess.obtenerAccesoPorId)
+    .post('/', controllerAccess.CrearAcceso)
+    .patch('/:id', controllerAccess.ModificarAcceso)
+    .delete('/:id', controllerAccess.eliminarAcceso)
 
 
 module.exports = router;

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const controllerRoles = require('../../controllers/Roles');
+const controllerRoles = require('../../controllers/roles');
 
 router
-    .get('/Roles', controllerRoles.getRol)
-    .get('/Roles/:id', controllerRoles.getRolID)
-    .post('/Roles', controllerRoles.postRol)
-    .patch('/Roles/:id', controllerRoles.patchRol)
-    .delete('/Roles/:id', controllerRoles.deleteRol)
+    .get('/', controllerRoles.obtenerRoles)
+    .get('/:id', controllerRoles.obtenerRolesPorId)
+    .post('/', controllerRoles.CrearRoles)
+    .put('/:id', controllerRoles.ModificarRoles)
+    .delete('/:id', controllerRoles.eliminarRoles)
 
 
 module.exports = router;
