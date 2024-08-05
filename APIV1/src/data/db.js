@@ -1,10 +1,11 @@
 const { Sequelize } = require('sequelize');
 
 const db = new Sequelize('api_final', 'root', '', {
-  host: 'localhost',
-  dialect: 'mysql',
-  logging: false ,
-  logging: console.log
+  host:'mysql-3c01adc3-creamysoft.h.aivencloud.com',
+  user:'avnadmin',
+  password:'AVNS_jw_tWB4q26vSZMF5Rdg',
+  database:'creamy',
+  port: 26923,
 });
 
 
