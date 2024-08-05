@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const controllerCategories = require('../../controllers/categories');
+const {validateCategoria } = require('../../validation/validations_PCP');
 
 router
-    .get('/categories', controllerCategories.getCategorie)
-    .get('/categories/:id', controllerCategories.getCategorieID)
-    .post('/categories', controllerCategories.postCategorie)
-    .patch('/categories/:id', controllerCategories.patchCategorie)
-    .delete('/categories/:id', controllerCategories.deleteCategorie)
+    .get('/', controllerCategories.obtenercategorias)
+    .get('/:id', controllerCategories.obtenerCategoriasPorId)
+    .post('/', validateCategoria, controllerCategories.CrearCategorias)
+    .put('/:id', controllerCategories.ModificarCategorias)
+    .delete('/:id', controllerCategories.eliminarCategorias)
 
 
 module.exports = router;

@@ -1,115 +1,56 @@
 const express = require('express');
-const db = require('../data/db.js');
 const {request , response} = require('express');
-    
-    
+
+const db = require('../../models');
+const Productos = db.Productos;
+
     const 
-        getProduct = (req ,res) => {
-            const sql = 'SELECT * FROM productos'
 
-            db.query(sql, (err, results) => {
-                if (err) {
-                  console.error('Error fetching products:', err);
-                  if (!res.headersSent) {
-                    return res.status(500).json({ error: 'Database error' });
-                  }
-                }
-            
-                if (!res.headersSent) {
-                  return res.json(results);
-                }
-              });
-        } ,
 
-        getProductID = (id) => {
-            return new Promise((resolve, reject) => {
-                const sql = 'SELECT * FROM productos WHERE ID_producto = ?';
-
-                db.query(sql, [id], (err, results) => {
-                  
-                  if (err) {
-                    console.error('Error fetching product:', err);
-                    return reject({ status: 500, message: 'Error fetching product' });
-                  }
-
-                  if (results.length > 0) {
-
-                    return resolve({ status: 200, data: results[0] }); // Devuelve el primer resultado
-
-                  } else {
-
-                    return resolve({ status: 404, message: 'Product not found' }); // No se encontró el producto
-                  }
-                });
-              });
-        } ,
-
-        postProduct = (product) => {
-            return new Promise((resolve, reject) => {
-                
-              if (!product) {
-                return reject(new Error('Product data is required'));
-              }
-              
-                const {descripcion = '', precio_neto = 0, estado_producto = '', ID_tipo_productos = 0, ID_categoria = 0, imagen = '' } = product;
+    getProductos = async (res,req) => {
+      const productos = await Productos.findAll();
+        res.status(200).json(productos);
+    },
         
-                // Verificación de campos requeridos
-                if (!descripcion || !precio_neto) {
-                    return reject(new Error('Missing required fields'));
-                  }
-        
-                const query = 'INSERT INTO productos (descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen) VALUES (?, ?, ?, ?, ?, ?)';
-        
-                db.query(query, [descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen], (err, results) => {
+    getProductosID = async (id) => {
+      const productos = await Productos.findByPk(id);
+        return productos;
+    } ,
 
-                    if (err) {
-                        return reject(err);
-                    }
-                    
-                    resolve(results); 
-                });
-            });
-        } ,
+    CreateProdutos = async (datos) => {
+        const productos = await Productos.create(datos);
+        return productos;
+
+    };
         
-        patchProduct = (productId, product) => {
+    PatchProductos = async (id, datos) => {
+      const [updated] = await Productos.update(datos, {
+        where: { ID_producto:id },
+      });
 
-            return new Promise((resolve, reject) => {
-                const { descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen } = product;
-                
-                const query = `
-                    UPDATE productos 
-                    SET descripcion = ?, precio_neto = ?, estado_producto = ?, ID_tipo_productos = ?, ID_categoria = ?, imagen = ?
-                    WHERE ID_producto = ?
-                `;
-                
-                db.query(query, [descripcion, precio_neto, estado_producto, ID_tipo_productos, ID_categoria, imagen, productId], (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(results);
-                    }
-                });
-            });
-          }
-      ,
+      if (updated) {
+        const updatedProductos = await Productos.findByPk(id);
+        return updatedProductos;
 
-        deleteProduct = (productId) => {
-          return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM productos WHERE ID_producto = ?'
-            db.query(query,[productId],(err, results) => {
-              if (err) {
-                reject(err);
-            } else {
-                resolve(results);
-            }
-            })
-          })
-        } 
+      }else{
+        return { status: 404, message: 'Product not found' };
+      }
+    },
+
+    DeleteProductos = async (id) => {
+      const deleted = await Productos.destroy({ where: {ID_producto: id}, });
+      if (deleted) {
+        return deleted;
+      }else{
+        return {status: 404, message: 'Product not found' };
+      }
+    } 
+
 
 module.exports = {
-    getProduct,
-    getProductID,
-    postProduct,
-    patchProduct,
-    deleteProduct
+  getProductos,
+  getProductosID,
+  CreateProdutos,
+  PatchProductos,
+  DeleteProductos,
 }

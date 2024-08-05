@@ -2,6 +2,7 @@
 const db = require('../../models');
 
 const Insumos = db.Insumos;
+
 const HistorialStock = db.HistorialStock;
 
 const obtenerInsumos = async (req, res) => {

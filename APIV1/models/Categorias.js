@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
+  
   const Categorias = sequelize.define('Categorias', {
     ID_categoria: {
       type: DataTypes.INTEGER,
@@ -10,7 +11,7 @@ module.exports = (sequelize) => {
     descripcion: {
       type: DataTypes.STRING(100),
       unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     estado_categoria: {
       type: DataTypes.CHAR(1),
