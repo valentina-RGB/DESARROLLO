@@ -3,7 +3,7 @@ const db = require('../../models');
 
 const Insumos = db.Insumos;
 const StockInsumos = db.StockInsumos;
-const HistorialStock = db.HistorialStock;
+const HistorialEntradas = db.HistorialEntradas
 
 const obtenerInsumos = async (req, res) => {
   try {
@@ -29,22 +29,39 @@ const obtenerInsumoPorId = async (req, res) => {
 };
 
 const crearInsumo = async (req, res) => {
-  const transaction = await db.sequelize.transaction(); // Iniciar una transacción
+  const transaction = await db.sequelize.transaction();
   try {
-    const insumo = await Insumos.create(req.body, { transaction });
+    const {
+      ID_tipo_insumo,
+      descripcion_insumo,
+      estado_insumo, // Opcional: Puedes incluir este campo si es necesario
+      precio,
+      stock_min,
+      stock_max,
+      stock_actual,
+      medida,
+      unidad
+    } = req.body;
 
-    // Crear un registro en Stock_insumos para el nuevo insumo
-    await StockInsumos.create(
-      {
-        stock_min: 0, 
-        stock_max: 100, 
-        stock_actual: 0, 
-        ID_insumo: insumo.ID_insumo,
-        medida: 'unidad', 
-        unidad: 0,
-      },
-      { transaction }
-    );
+    if (!ID_tipo_insumo || !descripcion_insumo) {
+      await transaction.rollback();
+      return res.status(400).json({ message: 'ID_tipo_insumo y descripcion_insumo son campos obligatorios.' });
+    }
+    const insumo = await Insumos.create({
+      ID_tipo_insumo,
+      descripcion_insumo,
+      estado_insumo, 
+      precio
+    }, { transaction });
+  
+    await StockInsumos.create({
+      stock_min: stock_min || 0,
+      stock_max: stock_max || 100,
+      stock_actual: stock_actual || 0,
+      ID_insumo: insumo.ID_insumo,
+      medida: medida || 'unidad',
+      unidad: unidad || 0
+    }, { transaction });
 
     await transaction.commit(); 
     res.status(201).json(insumo);
@@ -87,7 +104,7 @@ const eliminarInsumo = async (req, res) => {
   }
 };
 
-const agregarAdicion = async (req, res) => {
+const agregarEntrada = async (req, res) => {
   const { id } = req.params; 
   try {
     const insumo = await Insumos.findByPk(id);
@@ -96,8 +113,8 @@ const agregarAdicion = async (req, res) => {
     }
     const { cantidad, descripcion } = req.body;
 
-    // Registrar la entrada en el historial
-    await HistorialStock.create({
+    // Registrar la entrada en el historial de entradas
+    await HistorialEntradas.create({
       ID_insumo: id,
       cantidad,
       descripcion,
@@ -107,7 +124,7 @@ const agregarAdicion = async (req, res) => {
     // Actualizar el stock_actual en Stock_insumos
     await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
 
-    res.status(201).json({ message: 'Adición registrada y stock actualizado' });
+    res.status(201).json({ message: 'Entrada registrada y stock actualizado' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -119,5 +136,5 @@ module.exports = {
   crearInsumo,
   actualizarInsumo,
   eliminarInsumo,
-  agregarAdicion,
+  agregarEntrada,
 };

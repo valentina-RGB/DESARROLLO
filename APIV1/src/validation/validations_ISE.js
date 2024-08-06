@@ -1,44 +1,65 @@
 const express = require('express');
 const Joi = require('joi');
 
-const createStockInsumoSchema = Joi.object({
-    stock_min: Joi.number().integer().min(1).required(),
-    stock_max: Joi.number().integer().greater(Joi.ref('stock_min')).required(),
-    stock_actual: Joi.number().integer().min(1).optional(),
-    ID_porcion: Joi.number().integer().positive().optional(),
-    medida: Joi.string().max(30).optional(),
-    unidad: Joi.number().integer().positive().optional(),
-    sabor_helado: Joi.string().max(50).optional()
+const createInsumosSchema = Joi.object({
+    ID_tipo_insumo: Joi.number().integer().positive().required(),
+    descripcion_insumo: Joi.string().max(50).required(),
+    estado_insumo: Joi.string().valid('D', 'A').default('D').required(),
+    precio: Joi.number().positive().optional()
 });
 
-const updateStockInsumoSchema = Joi.object({
-    stock_min: Joi.number().integer().min(0).optional(),
-    stock_max: Joi.number().integer().greater(Joi.ref('stock_min')).optional(),
-    stock_actual: Joi.number().integer().min(0).optional(),
-    ID_porcion: Joi.number().integer().positive().optional(),
-    medida: Joi.string().max(30).optional(),
-    unidad: Joi.number().integer().positive().optional(),
-    sabor_helado: Joi.string().max(50).optional()
+const updateInsumosSchema = Joi.object({
+    ID_tipo_insumo: Joi.number().integer().positive().optional(),
+    descripcion_insumo: Joi.string().max(50).optional(),
+    estado_insumo: Joi.string().valid('D', 'A').optional(),
+    precio: Joi.number().positive().optional()
 });
-
 
 function validateInsumos(req, res, next) {
-    const { error } = createStockInsumoSchema.validate(req.body);
+    const { error } = createInsumosSchema.validate(req.body);
     if (error) {
-      return res.status(400).send(error.details[0].message);
-    }
-    next();
-}
-function validateInsumosUptate(req, res, next) {
-    const { error } = updateStockInsumoSchema.validate(req.body);
-    if (error) {
-      return res.status(400).send(error.details[0].message);
+        return res.status(400).send(error.details[0].message);
     }
     next();
 }
 
+function validateUpdateInsumo(req, res, next) {
+    const { error } = updateInsumosSchema.validate(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+    next();
+}
+
+//Tipo_INSUMO
+const createTipoInsumoSchema = Joi.object({
+    descripcion_tipo: Joi.string().max(255).required(),
+  });
+  
+  const updateTipoInsumoSchema = Joi.object({
+    descripcion_tipo: Joi.string().max(255).optional(),
+  });
+  
+  function validateCreateTipoInsumo(req, res, next) {
+    const { error } = createTipoInsumoSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    next();
+  }
+  
+  function validateUpdateTipoInsumo(req, res, next) {
+    const { error } = updateTipoInsumoSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    next();
+  }
+  
 
 module.exports = {
     validateInsumos,
-    validateInsumosUptate
+    validateUpdateInsumo,
+    validateCreateTipoInsumo,
+  validateUpdateTipoInsumo
 }

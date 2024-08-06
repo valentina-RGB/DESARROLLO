@@ -7,11 +7,11 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    ID_usuario: {
-      type: DataTypes.STRING(100),
-      unique: true,
-      allowNull: false,
-    },
+    // ID_usuario: {
+    //   type: DataTypes.STRING(100),
+    //   unique: true,
+    //   allowNull: false,
+    // },
     contrasena: {
       type: DataTypes.STRING(100),
       unique: true,
