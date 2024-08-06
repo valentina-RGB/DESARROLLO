@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controllerProduct = require('../../controllers/products');
-const { validateProducto } = require('../../validation/validations_PCP');
+const { validateProducto } = require('../../validation/validationsProductos');
 
 router
     .get('/', controllerProduct.obtenerProductos)
