@@ -34,6 +34,23 @@ module.exports = (sequelize, DataTypes) => {
     Insumos.associate = function(models) {
       Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' });
     };
+
+    const StockInsumos = require('./StockInsumo'); // Importa el modelo de StockInsumos
+
+  Insumos.afterCreate(async (insumo, options) => {
+    try {
+      await StockInsumos.create({
+        stock_min: 0, // Define valores iniciales o por defecto
+        stock_max: 100, // Define valores iniciales o por defecto
+        stock_actual: 0, // Define valores iniciales o por defecto
+        ID_insumo: insumo.ID_insumo,
+        medida: 'unidad', // Define la medida inicial o por defecto
+        unidad: 0 // Define la unidad inicial o por defecto
+      });
+    } catch (error) {
+      console.error('Error al crear StockInsumos:', error);
+    }
+  });
   
     return Insumos;
   };
