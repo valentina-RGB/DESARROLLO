@@ -14,9 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     });
 
-      Tipo_insumos.associate = function(models) {
-      Tipo_insumos.belongsTo(models.Insumos, { foreignKey: 'ID_insumo' });
-    };
-  
+     
     return Tipo_insumos;
   };
