@@ -21,7 +21,7 @@ const Categoria = db.Categorias;
         const categorias = await Categoria.create(datos);
         return categorias;
 
-    };
+    },
         
     PatchCategories = async (id, datos) => {
       const [updated] = await Categoria.update(datos, {

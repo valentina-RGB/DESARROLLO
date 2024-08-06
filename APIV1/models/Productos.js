@@ -1,7 +1,4 @@
-// models/Productos.js
-const { DataTypes } = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize,DataTypes) => {
   const Productos = sequelize.define('Productos', {
     ID_producto: {
       type: DataTypes.INTEGER,
@@ -22,9 +19,17 @@ module.exports = (sequelize) => {
     },
     ID_tipo_productos: {
       type: DataTypes.INTEGER,
+      references: {
+        model: 'tipo_productos',
+        key: 'ID_tipo_producto',
+      },
     },
     ID_categoria: {
       type: DataTypes.INTEGER,
+      references: {
+        model: 'Categorias',
+        key: 'ID_categoria',
+      },
     },
     imagen: {
       type: DataTypes.STRING(100),

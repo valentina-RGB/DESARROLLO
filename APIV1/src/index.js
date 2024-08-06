@@ -25,7 +25,20 @@ class server {
    this.app.use(express.urlencoded({ extended: true }));
    //this.app.use(body.urlencoded({ extended: false}));
    this.Routers();
+
+   this.syncDatabase();
    }
+
+   syncDatabase =async()=> {
+      try {
+        //await db.sequelize.sync({ force: true }); 
+        await db.sequelize.sync({ alter: true })
+        console.log('Todas las tablas han sido sincronizadas o creadas.');
+    
+      } catch (error) {
+        console.error('Error al sincronizar la base de datos:', error);
+      }
+    }
 
    Routers(){
       this.app  
@@ -48,6 +61,8 @@ class server {
 
       .use('/rol', rolRoutes)
 
+    
+
       this.app.get('/', (req, res) => {
          res.send("Welcome");
        });
@@ -60,16 +75,9 @@ class server {
    }
 
 }
-async function syncDatabase() {
-   try {
-     //await db.sequelize.sync({ force: true }); 
-     await db.sequelize.sync({ alter: true })
-     console.log('Todas las tablas han sido sincronizadas o creadas.');
- 
-   } catch (error) {
-     console.error('Error al sincronizar la base de datos:', error);
-   }
- }
- 
- syncDatabase();
+
+
+
+  
+
 module.exports = server;
