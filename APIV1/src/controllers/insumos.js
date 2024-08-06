@@ -2,7 +2,7 @@
 const db = require('../../models');
 
 const Insumos = db.Insumos;
-
+const StockInsumos = db.StockInsumos;
 const HistorialStock = db.HistorialStock;
 
 const obtenerInsumos = async (req, res) => {
@@ -29,10 +29,27 @@ const obtenerInsumoPorId = async (req, res) => {
 };
 
 const crearInsumo = async (req, res) => {
+  const transaction = await db.sequelize.transaction(); // Iniciar una transacción
   try {
-    const insumo = await Insumos.create(req.body);
+    const insumo = await Insumos.create(req.body, { transaction });
+
+    // Crear un registro en Stock_insumos para el nuevo insumo
+    await StockInsumos.create(
+      {
+        stock_min: 0, 
+        stock_max: 100, 
+        stock_actual: 0, 
+        ID_insumo: insumo.ID_insumo,
+        medida: 'unidad', 
+        unidad: 0,
+      },
+      { transaction }
+    );
+
+    await transaction.commit(); 
     res.status(201).json(insumo);
   } catch (error) {
+    await transaction.rollback(); 
     res.status(400).json({ message: error.message });
   }
 };
@@ -71,7 +88,7 @@ const eliminarInsumo = async (req, res) => {
 };
 
 const agregarAdicion = async (req, res) => {
-  const { id } = req.params; // ID del insumo
+  const { id } = req.params; 
   try {
     const insumo = await Insumos.findByPk(id);
     if (!insumo) {
@@ -87,8 +104,8 @@ const agregarAdicion = async (req, res) => {
       fecha: new Date(),
     });
 
-    // Opcional: Si tienes una tabla Stock_insumos, aquí actualizarías el stock_actual
-    // por ejemplo: await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
+    // Actualizar el stock_actual en Stock_insumos
+    await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
 
     res.status(201).json({ message: 'Adición registrada y stock actualizado' });
   } catch (error) {
