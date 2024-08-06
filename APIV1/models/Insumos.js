@@ -1,35 +1,41 @@
-
 module.exports = (sequelize, DataTypes) => {
-    const Insumos = sequelize.define('Insumos', {
-      ID_insumo: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+  const Insumos = sequelize.define('Insumos', {
+    ID_insumo: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    descripcion_insumo: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    estado_insumo: {
+      type: DataTypes.CHAR(1),
+      defaultValue: 'D',
+      allowNull: false,
+    },
+    precio: {
+      type: DataTypes.FLOAT,
+    },
+    ID_tipo_insumo: { // Clave foránea para tipo de insumo
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Tipo_insumos', // Nombre del modelo relacionado
+        key: 'ID_tipo_insumo',
       },
-      descripcion_insumo: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-      },
-      estado_insumo: {
-        type: DataTypes.CHAR(1),
-        defaultValue: 'D',
-        allowNull: false,
-      },
-      precio: {
-        type: DataTypes.FLOAT,
-      },
-    }, {
-      tableName: 'Insumos',
-      timestamps: false,
-    });
-  
-    Insumos.associate = function(models) {
-      Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' })
-     
-      // Insumos.hasMany(models.Tipo_insumos, {foreignKey: 'ID_tipo_insumo',as: 'Tipos_insumos', });
-    };
+    },
+  }, {
+    tableName: 'Insumos',
+    timestamps: false,
+  });
 
-    const StockInsumos = require('./StockInsumo'); // Importa el modelo de StockInsumos
+  Insumos.associate = function(models) {
+    Insumos.belongsTo(models.Tipo_insumos, { foreignKey: 'ID_tipo_insumo' });
+    Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' });
+  };
+
+  const StockInsumos = require('./StockInsumo'); // Importa el modelo de StockInsumos
 
   Insumos.afterCreate(async (insumo, options) => {
     try {
@@ -45,7 +51,6 @@ module.exports = (sequelize, DataTypes) => {
       console.error('Error al crear StockInsumos:', error);
     }
   });
-  
-    return Insumos;
-  };
-  
+
+  return Insumos;
+};

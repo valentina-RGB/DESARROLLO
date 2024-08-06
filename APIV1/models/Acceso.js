@@ -7,16 +7,16 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    ID_usuarios: {
-      type: DataTypes.INTEGER,
-      allowNull:true,
-      references: {
-      model: 'Usuarios',
-        key: 'ID_usuario',
-      },
-      onUpdate: 'CASCADE',
-      OnDelete:'SET NULL'
-    }, 
+    //ID_usuarios: {
+      //type: DataTypes.INTEGER,
+      //allowNull:true,
+      //references: {
+      //model: 'Usuarios',
+        //key: 'ID_usuario',
+      //},
+      //onUpdate: 'CASCADE',
+      //OnDelete:'SET NULL'
+    //},
     contrasena: {
       type: DataTypes.STRING(10),
       allowNull: false,
