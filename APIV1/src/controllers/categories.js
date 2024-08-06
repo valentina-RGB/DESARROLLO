@@ -3,70 +3,72 @@ const {request , response} = require('express');
 const categorieService = require('../services/categoriesServices');
 
 const 
-    
-    getCategorie = (req= req, res= response) =>{
-        const allcategories = categorieService.getCategorie(req,res)
-    } ,  
-    
-    getCategorieID = async (req = request, res= response) =>{  
-        const categorieId = req.params.id;
+    obtenercategorias = async (req, res) => {
+        try{
 
-        try {
-            const onecategorie = await   categorieService.getCategoriesID(categorieId)
-            return res.status(onecategorie.status).json(onecategorie.data || { message: onecategorie.message });
-          } catch (error) {
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-          }
-    } ,  
-
-    postCategorie = async  (req = request, res= response) => {
-        try {
-            const categorie = req.body;
-            const result = await categorieService.postCategorie(categorie); // Suponiendo que `postcategorieService` es tu función de servicio
-            res.status(201).json({ message: 'Categorie created successfully', result });
-        } catch (error) {
-            // Verifica que el error tenga un código de estado válido o usa un código por defecto
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+        return await categorieService.getCategorie(res,req);  
+       
+        }catch (error) {
+            res.status(500).json({ message: error.message });
         }
-    
-    } ,
+    },
 
-    patchCategorie = async (req = request, res= response) =>{
+
+    obtenerCategoriasPorId = async (req, res) => {
         try {
-            const categorieId = req.params.id;
-            const categorie = req.body; 
-            const updatecategorie = await categorieService.patchCategorie(categorieId,categorie);
+            const {id} = req.params;
+            const categorias = await categorieService.getCategoriesID(id);
 
-            res.status(200).json({ message: 'Categorie updated successfully',updatecategorie });
+            if(categorias){
+                res.status(200).json(categorias)      
+            }else{
+                res.status(404).json({message: 'Categorias not found' })
+            }               
             
         } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            res.status(500).json({ message: error.message });
         }
-    } ,
-
-    deleteCategorie = async (req = request, res= response) =>{
-        try {
-            const categorieId = req.params.id; 
-            const result = await categorieService.deleteCategorie(categorieId);
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Categorie not found' });
-            }
-            
-            res.status(200).json({ message: 'Categorie deleted successfully' });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        } 
     }
 
+    CrearCategorias = async  (req = request, res= response) => {
+        try {        
+            const categorias = await categorieService.CreateCategories(req.body);
+            res.status(201).json({ message: 'Categorie created successfully', categorias });
+            
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    
+    } ,
+
+    ModificarCategorias = async (req = request, res= response) =>{
+        try {
+            const { id } = req.params;
+            const updatecategorie = await categorieService.PatchCategories(id, req.body);
+
+            if(updatecategorie){
+                res.status(200).json({ message: 'Categoria updated successfully', updatecategorie });
+            }
+        }catch(error){
+            res.status(400).json({ message: error.message });
+            }     
+    } ,
+
+    eliminarCategorias= async (req = request, res= response) =>{
+        const { id } = req.params;
+            try{
+                const dato = await categorieService.DeleteCategories(id);
+                res.status(204).json({message: 'El dato fue eliminado', dato});
+            }catch(error){
+                const statusCode = error.status || 500;
+                res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            }      
+    }
 
 module.exports = {
-   getCategorie,
-   getCategorieID,
-   postCategorie,
-   patchCategorie,
-   deleteCategorie
+   obtenercategorias,  
+   obtenerCategoriasPorId,
+   CrearCategorias,
+   ModificarCategorias,
+   eliminarCategorias
 }

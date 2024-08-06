@@ -6,7 +6,7 @@ const getInsumoById = async (id) => {
     try {
         const insumo = await Insumo.findByPk(id);
         if (!insumo) {
-            throw { status: 404, message: 'Insumo not found' };
+            throw {status: 404, message: 'Insumo not found' };
         }
         return { status: 200, data: insumo };
     } catch (error) {

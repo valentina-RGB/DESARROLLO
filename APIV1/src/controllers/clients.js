@@ -1,142 +1,74 @@
 const express = require('express');
 const {request , response} = require('express');
-const clientService = require('../services/clientsServices');
+const clientsService = require('../services/clientsServices');
 
 const 
-    
-    getClient = (req= req, res= response) =>{
-        const allclient = clientService.getClient(req,res)
-    } ,  
-    
-    getClientID = async (req = request, res= response) =>{  
-        const clientId = req.params.id;
+    obtenerClientes = async (req, res) => {
+        try{
 
-        try {
-            const oneclient = await   clientService.getClientID(clientId)
-            return res.status(oneclient.status).json(oneclient.data || { message: oneclient.message });
-          } catch (error) {
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-          }
-    } ,  
+        return await clientsService.getClient(res,req);  
+       
+        }catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
 
-    postClient = async  (req = request, res= response) => {
+
+    obtenerClientesPorId = async (req, res) => {
         try {
-            const client = req.body;
-            const result = await clientService.postClient(client); 
-            res.status(201).json({ message: 'client created successfully', result });
+            const {id} = req.params;
+            const clientes = await clientsService.getClientsID(id);
+
+            if(clientes){
+                res.status(200).json(clientes)      
+            }else{
+                res.status(404).json({message: 'Clientes not found' })
+            }               
+            
         } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    CrearClientes = async  (req = request, res= response) => {
+        try {        
+            const clientes = await clientsService.CreateClients(req.body);
+            res.status(201).json({ message: 'clientes created successfully', clientes });
+            
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     
     } ,
 
-    patchClient = async (req = request, res= response) =>{
+    ModificarClientes = async (req = request, res= response) =>{
         try {
-            const clientId = req.params.id;
-            const client = req.body; 
-            const updateclient = await clientService.patchClient(clientId, client);
+            const { id } = req.params;
+            const updateclientes = await clientsService.PatchClients(id, req.body);
 
-            res.status(200).json({ message: 'client updated successfully',updateclient });
-            
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        }
-    } ,
-
-    deleteClient = async (req = request, res= response) =>{
-        try {
-            const clientId = req.params.id; 
-            const result = await clientService.deleteClient(clientId);
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'client not found' });
+            if(updateclientes){
+                res.status(200).json({ message: 'Cliente updated successfully', updateclientes });
             }
-            
-            res.status(200).json({ message: 'client deleted successfully' });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        } 
+        }catch(error){
+            res.status(400).json({ message: error.message });
+            }     
+    } ,
+
+    eliminarClientes= async (req = request, res= response) =>{
+        const { id } = req.params;
+            try{
+                const dato = await clientsService.DeleteClients(id);
+                res.status(204).json({message: 'El dato fue eliminado', dato});
+            }catch(error){
+                const statusCode = error.status || 500;
+                res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            }      
     }
 
-
 module.exports = {
-    getClient,
-    getClientID,
-    postClient,
-    patchClient,
-    deleteClient
-}
-const express = require('express');
-const {request , response} = require('express');
-const clientService = require('../services/clientsServices');
-
-const 
-    
-    getClient = (req= req, res= response) =>{
-        const allclient = clientService.getClient(req,res)
-    } ,  
-    
-    getClientID = async (req = request, res= response) =>{  
-        const clientId = req.params.id;
-
-        try {
-            const oneclient = await   clientService.getClientID(clientId)
-            return res.status(oneclient.status).json(oneclient.data || { message: oneclient.message });
-          } catch (error) {
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-          }
-    } ,  
-
-    postClient = async  (req = request, res= response) => {
-        try {
-            const client = req.body;
-            const result = await clientService.postClient(client); 
-            res.status(201).json({ message: 'client created successfully', result });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        }
-    
-    } ,
-
-    patchClient = async (req = request, res= response) =>{
-        try {
-            const clientId = req.params.id;
-            const client = req.body; 
-            const updateclient = await clientService.patchClient(clientId, client);
-
-            res.status(200).json({ message: 'client updated successfully',updateclient });
-            
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        }
-    } ,
-
-    deleteClient = async (req = request, res= response) =>{
-        try {
-            const clientId = req.params.id; 
-            const result = await clientService.deleteClient(clientId);
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'client not found' });
-            }
-            
-            res.status(200).json({ message: 'client deleted successfully' });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        } 
-    }
-
-
-module.exports = {
-    getClient,
-    getClientID,
-    postClient,
-    patchClient,
-    deleteClient
+   obtenerClientes,  
+   obtenerClientesPorId,
+   CrearClientes,
+   ModificarClientes,
+   eliminarClientes
 }

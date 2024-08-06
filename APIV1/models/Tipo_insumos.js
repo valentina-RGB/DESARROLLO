@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       descripcion_tipo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     }, {
       tableName: 'Tipo_insumos',

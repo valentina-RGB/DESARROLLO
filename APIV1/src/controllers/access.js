@@ -1,72 +1,74 @@
 const express = require('express');
 const {request , response} = require('express');
-const accessService = require('../services/accessServices');
+const accessService = require('../services/accessService');
 
 const 
-    
-    getAccess = (req= req, res= response) =>{
-        const allaccesss = accessService.getAccess(req,res)
-    } ,  
-    
-    getAccessID = async (req = request, res= response) =>{  
-        const accessId = req.params.id;
+    obtenerAcceso = async (req, res) => {
+        try{
 
-        try {
-            const oneaccess = await   accessService.getAccessID(accessId)
-            return res.status(oneaccess.status).json(oneaccess.data || { message: oneaccess.message });
-          } catch (error) {
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-          }
-    } ,  
-
-    postAccess = async  (req = request, res= response) => {
-        try {
-            const access = req.body;
-            const result = await accessService.postAccess(access); // Suponiendo que `postaccessService` es tu función de servicio
-            res.status(201).json({ message: 'access created successfully', result });
-        } catch (error) {
-            // Verifica que el error tenga un código de estado válido o usa un código por defecto
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+        return await accessService.getaccess(res,req);  
+       
+        }catch (error) {
+            res.status(500).json({ message: error.message });
         }
-    
-    } ,
+    },
 
-    patchAccess = async (req = request, res= response) =>{
+
+    obtenerAccesoPorId = async (req, res) => {
         try {
-            const accessId = req.params.id;
-            const access = req.body; 
-            const updateaccess = await accessService.patchAccess(accessId,access);
+            const {id} = req.params;
+            const acceso = await accessService.getAccessID(id);
 
-            res.status(200).json({ message: 'access updated successfully',updateaccess });
+            if(acceso){
+                res.status(200).json(acceso)      
+            }else{
+                res.status(404).json({message: 'acceso not found' })
+            }               
             
         } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            res.status(500).json({ message: error.message });
         }
-    } ,
-
-    deleteAccess = async (req = request, res= response) =>{
-        try {
-            const accessId = req.params.id; 
-            const result = await accessService.deleteAccess(accessId);
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'access not found' });
-            }
-            
-            res.status(200).json({ message: 'access deleted successfully' });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        } 
     }
 
+    CrearAcceso = async  (req = request, res= response) => {
+        try {        
+            const acceso = await accessService.CreateAccess(req.body);
+            res.status(201).json({ message: 'access created successfully', acceso });
+            
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    
+    } ,
+
+    ModificarAcceso = async (req = request, res= response) =>{
+        try {
+            const { id } = req.params;
+            const updateaccess = await accessService.Patchaccess(id, req.body);
+
+            if(updateaccess){
+                res.status(200).json({ message: 'Access updated successfully', updateaccess });
+            }
+        }catch(error){
+            res.status(400).json({ message: error.message });
+            }     
+    } ,
+
+    eliminarAcceso= async (req = request, res= response) =>{
+        const { id } = req.params;
+            try{
+                const dato = await accessService.Deleteaccess(id);
+                res.status(204).json({message: 'El dato fue eliminado', dato});
+            }catch(error){
+                const statusCode = error.status || 500;
+                res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            }      
+    }
 
 module.exports = {
-   getAccess,
-   getAccessID,
-   postAccess,
-   patchAccess,
-   deleteAccess
+   obtenerAcceso,  
+   obtenerAccesoPorId,
+   CrearAcceso,
+   ModificarAcceso,
+   eliminarAcceso
 }

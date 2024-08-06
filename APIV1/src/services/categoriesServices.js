@@ -1,115 +1,60 @@
 const express = require('express');
-const db = require('../data/db.js');
 const {request , response} = require('express');
-    
-    
+
+const db = require('../../models');
+const Categoria = db.Categorias;
+
     const 
-        getCategorie = (req ,res) => {
-            const sql = 'SELECT * FROM categorias'
 
-            db.query(sql, (err, results) => {
-                if (err) {
-                  console.error('Error fetching categories:', err);
-                  if (!res.headersSent) {
-                    return res.status(500).json({ error: 'Database error' });
-                  }
-                }
-            
-                if (!res.headersSent) {
-                  return res.json(results);
-                }
-              });
-        } ,
 
-        getCategoriesID = (id) => {
-            return new Promise((resolve, reject) => {
-                const sql = 'SELECT * FROM categorias WHERE ID_categoria = ?';
-
-                db.query(sql, [id], (err, results) => {
-                  
-                  if (err) {
-                    console.error('Error fetching categorie:', err);
-                    return reject({ status: 500, message: 'Error fetching categorie' });
-                  }
-
-                  if (results.length > 0) {
-
-                    return resolve({ status: 200, data: results[0] }); // Devuelve el primer resultado
-
-                  } else {
-
-                    return resolve({ status: 404, message: 'Categorie not found' }); // No se encontró el producto
-                  }
-                });
-              });
-        } ,
-
-        postCategorie = (categorie) => {
-            return new Promise((resolve, reject) => {
-                
-              if (!categorie) {
-                return reject(new Error('Categorie data is required'));
-              }
-              
-                const {descripcion = '', estado_categoria = '', imagen = '' } = categorie;
+    getCategorie = async (res,req) => {
+      const categoria = await Categoria.findAll();
+        res.status(200).json(categoria);
+    },
         
-                // Verificación de campos requeridos
-                if (!descripcion || !estado_categoria) {
-                    return reject(new Error('Missing required fields'));
-                  }
-        
-                const query = 'INSERT INTO categorias (descripcion, estado_categoria, imagen) VALUES (?, ?, ?)';
-        
-                db.query(query, [descripcion, estado_categoria, imagen], (err, results) => {
+    getCategoriesID = async (id) => {
+      const categorias = await Categoria.findByPk(id);
+        return categorias;
+    } ,
 
-                    if (err) {
-                        return reject(err);
-                    }
-                    
-                    resolve(results); 
-                });
-            });
-        } ,
+    CreateCategories = async (datos) => {
+        const categorias = await Categoria.create(datos);
+        return categorias;
+
+    },
         
-        patchCategorie = (categorieId, categorie) => {
+    PatchCategories = async (id, datos) => {
+      const [updated] = await Categoria.update(datos, {
+        where: { ID_categoria:id },
+      });
 
-            return new Promise((resolve, reject) => {
-                const { descripcion, estado_categoria, imagen } = categorie;
-                
-                const query = `
-                    UPDATE categorias 
-                    SET descripcion = ?, estado_categoria = ?, imagen = ?
-                    WHERE ID_categoria = ?
-                `;
-                
-                db.query(query, [descripcion, estado_categoria, imagen, categorieId], (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(results);
-                    }
-                });
-            });
-          }
-      ,
+      if (updated) {
+        const updatedCategoria = await Categoria.findByPk(id);
+        return updatedCategoria;
+      }else{
+        return { status: 404, message: 'categoria not found' };
+      }
+    },
 
-        deleteCategorie = (categorieId) => {
-          return new Promise((resolve, reject) => {
-            const query = 'DELETE FROM categorias WHERE ID_categoria = ?'
-            db.query(query,[categorieId],(err, results) => {
-              if (err) {
-                reject(err);
-            } else {
-                resolve(results);
-            }
-            })
-          })
-        } 
+    DeleteCategories = async (id) => {
+      const deleted = await Categoria.destroy({ where: {ID_categoria: id}, });
+      if (deleted) {
+        return deleted;
+      }else{
+        return {status: 404, message: 'categoria not found' };
+      }
+
+
+    } 
+
+
+        
+        
 
 module.exports = {
     getCategorie,
     getCategoriesID,
-    postCategorie,
-    patchCategorie,
-    deleteCategorie
+    CreateCategories,
+    PatchCategories,
+    DeleteCategories,
 }

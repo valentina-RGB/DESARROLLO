@@ -1,72 +1,72 @@
 const express = require('express');
 const {request , response} = require('express');
-const rolesService = require('../services/rolesServices');
+const rolesService = require('../services/rolesService');
 
 const 
-    
-    getRoles = (req= req, res= response) =>{
-        const allroless = rolesService.getRoles(req,res)
-    } ,  
-    
-    getRolesID = async (req = request, res= response) =>{  
-        const rolesId = req.params.id;
+    obtenerRoles = async (req, res) => {
+        try{
 
+        return await rolesService.getRol(res,req);  
+       
+        }catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+    obtenerRolesPorId = async (req, res) => {
         try {
-            const oneroles = await   rolesService.getRolesID(rolesId)
-            return res.status(oneroles.status).json(oneroles.data || { message: oneroles.message });
-          } catch (error) {
-            return res.status(error.status || 500).json({ error: error.message || 'Internal Server Error' });
-          }
-    } ,  
+            const {id} = req.params;
+            const roles = await rolesService.getRolesID(id);
 
-    postRoles = async  (req = request, res= response) => {
-        try {
-            const roles = req.body;
-            const result = await rolesService.postRoles(roles); // Suponiendo que `postrolesService` es tu función de servicio
-            res.status(201).json({ message: 'roles created successfully', result });
+            if(roles){
+                res.status(200).json(roles)      
+            }else{
+                res.status(404).json({message: 'roles not found' })
+            }               
+            
         } catch (error) {
-            // Verifica que el error tenga un código de estado válido o usa un código por defecto
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    CrearRoles = async  (req = request, res= response) => {
+        try {        
+            const roles = await rolesService.CreateRoles(req.body);
+            res.status(201).json({ message: 'roles created successfully', roles });
+            
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     
     } ,
 
-    patchRoles = async (req = request, res= response) =>{
+    ModificarRoles = async (req = request, res= response) =>{
         try {
-            const rolesId = req.params.id;
-            const roles = req.body; 
-            const updateroles = await rolesService.patchRoles(rolesId,roles);
+            const { id } = req.params;
+            const updateroles = await rolesService.PatchRoles(id, req.body);
 
-            res.status(200).json({ message: 'roles updated successfully',updateroles });
-            
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        }
-    } ,
-
-    deleteRoles = async (req = request, res= response) =>{
-        try {
-            const rolesId = req.params.id; 
-            const result = await rolesService.deleteRoles(rolesId);
-            
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'roles not found' });
+            if(updateroles){
+                res.status(200).json({ message: 'Rol updated successfully', updateroles });
             }
-            
-            res.status(200).json({ message: 'roles deleted successfully' });
-        } catch (error) {
-            const statusCode = error.status || 500;
-            res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-        } 
+        }catch(error){
+            res.status(400).json({ message: error.message });
+            }     
+    } ,
+
+    eliminarRoles= async (req = request, res= response) =>{
+        const { id } = req.params;
+            try{
+                const dato = await rolesService.DeleteRoles(id);
+                res.status(204).json({message: 'El dato fue eliminado', dato});
+            }catch(error){
+                const statusCode = error.status || 500;
+                res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
+            }      
     }
 
-
 module.exports = {
-   getRoles,
-   getRolesID,
-   postRoles,
-   patchRoles,
-   deleteRoles
+   obtenerRoles,  
+   obtenerRolesPorId,
+   CrearRoles,
+   ModificarRoles,
+   eliminarRoles
 }
