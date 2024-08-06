@@ -15,5 +15,9 @@ const EstadoPedido = sequelize.define('EstadoPedido', {
   timestamps: false // Ajusta esto según tus necesidades
 });
 
+EstadoPedido.associate = function(models) {
+  EstadoPedido.hasMany(models.Pedidos, { foreignKey: 'ID_estado_pedido' });
+  };
+
 return EstadoPedido;
 }

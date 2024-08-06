@@ -11,6 +11,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       unique: true,
       allowNull: false,
+      model: 'Usuarios', // Nombre de la tabla relacionada
     },
     contrasena: {
       type: DataTypes.STRING(100),

@@ -12,6 +12,8 @@ const Estado_pedidoRoutes = require('./v1/routers/estado_pedido');
 const AccesoRoutes = require('./v1/routers/access');
 const clientsRoutes = require('./v1/routers/clients');
 const rolRoutes = require('./v1/routers/roles');
+const configuracionRouters= require('./v1/routers/configuracion');
+const pedidosRouters= require('./v1/routers/pedidos');
 const body = require('body-parser');
 const Joi = require('joi');
 
@@ -61,6 +63,9 @@ class server {
 
       .use('/rol', rolRoutes)
 
+      .use('/configuracin', configuracionRouters )
+
+      .use('/pedidos',pedidosRouters)
     
 
       this.app.get('/', (req, res) => {
