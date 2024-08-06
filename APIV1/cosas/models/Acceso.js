@@ -29,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
   //  Acceso.associate= function (models) {
   //  Acceso.hasMany(models.Usuarios, { foreignKey:'ID_usuarios' });
   
-    // Acceso.belongsTo(models.Usuarios, { foreignKey: 'ID_usuario' });
+  //   // Acceso.belongsTo(models.Usuarios, { foreignKey: 'ID_usuario' });
 
-  
+  //  };
 
   return Acceso;
 };
