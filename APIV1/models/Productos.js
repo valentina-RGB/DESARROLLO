@@ -52,7 +52,7 @@ module.exports = (sequelize,DataTypes) => {
   Productos.associate = (models) => {
   
     Productos.belongsToMany(models.Pedidos , { through: models.Producto_Pedidos, foreignKey: 'ID_productos', otherKey: 'ID_pedidos', as: 'Pedidos' });
-
+    Productos.belongsToMany(models.Ventas, { through: models.Producto_Ventas, foreignKey: 'ID_producto', otherKey: 'ID_venta' });
 
   }
   

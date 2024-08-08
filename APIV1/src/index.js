@@ -7,17 +7,17 @@ const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const insumosRoutes = require('./v1/routers/insumos');
 const stockInsumosRoutes = require('./v1/routers/stockInsumos');
-const historyEntradasRoutes = require('./v1/routers/history_entradas'); // Corregir nombre
+const historyEntradasRouter = require('./v1/routers/History_entradas');
 const tipoInsumoRoutes = require('./v1/routers/tipo_insumo');
-const estadoPedidoRoutes = require('./v1/routers/estado_pedido'); // Corregir nombre
-const permisoRoutes = require('./v1/routers/permise'); // Corregir nombre
+const Estado_pedidoRoutes = require('./v1/routers/estado_pedido');
+const permisoRoutes = require('./v1/routers/permise');
 const clientsRoutes = require('./v1/routers/clients');
 const usuariosRoutes = require('./v1/routers/users');
 const permiso_rolesRoutes = require('./v1/routers/permise_roles');
 const rolRoutes = require('./v1/routers/roles');
 const configuracionRouters = require('./v1/routers/configuracion');
 const pedidosRouters = require('./v1/routers/pedidos');
-const VentasRouters = require('./v1/routers/Venta');
+const VentasRouters = require('./v1/routers/ventasRoutes');
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
 
@@ -34,16 +34,16 @@ class Server {
     this.syncDatabase();
   }
 
-  syncDatabase = async () => {
-    try {
-      //await db.sequelize.sync({ force: true }); 
-      //await db.sequelize.sync({ alter: true })
-      console.log('Todas las tablas han sido sincronizadas o creadas.');
-
-    } catch (error) {
-      console.error('Error al sincronizar la base de datos:', error);
+   syncDatabase =async()=> {
+      try {
+        //await db.sequelize.sync({ force: true }); 
+        //await db.sequelize.sync({ alter: true })
+        console.log('Todas las tablas han sido sincronizadas o creadas.');
+    
+      } catch (error) {
+        console.error('Error al sincronizar la base de datos:', error);
+      }
     }
-  }
 
   Routers() {
     this.app
@@ -58,11 +58,11 @@ class Server {
       //Rutas tipo_insumo
       .use('/tipoInsumos', tipoInsumoRoutes)
       // Rutas de historial de entradas
-      .use('/historial_entradas', historyEntradasRoutes)
+      .use('/historial_entradas', historyEntradasRouter)
       //Rutas de estado del pedidoo
-      .use('/Estado', estadoPedidoRoutes)
+      .use('/Estado',Estado_pedidoRoutes)
 
-      //Rutas de ventas
+      //Rutas de venta
       .use('/Ventas', VentasRouters)
 
       .use('/Clientes', clientsRoutes)

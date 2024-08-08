@@ -1,5 +1,7 @@
 // controllers/InsumosController.js
+const { sequelize } = require('../../models'); 
 const db = require('../../models');
+
 
 const Insumos = db.Insumos;
 const StockInsumos = db.StockInsumos;
@@ -104,6 +106,7 @@ const eliminarInsumo = async (req, res) => {
   }
 };
 
+
 const agregarEntrada = async (req, res) => {
   const { id } = req.params; 
   try {
@@ -129,6 +132,45 @@ const agregarEntrada = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+//NO FUNCIONA
+// const agregarEntrada = async (entrada) => {
+//   const { ID_insumo, cantidad } = entrada;
+
+//   // Iniciar una transacción para asegurar consistencia de datos
+//   const transaction = await sequelize.transaction();
+
+//   try {
+//     // Verificar si el insumo existe
+//     const insumo = await Insumos.findByPk(ID_insumo, { transaction });
+//     if (!insumo) {
+//       throw new Error('Insumo no encontrado.');
+//     }
+
+//     // Crear la entrada en el historial de entradas
+//     const entry = await HistorialEntradas.create({
+//       ID_insumo,
+//       cantidad,
+//       fecha: new Date(),
+//     }, { transaction });
+
+//     // Actualizar el stock del insumo
+//     insumo.stock_actual = (insumo.stock_actual || 0) + cantidad;
+//     await insumo.save({ transaction });
+
+//     // Confirmar la transacción
+//     await transaction.commit();
+
+//     return { status: 200, message: 'Entrada agregada y stock actualizado exitosamente.' };
+//   } catch (error) {
+//     // Revertir la transacción en caso de error
+//     await transaction.rollback();
+//     throw new Error('Error al agregar la entrada: ' + error.message);
+//   }
+// };
+
+module.exports = { agregarEntrada };
+
+
 
 module.exports = {
   obtenerInsumos,
