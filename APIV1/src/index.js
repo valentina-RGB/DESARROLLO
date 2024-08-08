@@ -1,8 +1,7 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
 
-const db = require('./../models');
-const routerClients = require('./v1/routers/clients');
+const db = require('./../models')
 const detalleRoutes = require('./v1/routers/detallePedido');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
@@ -14,41 +13,40 @@ const estadoPedidoRoutes = require('./v1/routers/estado_pedido'); // Corregir no
 const permisoRoutes = require('./v1/routers/permise'); // Corregir nombre
 const clientsRoutes = require('./v1/routers/clients');
 const usuariosRoutes = require('./v1/routers/users');
-const permiso_usuariosRoutes = require('./v1/routers/permise_users');
+const permiso_rolesRoutes = require('./v1/routers/permise_roles');
 const rolRoutes = require('./v1/routers/roles');
 const configuracionRouters = require('./v1/routers/configuracion');
 const pedidosRouters = require('./v1/routers/pedidos');
+const VentasRouters = require('./v1/routers/Venta');
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
 
 class Server {
-   constructor(){
-      this.app = express();
-      this.port = process.env.PORT || 3000; // Añadir valor por defecto
-      
-      this.middlewares();
-      this.routers();
-      this.syncDatabase();
-   }
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
 
-   middlewares() {
-      this.app.use(express.json());
-      this.app.use(express.urlencoded({ extended: true }));
-      this.app.use(bodyParser.urlencoded({ extended: false })); // Descomentar y corregir
-   }
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+    //this.app.use(body.urlencoded({ extended: false}));
+    this.Routers();
 
-   async syncDatabase() {
-      try {
-         // await db.sequelize.sync({ force: true });
-         await db.sequelize.sync({ alter: true });
-         console.log('Todas las tablas han sido sincronizadas o creadas.');
-      } catch (error) {
-         console.error('Error al sincronizar la base de datos:', error);
-      }
-   }
+    this.syncDatabase();
+  }
 
-   Routers(){
-      this.app  
+  syncDatabase = async () => {
+    try {
+      //await db.sequelize.sync({ force: true }); 
+      //await db.sequelize.sync({ alter: true })
+      console.log('Todas las tablas han sido sincronizadas o creadas.');
+
+    } catch (error) {
+      console.error('Error al sincronizar la base de datos:', error);
+    }
+  }
+
+  Routers() {
+    this.app
       // Rutas de productos
       .use('/productos', routerProduct)
       // Rutas de categorías
@@ -60,33 +58,41 @@ class Server {
       //Rutas tipo_insumo
       .use('/tipoInsumos', tipoInsumoRoutes)
       // Rutas de historial de entradas
-      .use('/historial_entradas', History_entradasRoutes)
+      .use('/historial_entradas', historyEntradasRoutes)
       //Rutas de estado del pedidoo
-      .use('/Estado',Estado_pedidoRoutes)
+      .use('/Estado', estadoPedidoRoutes)
 
-      .use('/Acceso', AccesoRoutes)
+      //Rutas de ventas
+      .use('/Ventas', VentasRouters)
 
-      .use('/clientes', clientsRoutes)
+      .use('/Clientes', clientsRoutes)
 
-      .use('/rol', rolRoutes)
+      .use('/roles', rolRoutes)
 
-      .use('/configuracin', configuracionRouters )
+      .use('/configuracin', configuracionRouters)
 
-      .use('/pedidos',pedidosRouters)
+      .use('/pedidos', pedidosRouters)
 
       .use('/detalle', detalleRoutes)
-    
 
-      this.app.get('/', (req, res) => {
-         res.send("Welcome");
-      });
-   }
+      .use('/permiso_roles', permiso_rolesRoutes)
 
-   listen() {
-      this.app.listen(this.port, () => {
-         console.log(` http://localhost:${this.port}`);
-      });
-   }
+      .use('/usuarios', usuariosRoutes)
+
+      .use('/permiso', permisoRoutes)
+
+
+    this.app.get('/', (req, res) => {
+      res.send("Welcome");
+    });
+  }
+
+  Listen() {
+    this.app.listen(this.port, () => {
+      console.log(` http://localhost:${this.port}`)
+    });
+  }
+
 }
 
 module.exports = Server;

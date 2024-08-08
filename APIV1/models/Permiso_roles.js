@@ -1,14 +1,21 @@
 
 module.exports = (sequelize,DataTypes) => {
-    const Permiso_usuarios = sequelize.define('Permiso_usuarios', {
-      ID_usuario: {
+    const Permiso_roles = sequelize.define('Permiso_roles', {
+      ID: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      ID_permiso: {
+      /* ID_rol: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
+        references:{
+          model: 'Roles',
+          key: 'ID_rol',
+        }
+      }, */
+      ID_permiso: {
+        type: DataTypes.INTEGER,
         references:{
             model: 'Permiso',
             key: 'ID_permiso',
@@ -19,12 +26,12 @@ module.exports = (sequelize,DataTypes) => {
         defaultValue: 'A',
       },
     }, {
-      tableName: 'Permiso_usuarios',
+      tableName: 'Permiso_roles',
       timestamps: false,
     });
   
-      Usuarios.associate = function (models) {
-      Usuarios.hasMany(models.Roles, { foreignKey:'ID_permiso'});
-      };
-    return Permiso_usuarios;
+      /* Roles.associate = function (models) {
+      Roles.hasMany(models.Roles, { foreignKey:'ID_permiso'});
+      }; */
+    return Permiso_roles;
   };

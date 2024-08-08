@@ -1,4 +1,4 @@
-const Venta = require('../models/Venta');
+const Venta = require('../../models/producto_ventas');
 
 const createVenta = async (ventaData) => {
   try {

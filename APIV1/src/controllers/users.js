@@ -1,12 +1,12 @@
 const express = require('express');
 const {request , response} = require('express');
-const usersService = require('../src/services/usersService');
+const usersService = require('../services/usersService');
 
 const 
     obtenerUsers = async (req, res) => {
         try{
 
-        return await usersService.getUsers(res,req);  
+        return await usersService.getUser(res,req);  
        
         }catch (error) {
             res.status(500).json({ message: error.message });
