@@ -2,6 +2,8 @@ const express = require('express');
 const { Sequelize } = require('sequelize');
 
 const db = require('./../models');
+const routerClients = require('./v1/routers/clients');
+const detalleRoutes = require('./v1/routers/detallePedido');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const insumosRoutes = require('./v1/routers/insumos');
@@ -45,22 +47,35 @@ class Server {
       }
    }
 
-   routers() {
-      this.app
-         .use('/productos', routerProduct)
-         .use('/categorias', routerCategories)
-         .use('/insumos', insumosRoutes)
-         .use('/stock_insumos', stockInsumosRoutes)
-         .use('/tipo_insumos', tipoInsumoRoutes) // Consistencia en nombres
-         .use('/historial_entradas', historyEntradasRoutes)
-         .use('/estado_pedidos', estadoPedidoRoutes)
-         .use('/permisos', permisoRoutes) // Consistencia en nombres
-         .use('/clientes', clientsRoutes)
-         .use('/roles', rolRoutes) // Consistencia en nombres
-         .use('/configuracion', configuracionRouters)
-         .use('/pedidos', pedidosRouters)
-         .use('/usuarios', usuariosRoutes)
-         .use('/permiso_usuarios', permiso_usuariosRoutes);
+   Routers(){
+      this.app  
+      // Rutas de productos
+      .use('/productos', routerProduct)
+      // Rutas de categorías
+      .use('/categorias', routerCategories)
+      // Rutas de insumos
+      .use('/insumos', insumosRoutes)
+      // Rutas de stock de insumos
+      .use('/stock_insumos', stockInsumosRoutes)
+      //Rutas tipo_insumo
+      .use('/tipoInsumos', tipoInsumoRoutes)
+      // Rutas de historial de entradas
+      .use('/historial_entradas', History_entradasRoutes)
+      //Rutas de estado del pedidoo
+      .use('/Estado',Estado_pedidoRoutes)
+
+      .use('/Acceso', AccesoRoutes)
+
+      .use('/clientes', clientsRoutes)
+
+      .use('/rol', rolRoutes)
+
+      .use('/configuracin', configuracionRouters )
+
+      .use('/pedidos',pedidosRouters)
+
+      .use('/detalle', detalleRoutes)
+    
 
       this.app.get('/', (req, res) => {
          res.send("Welcome");

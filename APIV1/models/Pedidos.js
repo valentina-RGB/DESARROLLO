@@ -1,46 +1,49 @@
+
+const producto_pedidos = require("./producto_pedidos");
+
 module.exports = (sequelize, DataTypes) => {
     const Pedidos = sequelize.define('Pedidos', {
-      ID_pedido: {
+    ID_pedido: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-      },
-      fecha: {
+    },
+    fecha: {
         type: DataTypes.DATE,
-        allowNull: true
-      },
-      ID_clientes: {
+        defaultValue: DataTypes.NOW,
+        allowNull: false
+    },
+    ID_clientes: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-          model: 'Clientes',
-          key: 'ID_cliente',
+            model: 'Clientes',
+            key: 'ID_cliente',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
-      precio_total: {
+        onDelete: 'SET NULL',
+        comment: 'Por favor ingrese el cliente',
+    },
+    precio_total: {
         type: DataTypes.FLOAT,
         allowNull: true
-      },
-      ID_estado_pedido: {
+    },
+    ID_estado_pedido: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Estado_pedidos',
-          key: 'ID_estado_pedido'
+        model: 'Estado_pedidos',
+        key: 'ID_estado_pedido'
         },
-      },
-    }, {
-      tableName: 'Pedidos',
-      timestamps: false,
+    },
+    },{
+    tableName: 'Pedidos',
+    timestamps: false,
     });
-  
+
     Pedidos.associate = function(models) {
-      Pedidos.belongsTo(models.Clientes, { foreignKey: 'ID_clientes' });
-      Pedidos.belongsTo(models.EstadoPedido, { foreignKey: 'ID_estado_pedido' }); // Asegúrate de que el nombre sea consistente
-      Pedidos.hasMany(models.Producto_Pedidos, { foreignKey: 'ID_pedidos' });
-    };
-  
+        Pedidos.hasMany(models.Clientes, { foreignKey: 'ID_cliente' });
+         //RELACION  MUCHO A MUCHOS
+         Pedidos.belongsToMany(models.Productos, { through:models.Producto_Pedidos, foreignKey: 'ID_pedidos', otherKey: 'ID_productos' });
+    }
     return Pedidos;
-  };
-  
+}; 

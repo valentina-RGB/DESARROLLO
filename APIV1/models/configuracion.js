@@ -1,6 +1,6 @@
 module.exports = (sequelize,DataTypes) => {
-  
   const Configuraciones = sequelize.define('Configuraciones', {
+    
     ID_configuracion: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -8,26 +8,20 @@ module.exports = (sequelize,DataTypes) => {
     },
     descripcion: {
       type: DataTypes.STRING(100),
-      unique: true,
-      allowNull: true,
-      
+      allowNull: true   
     },
-    ID_insumo: {
+    ID_insumos: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         references: {
           model: 'Insumos',
           key: 'ID_insumo',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
   }, {
     tableName: 'Configuraciones',
-    timestamps: false,
-  });
-  
-  Configuraciones.associate = function(models) {
-    Configuraciones.hasMany(models.Insumos, { foreignKey: 'ID_insumo' });
-  };
-
+    timestamps: false
+  });  
   return Configuraciones;
 };

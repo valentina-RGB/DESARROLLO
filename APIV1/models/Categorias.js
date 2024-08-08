@@ -1,4 +1,7 @@
-module.exports = (sequelize, DataTypes) => {
+
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
   
   const Categorias = sequelize.define('Categorias', {
     ID_categoria: {
@@ -7,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     descripcion: {
-      type: DataTypes.STRING(100),   
+      type: DataTypes.STRING(100), 
+      allowNull: false,  
     },
     estado_categoria: {
       type: DataTypes.CHAR(1),
@@ -15,11 +19,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     imagen: {
       type: DataTypes.STRING(100),
+      allowNull: false,
     },
   }, {
     tableName: 'Categorias',
     timestamps: false,
   });
 
+  Categorias.associate = function (models){
+  Categorias.hasMany(models.Productos, { foreignKey: 'ID_categorias'});
+  } 
+  
   return Categorias;
 };
