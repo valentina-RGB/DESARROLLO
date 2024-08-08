@@ -8,7 +8,7 @@ const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const insumosRoutes = require('./v1/routers/insumos');
 const stockInsumosRoutes = require('./v1/routers/stockInsumos');
-const History_entradasRoutes = require('./v1/routers/History_entradas');
+const historyEntradasRouter = require('./v1/routers/History_entradas');
 const tipoInsumoRoutes = require('./v1/routers/tipo_insumo');
 const Estado_pedidoRoutes = require('./v1/routers/estado_pedido');
 const VentasRouters= require('./v1/routers/ventasRoutes');
@@ -58,10 +58,10 @@ class server {
       //Rutas tipo_insumo
       .use('/tipoInsumos', tipoInsumoRoutes)
       // Rutas de historial de entradas
-      .use('/historial_entradas', History_entradasRoutes)
+      .use('/historial_entradas', historyEntradasRouter)
       //Rutas de estado del pedidoo
       .use('/Estado',Estado_pedidoRoutes)
-      
+
       //Rutas de ventas
       .use('/Ventas',VentasRouters)
       
