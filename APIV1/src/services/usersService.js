@@ -1,7 +1,7 @@
 const express = require('express');
 const {request , response} = require('express');
 
-const db = require('../../models');
+const db = require('../models');
 const User = db.Usuarios;
 
   const 

@@ -7,9 +7,20 @@ module.exports = (sequelize,DataTypes) => {
       primaryKey: true,
     },
     Correo: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.FLOAT(100),
         allowNull: false,
     },
+    telefono: {
+      type: DataTypes.FLOAT(10),
+      default: '1234567899',
+      unique: true,
+      allowNull: true,
+    },
+    contrasena: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+
     ID_roles: {
       type:DataTypes.INTEGER,
       allowNull: false,
