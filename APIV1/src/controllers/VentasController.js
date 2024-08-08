@@ -5,6 +5,14 @@ const createVenta = async (req, res) => {
     try {
         const { ID_cliente, productos, precio_total, ID_estado_venta } = req.body;
 
+        // Verificar si el estado de venta existe
+        if (ID_estado_venta) {
+            const estadoVenta = await Estado_ventas.findByPk(ID_estado_venta);
+            if (!estadoVenta) {
+                return res.status(400).json({ error: 'Estado de venta no encontrado' });
+            }
+        }
+
         // Crear la venta
         const nuevaVenta = await Ventas.create({
             ID_cliente,
@@ -38,6 +46,8 @@ const getAllVentas = async (req, res) => {
                 { model: Estado_ventas }
             ]
         });
+
+        console.log('Ventas:', JSON.stringify(ventas, null, 2));  // Agrega este registro para ver la salida
         res.status(200).json(ventas);
     } catch (error) {
         res.status(500).json({ error: error.message });

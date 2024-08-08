@@ -1,39 +1,23 @@
-const { addStockEntry, getAllEntries, getEntriesByInsumoId } = require('../services/history_entradasServices');
+const HistorialEntradas = require('../../models/HistorialEntradas');
 
-const addStockEntryHandler = async (req, res) => {
-  const { ID_insumo, cantidad } = req.body;
+const getAllEntries = async () => {
   try {
-    const entry = await addStockEntry(ID_insumo, cantidad);
-    res.status(201).json(entry);
+    const entries = await HistorialEntradas.findAll();
+    return entries;
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-const getAllEntriesHandler = async (req, res) => {
-  try {
-    const entries = await getAllEntries();
-    res.status(200).json(entries);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error('Error al obtener el historial de entradas: ' + error.message);
   }
 };
 
-const getEntriesByInsumoIdHandler = async (req, res) => {
-  const { ID_insumo } = req.params;
+const getEntriesByInsumoId = async (ID_insumo) => {
   try {
-    const entries = await getEntriesByInsumoId(ID_insumo);
-    if (entries.length === 0) {
-      res.status(404).json({ message: 'No se encontraron entradas para el insumo especificado.' });
-    } else {
-      res.status(200).json(entries);
-    }
+    const entries = await HistorialEntradas.findAll({
+      where: { ID_insumo }
+    });
+    return entries;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error('Error al obtener el historial de entradas para el insumo: ' + error.message);
   }
 };
 
-module.exports = {
-  getAllEntriesHandler,
-  getEntriesByInsumoIdHandler,
-  addStockEntryHandler
-};
+module.exports = { getAllEntries, getEntriesByInsumoId };
