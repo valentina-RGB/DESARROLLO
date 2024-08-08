@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-          model: 'Pedidos',
-          key: 'ID_pedido',
+        model: 'Pedidos',
+        key: 'ID_pedido',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
@@ -34,29 +34,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.FLOAT,
         allowNull: false
     },
-    precio_total: {
+    sub_total: {
         type: DataTypes.FLOAT,
         allowNull: false
-    },
-    fecha: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false,
     },
     }, {
     tableName: 'Producto_Pedidos',
     timestamps: false,
     });
-
-    // Producto_Pedidos.associate = function(models) { 
-    // Producto_Pedidos.hasMany(models.Pedidos, { foreignKey: 'ID_pedido' });
-    // Producto_Pedidos.hasMany(models.Productos, {foreignKey: 'ID_producto' });
-    // };
-
-    Producto_Pedidos.associate = function(models) {
-        Producto_Pedidos.belongsTo(models.Pedidos, { foreignKey: 'ID_pedido' });
-        Producto_Pedidos.belongsTo(models.Productos, { foreignKey: 'ID_producto' });
-    };
 
 
     return Producto_Pedidos;

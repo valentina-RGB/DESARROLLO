@@ -33,6 +33,8 @@ module.exports = (sequelize, DataTypes) => {
   Insumos.associate = function(models) {
     Insumos.belongsTo(models.Tipo_insumos, { foreignKey: 'ID_tipo_insumo' });
     Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' });
+    Insumos.hasMany(models.Tipo_insumos, {foreignKey: 'ID_tipo_insumo',as: 'Tipos_insumos', });
+
   };
 
   const StockInsumos = require('./StockInsumo'); // Importa el modelo de StockInsumos

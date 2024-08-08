@@ -3,6 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const db = require('./../models');
 const routerClients = require('./v1/routers/clients');
+const detalleRoutes = require('./v1/routers/detallePedido');
 const routerProduct = require('./v1/routers/products');
 const routerCategories = require('./v1/routers/categories');
 const insumosRoutes = require('./v1/routers/insumos');
@@ -69,6 +70,8 @@ class server {
       .use('/configuracin', configuracionRouters )
 
       .use('/pedidos',pedidosRouters)
+
+      .use('/detalle', detalleRoutes)
     
 
       this.app.get('/', (req, res) => {
