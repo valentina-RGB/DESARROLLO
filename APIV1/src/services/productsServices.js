@@ -21,7 +21,7 @@ const Productos = db.Productos;
         const productos = await Productos.create(datos);
         return productos;
 
-    };
+    },
         
     PatchProductos = async (id, datos) => {
       const [updated] = await Productos.update(datos, {
