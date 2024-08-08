@@ -11,6 +11,7 @@ const stockInsumosRoutes = require('./v1/routers/stockInsumos');
 const History_entradasRoutes = require('./v1/routers/History_entradas');
 const tipoInsumoRoutes = require('./v1/routers/tipo_insumo');
 const Estado_pedidoRoutes = require('./v1/routers/estado_pedido');
+const VentasRouters= require('./v1/routers/ventasRoutes');
 const AccesoRoutes = require('./v1/routers/access');
 const clientsRoutes = require('./v1/routers/clients');
 const rolRoutes = require('./v1/routers/roles');
@@ -36,7 +37,7 @@ class server {
    syncDatabase =async()=> {
       try {
         //await db.sequelize.sync({ force: true }); 
-        await db.sequelize.sync({ alter: true })
+        //await db.sequelize.sync({ alter: true })
         console.log('Todas las tablas han sido sincronizadas o creadas.');
     
       } catch (error) {
@@ -60,6 +61,10 @@ class server {
       .use('/historial_entradas', History_entradasRoutes)
       //Rutas de estado del pedidoo
       .use('/Estado',Estado_pedidoRoutes)
+      
+      //Rutas de ventas
+      .use('/Ventas',VentasRouters)
+      
 
       .use('/Acceso', AccesoRoutes)
 
