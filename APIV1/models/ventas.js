@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             primaryKey: true,
         },
+        //prueba
         fecha: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
