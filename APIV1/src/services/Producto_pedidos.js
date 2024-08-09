@@ -2,9 +2,7 @@ const express = require('express');
 const {request , response} = require('express');
 
 //const Pedidos = db.Pedidos;
-const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
-
-
+const { Pedidos, Producto_Pedidos, Productos } = require('../../models ');
 
 
     const 
@@ -33,8 +31,8 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
         const DetalleExistencia = await Producto_Pedidos.findAll(
             {
                 where:{
-                 ID_pedidos: ID_pedidos,
-                 ID_productos:ID_productos
+                    ID_pedidos: ID_pedidos,
+                    ID_productos:ID_productos
                 },
                 attributes: ['precio_neto','sub_total'],
             }
@@ -69,9 +67,8 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
             
             return {message:'Detalle actualizado exitosamente',actualizarDetalle}
         
-       
         
-         }else{
+        }else{
             
         const nuevoDetalle = await Producto_Pedidos.create({
                 ID_pedidos : ID_pedidos,
@@ -97,11 +94,11 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
     DeleteDetalles = async (id) => {
             const deleted = await Producto_Pedidos.destroy({ where: {ID_producto_pedido: id}, });
             if (deleted) {
-              return (deleted);
+                return (deleted);
             }else{
-              return {status: 404, message: 'EL detalle no se encontro :(' };
+                return {status: 404, message: 'EL detalle no se encontro :(' };
             }
-          } 
+        } 
 
 module.exports = {
     CrearDetalle,

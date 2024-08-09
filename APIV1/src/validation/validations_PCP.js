@@ -19,7 +19,7 @@ const categoriaSchema = Joi.object({
 
 const estadoPedidoSchema = Joi.object({
     descripcion: Joi.string()
-      .max(100)
+      .max(50)
       .allow(null, '')
       .pattern(/^[a-zA-Z0-9\s]*$/)  // Letras, números y espacios permitidos, vacío permitido
       .messages({
