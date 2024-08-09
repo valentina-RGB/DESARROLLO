@@ -41,9 +41,9 @@ const getAllVentas = async (req, res) => {
     try {
         const ventas = await Ventas.findAll({
             include: [
-                { model: Clientes, as: 'Cliente' }, // Usar el alias 'Cliente'
-                { model: Productos, through: { attributes: ['cantidad', 'precio'] } },
-                { model: Estado_ventas, as: 'Estado_venta' } // Usa el alias correcto para 'Estado_ventas'
+                { model: Clientes, as: 'Cliente' },
+                { model: Productos, as: 'Productos', through: { attributes: ['cantidad', 'precio'] } },
+                { model: Estado_ventas, as: 'Estado_venta' }
             ]
         });
 
@@ -60,7 +60,7 @@ const getVentaById = async (req, res) => {
         const venta = await Ventas.findByPk(id, {
             include: [
                 { model: Clientes, as: 'Cliente' },  // Usar el alias correcto
-                { model: Productos, through: { attributes: ['cantidad', 'precio'] } },
+                { model: Productos, as: 'Productos', through: { attributes: ['cantidad', 'precio'] } },
                 { model: Estado_ventas }
             ]
         });

@@ -1,7 +1,4 @@
-
-
-module.exports = (sequelize,DataTypes) => {
-  
+module.exports = (sequelize, DataTypes) => {
   const Productos = sequelize.define('Productos', {
     ID_producto: {
       type: DataTypes.INTEGER,
@@ -28,7 +25,6 @@ module.exports = (sequelize,DataTypes) => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
-      comment: 'Por favor que tipo de producto es:',
     },
     ID_categorias: {
       type: DataTypes.INTEGER,
@@ -38,7 +34,6 @@ module.exports = (sequelize,DataTypes) => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
-      comment: '¿A que categoría desea que pertenezca el producto?:',
     },
     imagen: {
       type: DataTypes.STRING(100),
@@ -48,15 +43,23 @@ module.exports = (sequelize,DataTypes) => {
     timestamps: false,
   });
 
-
   Productos.associate = (models) => {
-  
-    Productos.belongsToMany(models.Pedidos , { through: models.Producto_Pedidos, foreignKey: 'ID_productos', otherKey: 'ID_pedidos', as: 'Pedidos' });
-    Productos.belongsToMany(models.Ventas, { through: models.Producto_Ventas, foreignKey: 'ID_producto', otherKey: 'ID_venta' });
+    // Asociación con Ventas
+    Productos.belongsToMany(models.Ventas, { 
+      through: 'Producto_Ventas', 
+      foreignKey: 'ID_producto', 
+      otherKey: 'ID_venta',
+      as: 'Ventas'
+    });
 
-  }
-  
+    // Asociación con Pedidos
+    Productos.belongsToMany(models.Pedidos, { 
+      through: 'Producto_Pedidos', 
+      foreignKey: 'ID_producto', 
+      otherKey: 'ID_pedido',
+      as: 'Pedidos'
+    });
+  };
+
   return Productos;
-
-  
 };
