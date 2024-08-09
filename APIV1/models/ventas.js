@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Ventas.associate = function(models) {
         Ventas.belongsTo(models.Clientes, { foreignKey: 'ID_cliente', as: 'Cliente' });
-        Ventas.belongsTo(models.Estado_ventas, { foreignKey: 'ID_estado_venta' }); // Asociación inversa
+        Ventas.belongsTo(models.Estado_ventas, { foreignKey: 'ID_estado_venta' }); 
         Ventas.belongsToMany(models.Productos, { through: models.Producto_Ventas, foreignKey: 'ID_venta', otherKey: 'ID_producto' });
     }
 
