@@ -28,7 +28,7 @@ const
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    }
+    },
 
     CrearProductos = async  (req = request, res= response) => {
         try {        

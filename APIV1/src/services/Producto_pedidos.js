@@ -2,7 +2,7 @@ const express = require('express');
 const {request , response} = require('express');
 
 //const Pedidos = db.Pedidos;
-const { Pedidos, Producto_Pedidos, Productos } = require('../../models ');
+const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
 
 
     const 
