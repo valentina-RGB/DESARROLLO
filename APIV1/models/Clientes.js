@@ -15,16 +15,15 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true,
         },
         telefono: {
-          type: DataTypes.INTEGER(10),
-          defaultValue: '1234567899',
+          type: DataTypes.STRING(11),
           unique: true,
           allowNull: true,
         },
         documento: {
-          type: DataTypes.INTEGER(15),
+          type: DataTypes.BIGINT,
           unique: true,
-          defaultValue: '123456789456',
-        },
+          defaultValue: 123456789456,  
+      },
         nombre: {
           type: DataTypes.STRING(100),
           unique: true,

@@ -41,13 +41,12 @@ const getAllVentas = async (req, res) => {
     try {
         const ventas = await Ventas.findAll({
             include: [
-                { model: Clientes },
+                { model: Clientes, as: 'Cliente' }, // Usar el alias 'Cliente'
                 { model: Productos, through: { attributes: ['cantidad', 'precio'] } },
-                { model: Estado_ventas }
+                { model: Estado_ventas, as: 'Estado_venta' } // Usa el alias correcto para 'Estado_ventas'
             ]
         });
 
-        console.log('Ventas:', JSON.stringify(ventas, null, 2));  // Agrega este registro para ver la salida
         res.status(200).json(ventas);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -60,7 +59,7 @@ const getVentaById = async (req, res) => {
         const { id } = req.params;
         const venta = await Ventas.findByPk(id, {
             include: [
-                { model: Clientes },
+                { model: Clientes, as: 'Cliente' },  // Usar el alias correcto
                 { model: Productos, through: { attributes: ['cantidad', 'precio'] } },
                 { model: Estado_ventas }
             ]
@@ -75,7 +74,6 @@ const getVentaById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 // Eliminar una venta
 const deleteVenta = async (req, res) => {

@@ -15,10 +15,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             references: {
                 model: 'Clientes',
-                key: 'ID_cliente',
+                key: 'ID',
             },
             onUpdate: 'CASCADE',
             onDelete: 'SET NULL',
+            comment: 'Por favor ingrese el cliente',
         },
         precio_total: {
             type: DataTypes.FLOAT,
@@ -37,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Ventas.associate = function(models) {
-        Ventas.belongsTo(models.Clientes, { foreignKey: 'ID_cliente' });
+        Ventas.belongsTo(models.Clientes, { foreignKey: 'ID_cliente', as: 'Cliente' });
         Ventas.belongsTo(models.Estado_ventas, { foreignKey: 'ID_estado_venta' }); // Asociación inversa
         Ventas.belongsToMany(models.Productos, { through: models.Producto_Ventas, foreignKey: 'ID_venta', otherKey: 'ID_producto' });
     }

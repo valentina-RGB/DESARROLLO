@@ -1,5 +1,5 @@
 
-module.exports = (sequelize,DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const Usuarios = sequelize.define('Usuarios', {
     ID_usuario: {
       type: DataTypes.INTEGER,
@@ -7,12 +7,12 @@ module.exports = (sequelize,DataTypes) => {
       primaryKey: true,
     },
     Correo: {
-        type: DataTypes.FLOAT(100),
-        allowNull: false,
+      type: DataTypes.STRING(100), // Cambiado a STRING
+      allowNull: false,
     },
     telefono: {
-      type: DataTypes.FLOAT(10),
-      default: '1234567899',
+      type: DataTypes.BIGINT, // Cambiado a BIGINT, puedes usar STRING si prefieres
+      defaultValue: '1234567899',
       unique: true,
       allowNull: true,
     },
@@ -20,11 +20,10 @@ module.exports = (sequelize,DataTypes) => {
       type: DataTypes.STRING(10),
       allowNull: false,
     },
-
     ID_roles: {
-      type:DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      references:{
+      references: {
         model: 'Roles',
         key: 'ID_rol',
       }
@@ -38,8 +37,9 @@ module.exports = (sequelize,DataTypes) => {
     timestamps: false,
   });
 
-    Usuarios.associate = function (models) {
-    Usuarios.hasMany(models.Roles, { foreignKey:'ID_rol'});
-    };
+  Usuarios.associate = function (models) {
+    Usuarios.hasMany(models.Roles, { foreignKey: 'ID_rol' });
+  };
+
   return Usuarios;
 };
