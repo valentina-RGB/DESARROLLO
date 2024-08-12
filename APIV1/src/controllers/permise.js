@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require ('express');
 const {request , response} = require('express');
 const permiseService = require('../services/permiseService');
 
@@ -6,7 +6,7 @@ const
     obtenerPermiso = async (req, res) => {
         try{
 
-        return await permiseService.getPermise(res,req);  
+        return await permiseService.getPermiso(res,req);  
        
         }catch (error) {
             res.status(500).json({ message: error.message });
@@ -17,7 +17,7 @@ const
     obtenerPermisoPorId = async (req, res) => {
         try {
             const {id} = req.params;
-            const permiso = await permiseService.getPermiseID(id);
+            const permiso = await permiseService.getPermisoID(id);
 
             if(permiso){
                 res.status(200).json(permiso)      
@@ -32,7 +32,7 @@ const
 
     crearPermiso = async  (req = request, res= response) => {
         try {        
-            const permiso = await permiseService.CreatePermise(req.body);
+            const permiso = await permiseService.CreatePermiso(req.body);
             res.status(201).json({ message: 'permise created successfully', permiso });
             
         } catch (error) {
@@ -44,7 +44,7 @@ const
     modificarPermiso = async (req = request, res= response) =>{
         try {
             const { id } = req.params;
-            const updatepermise = await permiseService.PatchPermise(id, req.body);
+            const updatepermise = await permiseService.PatchPermiso(id, req.body);
 
             if(updatepermise){
                 res.status(200).json({ message: 'permise updated successfully', updatePermise });
@@ -57,7 +57,7 @@ const
     eliminarPermiso= async (req = request, res= response) =>{
         const { id } = req.params;
             try{
-                const dato = await permiseService.DeletePermise(id);
+                const dato = await permiseService.DeletePermiso(id);
                 res.status(204).json({message: 'El permiso fue eliminado', dato});
             }catch(error){
                 const statusCode = error.status || 500;
