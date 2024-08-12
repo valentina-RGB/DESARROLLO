@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    Correo: {
+    email: {
       type: DataTypes.STRING(100), // Cambiado a STRING
       allowNull: false,
     },
@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: true,
     },
-    contrasena: {
+    password: {
       type: DataTypes.STRING(10),
       allowNull: false,
     },
-    ID_roles: {
+    ID_rol: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_rol',
       }
     },
-    estado_usuario: {
+    estado: {
       type: DataTypes.CHAR(1),
       defaultValue: 'A',
     },

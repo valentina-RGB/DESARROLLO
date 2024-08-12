@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    ID_usuarios: {
+    ID_usuario: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'SET NULL',
     }, 
     contrasena: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     descripcion: {
@@ -26,13 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, 
   {
-    tableName: 'Permiso',
+    tableName: 'Permisos',
     timestamps: false,
   });
 
   Permiso.associate = function(models) {
-    Permiso.hasMany(models.Usuarios, { foreignKey: 'ID_usuarios' });
-    Permiso.belongsTo(models.Usuarios, { foreignKey: 'ID_usuarios' });
+    Permiso.hasMany(models.Usuarios, { foreignKey: 'ID_usuario' });
+    Permiso.belongsTo(models.Usuarios, { foreignKey: 'ID_usuario' });
   };
 
   return Permiso;

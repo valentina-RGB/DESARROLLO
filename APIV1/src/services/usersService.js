@@ -23,7 +23,7 @@ const User = db.Usuarios;
         
     PatchUsers = async (id, datos) => {
       const [updated] = await User.update(datos, {
-        where: { ID_user:id },
+        where: { ID_usuario:id },
       });
 
       if (updated) {
@@ -35,7 +35,7 @@ const User = db.Usuarios;
     },
 
     DeleteUsers = async (id) => {
-      const deleted = await User.destroy({ where: {ID_user: id}, });
+      const deleted = await User.destroy({ where: {ID_usuario: id}, });
       if (deleted) {
         return deleted;
       }else{
