@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         references: {
           model: 'Clientes',
-          key: 'ID', 
+          key: 'ID_cliente', 
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',

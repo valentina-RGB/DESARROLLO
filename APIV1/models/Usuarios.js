@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+      
     },
     email: {
       type: DataTypes.STRING(100), // Cambiado a STRING
@@ -26,7 +27,9 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'Roles',
         key: 'ID_rol',
-      }
+      },
+      onDelete: 'CASCADE', // Añadido ON DELETE CASCADE
+      onUpdate: 'CASCADE' // Añadido ON UPDATE CASCADE
     },
     estado: {
       type: DataTypes.CHAR(1),
@@ -38,7 +41,12 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Usuarios.associate = function (models) {
-    Usuarios.hasMany(models.Roles, { foreignKey: 'ID_rol' });
+    Usuarios.hasMany(models.Roles, {
+       foreignKey: 'ID_rol',
+       onDelete: 'CASCADE', 
+      onUpdate: 'CASCADE' 
+      });
+    
   };
 
   return Usuarios;
