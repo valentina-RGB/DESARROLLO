@@ -53,11 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     // Asociación con Pedidos
-    Productos.belongsToMany(models.Pedidos, { 
-      through: 'Producto_Pedidos', 
-      foreignKey: 'ID_producto', 
-      otherKey: 'ID_pedido',
-      as: 'Pedidos'
+    Productos.belongsToMany(models.Pedidos, { through: 'Producto_Pedidos', foreignKey: 'ID_productos', otherKey: 'ID_pedidos'
     });
   };
 
