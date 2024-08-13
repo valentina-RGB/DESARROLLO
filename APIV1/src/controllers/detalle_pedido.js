@@ -1,13 +1,14 @@
 const express = require('express');
 const {request , response} = require('express');
 const detalleService = require('../services/Producto_pedidos');
+const {CustomError}= require('../errors/bad');
 
 
 
 const 
-    obtenerpedidos = async (req, res= response) => {
+    ObtenerDetalles = async (req, res= response) => {
         try{
-        const pedidos = await detalleService.CrearDetalle()  
+        const pedidos = await detalleService.ListarDetalle()  
         res.status(200).json(pedidos); 
 
         }catch (error) {
@@ -16,7 +17,7 @@ const
     },
 
     
-    CrearDetalle = async  (req = request, res= response) => {
+    CrearDetalles = async  (req = request, res= response) => {
         const pedido =req.body.ID_pedidos;
         const producto = req.body.ID_productos;
         const cantidad = req.body.cantidad;
@@ -26,8 +27,10 @@ const
             // res.status(201).json({ messaestados });
             res.status(201).json(estados); 
             
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+        } catch (err) {
+            if (err instanceof CustomError){
+            return res.status(err.statusCode).json({mensaje: err.message })
+            }
         }
     
     },
@@ -44,7 +47,7 @@ const
     }
 
 module.exports = {
-    obtenerpedidos,
-    CrearDetalle,
+    CrearDetalles,
+    ObtenerDetalles,
     EliminarDetalle
 }
