@@ -125,7 +125,7 @@ const agregarEntrada = async (req, res) => {
     });
 
     // Actualizar el stock_actual en Stock_insumos
-    await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
+    //await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
 
     res.status(201).json({ message: 'Entrada registrada y stock actualizado' });
   } catch (error) {
