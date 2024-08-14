@@ -3,16 +3,18 @@ const {request , response} = require('express');
 
 //const Pedidos = db.Pedidos;
 const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
+const {ErrorNoEncontrado,ErrorSolicitudIncorrecta} = require ('../errors/bad')
 
 
     const 
-    CrearDetalle = async () => {
+    ListarDetalle = async () => {
         const producto_pedidos = await Producto_Pedidos.findAll();
         return producto_pedidos;
     },
 
 
         agregarDetalle = async (ID_pedidos, ID_productos, cantidad) =>{
+
         
         // Aqui hago la busqueda del precio neto del producto
         const precio_productos = await Productos.findAll(
@@ -25,7 +27,29 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
             )
 
 
-        const precio_neto = precio_productos[0].precio_neto
+            if (precio_productos.length === 0) {  // Verifica si no se encontró el producto
+                throw new ErrorNoEncontrado("El producto no se encuentra registrado :(");
+            } 
+
+            const precio_neto = precio_productos[0].precio_neto;
+
+
+
+            const ExistenciaPedido = await Pedidos.findAll(
+                {
+                    where:{
+                        ID_pedido: ID_pedidos,
+                       
+                    },
+                    attributes: ['ID_pedido'],
+                }
+            )
+
+            if (ExistenciaPedido.length === 0) {  // Verifica si no se encontró el producto
+                throw new ErrorNoEncontrado("El pedido no se encuentra registrado :(");
+            }     
+            
+
 
         //Aqui verifico la existencia de un producto (Evito duplicados) 
         const DetalleExistencia = await Producto_Pedidos.findAll(
@@ -38,11 +62,14 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
             }
         )
 
+
+        
+
+
         if(DetalleExistencia!=0){
 
             const nuevo_neto = DetalleExistencia[0].precio_neto;
-
-            
+  
             const actualizarDetalle = await Producto_Pedidos.update(
                 {
                     cantidad : cantidad,
@@ -56,6 +83,8 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
                 }
             )
 
+            //Aptualizo el pedido 
+
             const updatepedido = await Pedidos.update(
                 { precio_total: DetalleExistencia[0].precio_neto * cantidad},
                 {
@@ -65,11 +94,10 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
                 }
             )
             
-            return {message:'Detalle actualizado exitosamente',actualizarDetalle}
+            return {message:'Detalle actualizado exitosamente'}
         
         
         }else{
-            
         const nuevoDetalle = await Producto_Pedidos.create({
                 ID_pedidos : ID_pedidos,
                 ID_productos: ID_productos,
@@ -101,7 +129,7 @@ const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
         } 
 
 module.exports = {
-    CrearDetalle,
+    ListarDetalle,
     agregarDetalle,
     DeleteDetalles
 }

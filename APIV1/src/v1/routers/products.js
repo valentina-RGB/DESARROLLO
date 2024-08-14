@@ -6,7 +6,7 @@ const { validateProducto } = require('../../validation/validationsProductos');
 router
     .get('/', controllerProduct.obtenerProductos)
     .get('/:id', controllerProduct.obtenerProductosPorId)
-    .post ('/', validateProducto , controllerProduct.CrearProductos)
+    .post ('/', controllerProduct.CrearProductos)
     .put('/:id', controllerProduct.ModificarProductos)
     .delete('/:id', controllerProduct.EliminarProductos)
 
