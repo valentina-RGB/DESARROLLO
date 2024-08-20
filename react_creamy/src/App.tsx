@@ -2,11 +2,12 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
-import "./App.css";
+// import "./App.css";
 import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
+
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -15,10 +16,10 @@ function App() {
       <div className="d-flex align-items-stretch">
       <Menu></Menu>
         <div className="page-holder bg-gray-100">
-          <div className="container-fluid px-lg-4 px-xl-5">
-            <div className="page-header">
-              <h1 className="page-heading">Dashboard heladeria las valem</h1>
-            </div>
+          <div className="container-fluid px-lg-1 px-xl-4">
+            {/* <div className="page-header">
+              <h1 className="page-heading">:)</h1>
+            </div> */}
              {/* Definición de rutas */}
        <Routes>
           <Route path="/"   element={<Navigate to="/Dashboard" />}  />

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../../api/api';
 import { Insumo } from '../../types/insumos';
 
+
+
 const InsumosList: React.FC = () => {
   const [insumos, setInsumos] = useState<Insumo[]>([]);
 

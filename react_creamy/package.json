@@ -16,13 +16,22 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "cors": "^2.8.5",
+    "datatables.net": "^2.1.4",
+    "datatables.net-dt": "^2.1.4",
+    "dropzone": "^6.0.0-beta.2",
+    "express": "^4.19.2",
+    "jquery": "^3.7.1",
     "postcss": "^8.4.41",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
+    "react-data-table-component": "^7.6.2",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.26.1"
+    "react-router-dom": "^6.26.1",
+    "simple-datatables": "^9.0.4",
+    "styled-components": "^6.1.12"
   },
   "devDependencies": {
+    "@types/dropzone": "^5.7.8",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
