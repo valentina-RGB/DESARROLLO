@@ -15,7 +15,9 @@ function App() {
   return (
     <Router>
       <div className="d-flex align-items-stretch">
-      <Menu></Menu>
+      <Menu>
+        
+      </Menu>
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
             <div className="page-header">

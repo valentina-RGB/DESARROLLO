@@ -1,60 +1,114 @@
-import React, { useState } from 'react';
-import api from '../../api/api';
+import React, { useState, useEffect } from 'react';
+import api from '../../api/api'; // Asegúrate de que esta ruta sea correcta
 import { useNavigate } from 'react-router-dom';
 
 const AddInsumo: React.FC = () => {
   const [descripcionInsumo, setDescripcionInsumo] = useState('');
-  const [precio, setPrecio] = useState(0);
+  const [precio, setPrecio] = useState<number | string>('');
   const [estadoInsumo, setEstadoInsumo] = useState('A');
+  const [tipoInsumo, setTipoInsumo] = useState<number | string>('');
+  const [tiposInsumo, setTiposInsumo] = useState<Array<{ ID_tipo_insumo: number, descripcion_tipo: string }>>([]);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTiposInsumo = async () => {
+      try {
+        const response = await api.get('/tipoInsumos'); // Verifica que el endpoint sea correcto
+        setTiposInsumo(response.data);
+      } catch (error) {
+        console.error('Error fetching types of insumos:', error);
+        setError('Error al cargar los tipos de insumos.');
+      }
+    };
+
+    fetchTiposInsumo();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!descripcionInsumo || !precio || !estadoInsumo || !tipoInsumo) {
+      setError('Por favor, completa todos los campos.');
+      return;
+    }
     try {
-      await api.post('/insumos', { descripcion_insumo: descripcionInsumo, precio, estado_insumo: estadoInsumo });
+      await api.post('/insumos', {
+        descripcion_insumo: descripcionInsumo,
+        precio: Number(precio),
+        estado_insumo: estadoInsumo,
+        ID_tipo_insumo: Number(tipoInsumo),
+      });
       navigate('/Insumos');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al agregar el insumo:', error);
+      setError('Error al agregar el insumo: ' + error.response?.data?.message || 'Error desconocido');
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6 text-gray-900">Agregar Insumo</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-        <div className="mb-4">
-          <label className="block text-gray-700">Descripción del Insumo</label>
-          <input
-            type="text"
-            value={descripcionInsumo}
-            onChange={(e) => setDescripcionInsumo(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Precio</label>
-          <input
-            type="number"
-            value={precio}
-            onChange={(e) => setPrecio(Number(e.target.value))}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Estado</label>
-          <select
-            value={estadoInsumo}
-            onChange={(e) => setEstadoInsumo(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen flex items-center justify-center">
+      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md">
+        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Agregar Insumo</h2>
+        {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="tw-mb-4">
+            <label htmlFor="descripcion" className="tw-block tw-text-gray-700 tw-font-semibold">Descripción del Insumo</label>
+            <input
+              type="text"
+              id="descripcion"
+              value={descripcionInsumo}
+              onChange={(e) => setDescripcionInsumo(e.target.value)}
+              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              placeholder="Descripción del insumo"
+              required
+            />
+          </div>
+          <div className="tw-mb-4">
+            <label htmlFor="precio" className="tw-block tw-text-gray-700 tw-font-semibold">Precio</label>
+            <input
+              type="number"
+              id="precio"
+              value={precio}
+              onChange={(e) => setPrecio(e.target.value)}
+              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              placeholder="Precio del insumo"
+              required
+            />
+          </div>
+          <div className="tw-mb-4">
+            <label htmlFor="estado" className="tw-block tw-text-gray-700 tw-font-semibold">Estado</label>
+            <select
+              id="estado"
+              value={estadoInsumo}
+              onChange={(e) => setEstadoInsumo(e.target.value)}
+              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+            >
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+          </div>
+          <div className="tw-mb-4">
+            <label htmlFor="tipoInsumo" className="tw-block tw-text-gray-700 tw-font-semibold">Tipo de Insumo</label>
+            <select
+              id="tipoInsumo"
+              value={tipoInsumo}
+              onChange={(e) => setTipoInsumo(e.target.value)}
+              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+            >
+              <option value="" disabled>Selecciona un tipo de insumo</option>
+              {tiposInsumo.map(tipo => (
+                <option key={tipo.ID_tipo_insumo} value={tipo.ID_tipo_insumo}>{tipo.descripcion_tipo}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-hover:bg-blue-600 tw-transition"
           >
-            <option value="A">Activo</option>
-            <option value="I">Inactivo</option>
-          </select>
-        </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-          Agregar Insumo
-        </button>
-      </form>
+            Agregar Insumo
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

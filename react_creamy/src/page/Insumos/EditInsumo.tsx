@@ -31,38 +31,38 @@ const EditInsumo: React.FC = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <h2 className="text-3xl font-bold mb-6 text-gray-900">Editar Insumo</h2>
-            <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-                <div className="mb-4">
-                    <label className="block text-gray-700">Descripción del Insumo</label>
+        <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
+            <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Editar Insumo</h2>
+            <form onSubmit={handleSubmit} className="tw-bg-white tw-p-6 tw-rounded-lg tw-shadow-md">
+                <div className="tw-mb-4">
+                    <label className="tw-block tw-text-gray-700">Descripción del Insumo</label>
                     <input
                         type="text"
                         value={descripcionInsumo}
                         onChange={(e) => setDescripcionInsumo(e.target.value)}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"/>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Precio</label>
+                <div className="tw-mb-4">
+                    <label className="tw-block tw-text-gray-700">Precio</label>
                     <input
                         type="number"
                         value={precio}
                         onChange={(e) => setPrecio(Number(e.target.value))}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md shadow-sm"
                     />
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Estado</label>
+                <div className="tw-mb-4">
+                    <label className="tw-block tw-text-gray-700">Estado</label>
                     <select
                         value={estadoInsumo}
                         onChange={(e) => setEstadoInsumo(e.target.value)}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"
                     >
                         <option value="A">Activo</option>
                         <option value="I">Inactivo</option>
                     </select>
                 </div>
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+                <button type="submit" className="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-hover:bg-blue-600 tw-transition">
                     Guardar Cambios
                 </button>
             </form>
