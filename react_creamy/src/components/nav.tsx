@@ -324,7 +324,7 @@ function Menu() {
             <svg className="svg-icon svg-icon-md me-3">
               {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#man-1"> </use> */}
             </svg>
-            <span className="sidebar-link-title">User </span>
+            <span className="sidebar-link-title">Usuarios </span>
           </a>
           <ul
             className="sidebar-menu list-unstyled collapse "
@@ -343,15 +343,19 @@ function Menu() {
                 className="sidebar-link text-muted"
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/register.html"
               >
-                Register
+                <li className="sidebar-list-item">
+              <Link to="/Clientes" className="sidebar-link text-muted">Clientes</Link>
+            </li>
               </a>
             </li>
             <li className="sidebar-list-item">
               <a
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/login-2.html"
+               // href="https://demo.bootstrapious.com/bubbly/1-3-2/login-2.html"
               >
-                Login v.2{" "}
+                <li className="sidebar-list-item">
+              <Link to="/Roles" className="sidebar-link text-muted">Roles</Link>
+            </li>
                 <span className="badge bg-info ms-2 text-decoration-none">
                   New
                 </span>
@@ -360,9 +364,11 @@ function Menu() {
             <li className="sidebar-list-item">
               <a
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/register-2.html"
+                href="../../Roles/ListRol"
               >
-                Register v.2{" "}
+                 <li className="sidebar-list-item">
+              <Link to="/Usuarios" className="sidebar-link text-muted">Usuarios</Link>
+            </li>
                 <span className="badge bg-info ms-2 text-decoration-none">
                   New
                 </span>

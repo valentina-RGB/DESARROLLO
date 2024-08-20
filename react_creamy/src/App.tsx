@@ -9,6 +9,12 @@ import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
 import AddInsumo from "./page/Insumos/CreateInsumo";
 import EditInsumo from "./page/Insumos/EditInsumo";
+import AddRol from './page/Roles/CreateRol';
+import ListarRoles from './page/Roles/ListRol';
+import AddCliente from './page/Clientes/CreateCliente';
+import ListarClientes from './page/Clientes/ListCliente';
+import ListarUsuarios from './page/Usuarios/ListUsuario';
+import AddUsuario from './page/Usuarios/CreateUsuario';
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -31,6 +37,14 @@ function App() {
           <Route path="/Insumos" element={<Insumos/>} />
           <Route path="/Insumos/Add" element={<AddInsumo />} />
           <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />
+          <Route path="/roles" element={<ListarRoles />} />
+          <Route path="/agregar-rol" element={<AddRol />} />
+          <Route path="/Clientes" element={<ListarClientes />} />
+          <Route path="/agregar-cliente" element={<AddCliente />} />
+          <Route path="/Usuarios" element={<ListarUsuarios />} />
+          <Route path="/agregar-usuario" element={<AddUsuario />} />
+          
+
         </Routes>
             
             {/* <Dashboard></Dashboard> */}
