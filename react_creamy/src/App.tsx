@@ -7,6 +7,8 @@ import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
+import AddInsumo from "./page/Insumos/CreateInsumo";
+import EditInsumo from "./page/Insumos/EditInsumo";
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -25,6 +27,8 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard/>} />
           <Route path="/Nueva-categorias" element={<Categorias/>} />
           <Route path="/Insumos" element={<Insumos/>} />
+          <Route path="/Insumos/Add" element={<AddInsumo />} />
+          <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />
         </Routes>
             
             {/* <Dashboard></Dashboard> */}

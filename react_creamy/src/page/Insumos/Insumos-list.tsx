@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { Insumo } from '../../types/insumos';
 
 const InsumosList: React.FC = () => {
   const [insumos, setInsumos] = useState<Insumo[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/insumos')
@@ -12,18 +14,27 @@ const InsumosList: React.FC = () => {
   }, []);
 
   const handleEdit = (id: number) => {
-    // Implementar lógica para editar el insumo
-    console.log('Editar insumo con ID:', id);
+    navigate(`/Insumos/Edit/${id}`);
   };
 
-  const handleDelete = (id: number) => {
-    // Implementar lógica para eliminar el insumo
-    console.log('Eliminar insumo con ID:', id);
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/insumos/${id}`);
+      setInsumos(insumos.filter(insumo => insumo.ID_insumo !== id));
+    } catch (error) {
+      console.error('Error al eliminar el insumo:', error);
+    }
   };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-3xl font-bold mb-6 text-gray-900">Lista de Insumos</h2>
+      <button 
+        onClick={() => navigate('/Insumos/Add')} 
+        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition mb-4"
+      >
+        Agregar Insumo
+      </button>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
           <thead className="bg-gray-100 border-b border-gray-200">
