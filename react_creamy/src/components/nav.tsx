@@ -8,17 +8,17 @@ function Menu() {
       <ul className="list-unstyled">
         <li className="sidebar-list-item">
           <Link
-            className="sidebar-link text-muted active"
+            className="sidebar-link text-muted active collapsed"
             to="/Dashboard"
             data-bs-target="#dashboardsDropdown"
             role="button"
-            aria-expanded="true"
+            aria-expanded="false"
             data-bs-toggle="collapse">
             <svg className="svg-icon svg-icon-md me-3"></svg>
             <span className="sidebar-link-title"></span>Dashboard
           </Link>
           <ul
-            className="sidebar-menu list-unstyled collapse show"
+            className="sidebar-menu list-unstyled collapse "//agregarle el "show" hace que despliegue la lista al iniciar la pagina en este elemento
             id="dashboardsDropdown"
           >
             <li className="sidebar-list-item">
@@ -114,13 +114,57 @@ function Menu() {
             data-bs-toggle="collapse"
           >
             <svg className="svg-icon svg-icon-md me-3">
+              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#reading-1"> </use> */}
+            </svg>
+            <span className="sidebar-link-title">Insumos</span>
+          </a>
+          <ul className="sidebar-menu list-unstyled collapse " id="widgetsDropdown">
+            <li className="sidebar-list-item">
+              <Link to="/Insumos" className="sidebar-link text-muted">Lista de insumos</Link>
+            </li>
+            <li className="sidebar-list-item">
+              <a
+                className="sidebar-link text-muted"
+                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html"
+              >
+                Ver detalles de las categorías
+              </a>
+            </li>
+            <li className="sidebar-list-item">
+              <a
+                className="sidebar-link text-muted"
+                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-category.html"
+              >
+                Categories
+              </a>
+            </li>
+            <li className="sidebar-list-item">
+              <a
+                className="sidebar-link text-muted"
+                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-media.html"
+              >
+                Media library
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li className="sidebar-list-item">
+          <a
+            className="sidebar-link text-muted "
+            href="#"
+            data-bs-target="#widgetsDropdow"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="collapse"
+          >
+            <svg className="svg-icon svg-icon-md me-3">
               {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#statistic-1"> </use> */}
             </svg>
             <span className="sidebar-link-title">Widgets </span>
           </a>
           <ul
             className="sidebar-menu list-unstyled collapse "
-            id="widgetsDropdown"
+            id="widgetsDropdow"
           >
             <li className="sidebar-list-item">
               <a

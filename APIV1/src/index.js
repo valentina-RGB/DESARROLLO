@@ -1,5 +1,6 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
+const cors = require('cors');
 
 const db = require('./../models')
 const detalleRoutes = require('./v1/routers/detallePedido');
@@ -29,15 +30,22 @@ class Server {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     //this.app.use(body.urlencoded({ extended: false}));
+    this.app.use(cors({
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      allowedHeaders: 'Content-Type,Authorization'
+    }));
     this.Routers();
+  
+   
 
     this.syncDatabase();
   }
 
    syncDatabase =async()=> {
       try {
-         await db.sequelize.sync({ force: true }); 
-          await db.sequelize.sync({ alter: true })
+         //await db.sequelize.sync({ force: true }); 
+          //await db.sequelize.sync({ alter: true })
         console.log('Todas las tablas han sido sincronizadas o creadas.');
     
       } catch (error) {

@@ -6,6 +6,7 @@ import "./App.css";
 import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categorias";
+import Insumos from "./page/Insumos/Insumos-list";
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/"   element={<Navigate to="/Dashboard" />}  />
           <Route path="/Dashboard" element={<Dashboard/>} />
           <Route path="/Nueva-categorias" element={<Categorias/>} />
+          <Route path="/Insumos" element={<Insumos/>} />
         </Routes>
             
             {/* <Dashboard></Dashboard> */}
