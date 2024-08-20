@@ -9,7 +9,6 @@ import './datatables.css';
 // import 
 // import 'bootstrap/dist/css/bootstrap.min.css'
  import './App.css'
-import Lista from './components/Lista_categoria.tsx';
 // import  'bootstrap/dist/js/bootstrap.min'
 // import   'react-chartjs-2';
 
@@ -18,7 +17,6 @@ import Lista from './components/Lista_categoria.tsx';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
-    <Lista/>
   </React.StrictMode>,
 )
 
