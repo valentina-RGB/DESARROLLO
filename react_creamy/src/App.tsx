@@ -9,6 +9,7 @@ import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
 import AddInsumo from "./page/Insumos/CreateInsumo";
 import EditInsumo from "./page/Insumos/EditInsumo";
+import AddEntry from './page/Insumos/AddEntry';
 function App() {
   // const [count, setCount] = useState(0)
 
@@ -16,7 +17,7 @@ function App() {
     <Router>
       <div className="d-flex align-items-stretch">
       <Menu>
-        
+
       </Menu>
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
@@ -31,6 +32,7 @@ function App() {
           <Route path="/Insumos" element={<Insumos/>} />
           <Route path="/Insumos/Add" element={<AddInsumo />} />
           <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />
+          <Route path="/Insumos/AddEntry" element={<AddEntry />} />
         </Routes>
             
             {/* <Dashboard></Dashboard> */}

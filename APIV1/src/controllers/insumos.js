@@ -9,8 +9,17 @@ const HistorialEntradas = db.HistorialEntradas
 
 const obtenerInsumos = async (req, res) => {
   try {
-    const insumos = await Insumos.findAll();
-    res.status(200).json(insumos);
+    const insumos = await Insumos.findAll({
+      include: [
+        {
+          model: StockInsumos,
+          as: 'stock',
+          attributes: ['stock_actual']
+        }
+      ]
+    });
+    console.log(JSON.stringify(insumos, null, 2)); 
+    res.json(insumos);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -108,7 +117,7 @@ const eliminarInsumo = async (req, res) => {
 
 
 const agregarEntrada = async (req, res) => {
-  const { id } = req.params; 
+  const { id } = req.params;
   try {
     const insumo = await Insumos.findByPk(id);
     if (!insumo) {
@@ -125,7 +134,7 @@ const agregarEntrada = async (req, res) => {
     });
 
     // Actualizar el stock_actual en Stock_insumos
-    //await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
+    await StockInsumos.increment('stock_actual', { by: cantidad, where: { ID_insumo: id } });
 
     res.status(201).json({ message: 'Entrada registrada y stock actualizado' });
   } catch (error) {
