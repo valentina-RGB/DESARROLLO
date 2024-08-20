@@ -7,14 +7,18 @@ import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
-
+import AddInsumo from "./page/Insumos/CreateInsumo";
+import EditInsumo from "./page/Insumos/EditInsumo";
+import AddEntry from './page/Insumos/AddEntry';
 function App() {
   // const [count, setCount] = useState(0)
 
   return (
     <Router>
       <div className="d-flex align-items-stretch">
-      <Menu></Menu>
+      <Menu>
+
+      </Menu>
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-1 px-xl-4">
             {/* <div className="page-header">
@@ -26,6 +30,9 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard/>} />
           <Route path="/Nueva-categorias" element={<Categorias/>} />
           <Route path="/Insumos" element={<Insumos/>} />
+          <Route path="/Insumos/Add" element={<AddInsumo />} />
+          <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />
+          <Route path="/Insumos/AddEntry" element={<AddEntry />} />
         </Routes>
             
             {/* <Dashboard></Dashboard> */}
