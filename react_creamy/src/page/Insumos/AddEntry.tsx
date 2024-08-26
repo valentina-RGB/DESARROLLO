@@ -2,33 +2,53 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { Insumo } from '../../types/insumos';
+import Swal from 'sweetalert2';  // Importa SweetAlert2
 
-const AddEntry: React.FC = () => {
-  const [insumos, setInsumos] = useState<Insumo[]>([]);
-  const [selectedInsumo, setSelectedInsumo] = useState<number | undefined>(undefined);
+// Definimos la interfaz para las props que recibirá AddEntry
+interface AddEntryProps {
+  id: number;  // ID del insumo seleccionado
+  onClose: () => void;  // Función para cerrar la modal
+}
+
+const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
+  const [insumo, setInsumo] = useState<Insumo | null>(null);
   const [cantidad, setCantidad] = useState<number>(0);
   const [descripcion, setDescripcion] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/insumos')
-      .then(response => setInsumos(response.data))
-      .catch(error => console.error('Error al obtener los insumos:', error));
-  }, []);
+    const fetchInsumo = async () => {
+      try {
+        const response = await api.get(`/insumos/${id}`);
+        setInsumo(response.data);
+      } catch (error) {
+        console.error('Error al obtener el insumo:', error);
+      }
+    };
+
+    fetchInsumo();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-   
-    if (selectedInsumo === undefined) {
-      console.error('No se ha seleccionado un insumo.');
-      return;
-    }
-    try { 
-      await api.post(`/insumos/${selectedInsumo}/entradas`, { cantidad, descripcion });  
-      navigate('/Insumos');
+
+    try {
+      await api.post(`/insumos/${id}/entradas`, { cantidad, descripcion });
+      onClose();  // Cierra la modal después de agregar la entrada
+      Swal.fire({
+        icon: 'success',
+        title: 'Entrada agregada',
+        text: 'La entrada del insumo se ha agregado exitosamente.',
+      }).then(() => {
+        navigate('/Insumos');  // Navega de regreso a la lista de insumos después de cerrar la alerta
+      });
     } catch (error) {
       console.error('Error al agregar la entrada:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo agregar la entrada del insumo. Por favor, intente nuevamente.',
+      });
     }
   };
 
@@ -37,23 +57,9 @@ const AddEntry: React.FC = () => {
       <h2 className="tw-text-4xl tw-font-extrabold tw-mb-8 tw-text-gray-800">Agregar Entrada de Insumo</h2>
       <form onSubmit={handleSubmit} className="tw-bg-white tw-p-6 tw-rounded-lg tw-shadow-md">
         <div className="tw-mb-4">
-          <label className="tw-block tw-text-gray-700">Seleccionar Insumo</label>
-          <select
-            value={selectedInsumo}
-            onChange={(e) => setSelectedInsumo(Number(e.target.value))}
-            className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"
-          >
-            <option value="" disabled>Selecciona un insumo</option>
-            {insumos.map(insumo => (
-              <option key={insumo.ID_insumo} value={insumo.ID_insumo}>
-                {insumo.descripcion_insumo}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="tw-mb-4">
-          <label className="tw-block tw-text-gray-700">Cantidad</label>
+          <label htmlFor="cantidad" className="tw-block tw-text-gray-700">Cantidad</label>
           <input
+            id="cantidad"
             type="number"
             value={cantidad}
             onChange={(e) => setCantidad(Number(e.target.value))}
@@ -61,8 +67,9 @@ const AddEntry: React.FC = () => {
           />
         </div>
         <div className="tw-mb-4">
-          <label className="tw-block tw-text-gray-700">Descripción</label>
+          <label htmlFor="descripcion" className="tw-block tw-text-gray-700">Descripción</label>
           <textarea
+            id="descripcion"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"

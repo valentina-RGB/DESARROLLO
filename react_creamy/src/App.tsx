@@ -41,7 +41,7 @@ function App() {
                 <div className="row">
                   <div className="col-md-6 text-center text-md-start fw-bold">
                     <p className="mb-2 mb-md-0 fw-bold">
-                      Your company &copy; 2023
+                      Creamy Soft &copy; 2024
                     </p>
                   </div>
                   <div className="col-md-6 text-center text-md-end text-gray-400">

@@ -1,6 +1,7 @@
 // controllers/InsumosController.js
 const { sequelize } = require('../../models'); 
 const db = require('../../models');
+const { validateInsumos, validateUpdateInsumo } = require('../validation/validations_ISE');
 
 
 const Insumos = db.Insumos;
@@ -83,22 +84,25 @@ const crearInsumo = async (req, res) => {
 };
 
 const actualizarInsumo = async (req, res) => {
+  console.log('Datos recibidos:', req.body);
   const { id } = req.params;
+
   try {
-    const [updated] = await Insumos.update(req.body, {
-      where: { ID_insumo: id },
-    });
-    if (updated) {
-      const updatedInsumo = await Insumos.findByPk(id);
-      res.status(200).json(updatedInsumo);
-    } else {
-      res.status(404).json({ message: 'Insumo no encontrado' });
-    }
+      const [updated] = await Insumos.update(req.body, {
+          where: { ID_insumo: id },
+      });
+
+      if (updated) {
+          const updatedInsumo = await Insumos.findByPk(id);
+          res.status(200).json(updatedInsumo);
+      } else {
+          res.status(404).json({ message: 'Insumo no encontrado' });
+      }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+      console.error('Error al actualizar el insumo:', error);
+      res.status(400).json({ message: error.message });
   }
 };
-
 const eliminarInsumo = async (req, res) => {
   const { id } = req.params;
   try {
@@ -141,43 +145,27 @@ const agregarEntrada = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//NO FUNCIONA
-// const agregarEntrada = async (entrada) => {
-//   const { ID_insumo, cantidad } = entrada;
+const getInsumoDetails = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const insumo = await Insumos.findOne({
+          where: { ID_insumo: id },
+          include: [
+              { model: StockInsumos, as: 'stock' }
+          ]
+      });
 
-//   // Iniciar una transacción para asegurar consistencia de datos
-//   const transaction = await sequelize.transaction();
+      if (!insumo) {
+          return res.status(404).json({ error: 'Insumo no encontrado' });
+      }
 
-//   try {
-//     // Verificar si el insumo existe
-//     const insumo = await Insumos.findByPk(ID_insumo, { transaction });
-//     if (!insumo) {
-//       throw new Error('Insumo no encontrado.');
-//     }
+      res.json(insumo);
+  } catch (error) {
+      console.error('Error al obtener el detalle del insumo:', error);
+      res.status(500).json({ error: 'Error al obtener el detalle del insumo' });
+  }
+};
 
-//     // Crear la entrada en el historial de entradas
-//     const entry = await HistorialEntradas.create({
-//       ID_insumo,
-//       cantidad,
-//       fecha: new Date(),
-//     }, { transaction });
-
-//     // Actualizar el stock del insumo
-//     insumo.stock_actual = (insumo.stock_actual || 0) + cantidad;
-//     await insumo.save({ transaction });
-
-//     // Confirmar la transacción
-//     await transaction.commit();
-
-//     return { status: 200, message: 'Entrada agregada y stock actualizado exitosamente.' };
-//   } catch (error) {
-//     // Revertir la transacción en caso de error
-//     await transaction.rollback();
-//     throw new Error('Error al agregar la entrada: ' + error.message);
-//   }
-// };
-
-module.exports = { agregarEntrada };
 
 
 
@@ -188,4 +176,5 @@ module.exports = {
   actualizarInsumo,
   eliminarInsumo,
   agregarEntrada,
+  getInsumoDetails
 };
