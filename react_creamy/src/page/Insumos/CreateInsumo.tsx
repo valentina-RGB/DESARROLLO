@@ -51,13 +51,13 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen flex items-center justify-center">
-      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md">
-        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Agregar Insumo</h2>
+    <div className="fixed inset-0 flex items-center justify-center ">
+      <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">Agregar Insumo</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-gray-700 tw-font-semibold">Descripción del Insumo</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción del Insumo</label>
             <input
               id="descripcion"
               type="text"
@@ -69,7 +69,7 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="precio" className="tw-block tw-text-gray-700 tw-font-semibold">Precio</label>
+            <label htmlFor="precio" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Precio</label>
             <input
               id="precio"
               type="number"
@@ -101,6 +101,12 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
             Agregar Insumo
           </button>
         </form>
+        <button
+          onClick={onClose}
+          className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition mt-4"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   );

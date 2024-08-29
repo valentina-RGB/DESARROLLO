@@ -43,36 +43,45 @@ const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
   };
 
   return (
-    <div className="tw-bg-gray-50 flex items-center justify-center">
-      <div className="tw-p-3 tw-bg-gray-100">
-        <h2 className="tw-text-4xl tw-font-extrabold tw-mb-8 tw-text-gray-800">Agregar Entrada de Insumo</h2>
-        <form onSubmit={handleSubmit} className="tw-bg-white tw-p-6 tw-rounded-lg tw-shadow-md">
+    <div className="fixed inset-0 flex items-center justify-center ">
+      <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">Agregar Entrada</h2>
+        <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="cantidad" className="tw-block tw-text-gray-700">Cantidad</label>
+            <label htmlFor="cantidad" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Cantidad</label>
             <input
               id="cantidad"
               type="number"
               value={cantidad}
               onChange={(e) => setCantidad(Number(e.target.value))}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 tw-transition"
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-gray-700">Descripción</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción</label>
             <textarea
               id="descripcion"
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 tw-transition"
               rows={3}
             />
           </div>
-          <button
-            type="submit"
-            className="tw-bg-green-500 tw-text-white tw-px-6 tw-py-3 tw-rounded-lg tw-shadow-md tw-hover:bg-green-600 tw-transition tw-font-semibold"
-          >
-            Agregar Entrada
-          </button>
+          <div className="tw-flex tw-justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-gray-200 tw-text-gray-700 tw-rounded-lg hover:tw-bg-gray-300 tw-transition"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="tw-bg-green-500 tw-text-white tw-px-6 tw-py-2 tw-rounded-lg hover:tw-bg-green-600 tw-transition tw-font-semibold"
+            >
+              Agregar
+            </button>
+          </div>
         </form>
       </div>
     </div>
