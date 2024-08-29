@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import { toast } from 'react-hot-toast';  // Importa react-hot-toast
 
 interface CreateInsumoProps {
   onClose: () => void;
@@ -10,7 +10,6 @@ interface CreateInsumoProps {
 const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
   const [descripcionInsumo, setDescripcionInsumo] = useState('');
   const [precio, setPrecio] = useState<number | string>('');
-
   const [tipoInsumo, setTipoInsumo] = useState<number | string>('');
   const [tiposInsumo, setTiposInsumo] = useState<Array<{ ID_tipo_insumo: number, descripcion_tipo: string }>>([]);
   const [error, setError] = useState<string | null>(null);
@@ -40,15 +39,14 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
       await api.post('/insumos', {
         descripcion_insumo: descripcionInsumo,
         precio: Number(precio),
-        
         ID_tipo_insumo: Number(tipoInsumo),
       });
-      await Swal.fire('¡Éxito!', 'Insumo agregado correctamente.', 'success');
+      toast.success('Insumo agregado correctamente.');
       onClose(); // Cierra el modal y actualiza la lista
     } catch (error: any) {
       console.error('Error al agregar el insumo:', error);
       setError('Error al agregar el insumo: ' + (error.response?.data?.message || 'Error desconocido'));
-      await Swal.fire('Error', 'Hubo un problema al agregar el insumo.', 'error');
+      toast.error('Hubo un problema al agregar el insumo.');
     }
   };
 

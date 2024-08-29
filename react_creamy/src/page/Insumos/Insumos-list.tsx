@@ -4,12 +4,14 @@ import { Insumo } from '../../types/insumos';
 import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2';
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-hot-toast';  
 import AddInsumo from './CreateInsumo';
 import EditInsumo from './EditInsumo';
 import AddEntry from './AddEntry';
 import InsumoDetails from './InsumoDetails';
 import Modal from 'react-modal';
+
 
 Modal.setAppElement('#root');
 
@@ -39,27 +41,16 @@ const InsumosList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'No podrás revertir esta acción',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminarlo',
-      cancelButtonText: 'Cancelar'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await api.delete(`/insumos/${id}`);
-        fetchInsumos(); // Actualiza la lista después de eliminar
-        Swal.fire('¡Eliminado!', 'El insumo ha sido eliminado.', 'success');
-      } catch (error) {
-        console.error('Error al eliminar el insumo:', error);
-        Swal.fire('Error', 'Hubo un problema al eliminar el insumo.', 'error');
+    toast.promise(
+      api.delete(`/insumos/${id}`),
+      {
+        loading: 'Eliminando insumo...',
+        success: '¡El insumo ha sido eliminado!',
+        error: 'Hubo un problema al eliminar el insumo.',
       }
-    }
+    ).then(() => {
+      fetchInsumos(); // Actualiza la lista después de eliminar
+    });
   };
 
   const handleToggleEstado = async (id: number, estadoActual: string) => {
@@ -70,10 +61,10 @@ const InsumosList: React.FC = () => {
       setInsumos(insumos.map(insumo =>
         insumo.ID_insumo === id ? { ...insumo, estado_insumo: nuevoEstado } : insumo
       ));
-      Swal.fire('¡Éxito!', 'El estado del insumo ha sido actualizado.', 'success');
+      toast.success('El estado del insumo ha sido actualizado.');
     } catch (error) {
       console.error('Error al cambiar el estado del insumo:', error);
-      Swal.fire('Error', 'Hubo un problema al cambiar el estado del insumo.', 'error');
+      toast.error('Hubo un problema al cambiar el estado del insumo.');
     }
   };
 
@@ -87,11 +78,13 @@ const InsumosList: React.FC = () => {
     setModalType('entry');
     setIsModalOpen(true);
   };
+
   const handleViewDetails = (id: number) => {
     setSelectedInsumoId(id);
-    setModalType('detail');  
+    setModalType('detail');
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setModalType(null);
@@ -131,7 +124,6 @@ const InsumosList: React.FC = () => {
                 className="tw-text-2xl"
               />
             </button>
-            
           </div>
         ),
       },
@@ -154,8 +146,11 @@ const InsumosList: React.FC = () => {
             <button onClick={() => handleAddEntry(row.original.ID_insumo)} className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faBoxOpen} />
             </button>
-            <button onClick={() => handleViewDetails(row.original.ID_insumo)} className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faBoxOpen} />
+            <button
+              onClick={() => handleViewDetails(row.original.ID_insumo)}
+              className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
+            >
+              <FontAwesomeIcon icon={faSignInAlt} />
             </button>
           </div>
         ),
@@ -174,21 +169,13 @@ const InsumosList: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
-        className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-max-w-lg tw-w-full tw-mx-auto tw-transform tw-translate-y-1/4 tw-transition-all tw-duration-300"
-        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-z-50 tw-flex tw-justify-center tw-items-center"
+        className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
+        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
       >
         {modalType === 'add' && <AddInsumo onClose={handleModalCloseAndFetch} />}
         {modalType === 'edit' && selectedInsumoId !== null && <EditInsumo id={selectedInsumoId} onClose={handleModalCloseAndFetch} />}
         {modalType === 'entry' && selectedInsumoId !== null && <AddEntry id={selectedInsumoId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'detail' && selectedInsumoId !== null && <InsumoDetails id={selectedInsumoId} onClose={handleCloseModal} />}  {/* Renderizar InsumoDetails */}
-        <div className="tw-flex tw-justify-end tw-mt-4">
-          <button
-            onClick={handleCloseModal}
-            className="tw-bg-gray-300 tw-text-gray-800 tw-rounded-full tw-px-4 tw-py-2 tw-mr-2 tw-shadow-md tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
-          >
-            Cancelar
-          </button>
-        </div>
+        {modalType === 'detail' && selectedInsumoId !== null && <InsumoDetails id={selectedInsumoId} onClose={handleModalCloseAndFetch} />}
       </Modal>
     </div>
   );

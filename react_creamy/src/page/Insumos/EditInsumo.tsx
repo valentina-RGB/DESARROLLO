@@ -88,7 +88,7 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
   if (!insumo) return <p>Cargando...</p>;
 
   return (
-    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen flex items-center justify-center">
+    <div className="tw-p-0 tw-bg-gray-50 flex items-center justify-center">
       <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md">
         <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Editar Insumo</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
