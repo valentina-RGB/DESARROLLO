@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
 import { Link } from 'react-router-dom';
-
-
-interface Rol {
-  id_rol: number;
-  descripcion: string;
-}
+import { Rol } from '../../types/roles';
 
 const ListarRoles: React.FC = () => {
   const [roles, setRoles] = useState<Rol[]>([]);
@@ -16,6 +11,8 @@ const ListarRoles: React.FC = () => {
     const fetchRoles = async () => {
       try {
         const response = await api.get('/roles');
+        console.log(response);
+
         setRoles(response.data);
       } catch (error) {
         console.error('Error fetching roles:', error);
@@ -44,12 +41,19 @@ const ListarRoles: React.FC = () => {
           </thead>
           <tbody>
             {roles.map((rol) => (
-              <tr key={rol.id_rol} className="tw-border-b tw-border-gray-200 hover:tw-bg-gray-100">
-                <td className="tw-py-3 tw-px-4">{rol.id_rol}</td>
+              <tr key={rol.ID_rol} className="tw-border-b tw-border-gray-200 hover:tw-bg-gray-100">
+                <td className="tw-py-3 tw-px-4">{rol.ID_rol}</td>
                 <td className="tw-py-3 tw-px-4">{rol.descripcion}</td>
                 <td className="tw-py-3 tw-px-4">
                   <Link to={`/editar-rol/${rol.id_rol}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
-                  <button onClick={() => {/* Implementar lógica de eliminación */}} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>
+                  <button onClick={async () => {
+                    try {
+                      await api.delete(`/roles/${rol.ID_rol}`);
+                      setRoles(roles.filter(rol => rol.ID_rol !== rol.ID_rol));
+                    } catch (error) {
+                      console.error('Error al eliminar el rol:', error);
+                    }
+                  }} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>
                 </td>
               </tr>
             ))}

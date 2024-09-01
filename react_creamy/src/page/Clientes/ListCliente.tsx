@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
 import { Link } from 'react-router-dom';
-
-interface Cliente {
-  ID_cliente: number;
-  documento: string;
-  nombre: string;
-  apellidos: string;
-  direccion: string;
-  correo_electronico: string;
-  estado_cliente: string;
-  ID_usuario: number;
-}
+import { Cliente } from '../../types/clientes';
 
 const ListarClientes: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -28,8 +18,21 @@ const ListarClientes: React.FC = () => {
       }
     };
 
+    const conDelte = async (id: number) => {
+      try {
+        await api.delete(`/clientes/${id}`);
+        setClientes(clientes.filter(cliente => cliente.ID_cliente !== id));
+      } catch (error) {
+        console.error('Error al eliminar el cliente:', error);
+      }
+    };
+
     fetchClientes();
   }, []);
+
+  const deleteClient = async (id: number) => {
+
+  }
 
   return (
     <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
@@ -65,8 +68,15 @@ const ListarClientes: React.FC = () => {
                 <td className="tw-py-3 tw-px-4">{cliente.estado_cliente}</td>
                 <td className="tw-py-3 tw-px-4">{cliente.ID_usuario}</td>
                 <td className="tw-py-3 tw-px-4">
-                  <Link to={`/editar-cliente/${cliente.ID_cliente}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
-                  <button onClick={() => {/* Implementar lógica de eliminación */}} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>
+                  <Link to={`/editar-cliente${cliente.ID_cliente}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
+                  <button onClick={ async () => {
+                        try {
+                          await api.delete(`/clientes/${cliente.ID_cliente}`);
+                          setClientes(clientes.filter(cliente => cliente.ID_cliente !== cliente.ID_cliente));
+                        } catch (error) {
+                          console.error('Error al eliminar el cliente:', error);
+                        }
+                  }} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>
                 </td>
               </tr>
             ))}

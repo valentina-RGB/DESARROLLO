@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
 import { Link } from 'react-router-dom';
-
-interface Usuario {
-  ID_usuario: number;
-  email: string;
-  telefono: string;
-  ID_rol: number;
-  estado: string;
-}
+import { Usuario } from '../../types/usuarios';
 
 const ListarUsuarios: React.FC = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
