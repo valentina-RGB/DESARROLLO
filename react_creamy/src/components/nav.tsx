@@ -91,12 +91,12 @@ function Menu() {
               </Link>
             </li>
             <li className="sidebar-list-item">
-              <Link
+              {/* <Link
                 className="sidebar-link text-muted"
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html"
               >
                 Ver detalles de las categorías
-              </a>
+              </Link> */}
             </li>
             <li className="sidebar-list-item">
               <a
@@ -549,7 +549,8 @@ function Menu() {
               >
                 Datatable
               </a>
-                to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
+
+                <Link  to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
                 Ver detalles de los insumos
               </Link>
             </li>

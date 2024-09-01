@@ -45,8 +45,9 @@ const ListarRoles: React.FC = () => {
                 <td className="tw-py-3 tw-px-4">{rol.ID_rol}</td>
                 <td className="tw-py-3 tw-px-4">{rol.descripcion}</td>
                 <td className="tw-py-3 tw-px-4">
-                  <Link to={`/editar-rol/${rol.id_rol}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
+                  <Link to={`/editar-rol/${rol.ID_rol}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
                   <button onClick={async () => {
+                    //szs
                     try {
                       await api.delete(`/roles/${rol.ID_rol}`);
                       setRoles(roles.filter(rol => rol.ID_rol !== rol.ID_rol));
@@ -65,3 +66,12 @@ const ListarRoles: React.FC = () => {
 };
 
 export default ListarRoles;
+
+
+
+
+
+
+
+
+// 

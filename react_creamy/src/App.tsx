@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Route, Routes,  Navigate } from 'react-router-dom';
 import Menu from "./components/nav";
 //import Navbar from "./components/navbar";
@@ -15,20 +16,21 @@ import AddUsuario from './page/Usuarios/CreateUsuario';
 import EditarCliente from './page/Clientes/EditCliente';
 import EditarRol from './page/Roles/EditRol';
 import EditarUsuario from './page/Usuarios/EditUsuario';
-function App() {
-  // const [count, setCount] = useState(0)
+// const [count, setCount] = useState(0)
 
 //import ListadoVentas from './page/Ventas/ventas-list';
+// function App() {
 
-import { Toaster } from 'react-hot-toast';
+
+
+
 
 const App: React.FC = () => {
   return (
     <Router>
       <div className="d-flex align-items-stretch">
-        <Menu>
+        {/* No sé */}
 
-        </Menu>
         <Menu />
      
         <div className="page-holder bg-gray-100">
@@ -80,6 +82,7 @@ const App: React.FC = () => {
             </footer>
           </div>
         </div>
+      </div>
       </div>
       <Toaster position="top-right" reverseOrder={false} /> {/* Toaster debería estar aquí */}
     </Router>

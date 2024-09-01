@@ -50,8 +50,17 @@ const ListarUsuarios: React.FC = () => {
                 <td className="tw-py-3 tw-px-4">{usuario.estado}</td>
                 <td className="tw-py-3 tw-px-4">
                   <Link to={`/editar-usuario/${usuario.ID_usuario}`} className="tw-text-blue-500 tw-hover:text-blue-700 tw-mr-2">Editar</Link>
-                  <button onClick={() => {/* Implementar lógica de eliminación */}} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>
-                </td>
+                  <button onClick={async () => {
+                    //szs
+                    try {
+                      await api.delete(`/usuarios/${usuario.ID_usuario}`);
+                      setUsuarios(usuarios.filter(usuario => usuario.ID_usuario !== usuario.ID_usuario));
+                    } catch (error) {
+                      console.error('Error al eliminar el usuario:', error);
+                    }
+                  }} className="tw-text-red-500 tw-hover:text-red-700">Eliminar</button>                </td>
+                {/* no hay eliminar usuario, el roles quedo melo */}
+                {/* dame 1min */}
               </tr>
             ))}
           </tbody>
