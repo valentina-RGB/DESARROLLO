@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../api/api'; // Asegúrate de que esta ruta sea correcta
+import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';  // Importa react-hot-toast
 
-const AddInsumo: React.FC = () => {
+interface CreateInsumoProps {
+  onClose: () => void;
+}
+
+const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
   const [descripcionInsumo, setDescripcionInsumo] = useState('');
   const [precio, setPrecio] = useState<number | string>('');
-  const [estadoInsumo, setEstadoInsumo] = useState('A');
   const [tipoInsumo, setTipoInsumo] = useState<number | string>('');
   const [tiposInsumo, setTiposInsumo] = useState<Array<{ ID_tipo_insumo: number, descripcion_tipo: string }>>([]);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +18,7 @@ const AddInsumo: React.FC = () => {
   useEffect(() => {
     const fetchTiposInsumo = async () => {
       try {
-        const response = await api.get('/tipoInsumos'); // Verifica que el endpoint sea correcto
+        const response = await api.get('/tipoInsumos');
         setTiposInsumo(response.data);
       } catch (error) {
         console.error('Error fetching types of insumos:', error);
@@ -27,7 +31,7 @@ const AddInsumo: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!descripcionInsumo || !precio || !estadoInsumo || !tipoInsumo) {
+    if (!descripcionInsumo || !precio || !tipoInsumo) {
       setError('Por favor, completa todos los campos.');
       return;
     }
@@ -35,27 +39,28 @@ const AddInsumo: React.FC = () => {
       await api.post('/insumos', {
         descripcion_insumo: descripcionInsumo,
         precio: Number(precio),
-        estado_insumo: estadoInsumo,
         ID_tipo_insumo: Number(tipoInsumo),
       });
-      navigate('/Insumos');
+      toast.success('Insumo agregado correctamente.');
+      onClose(); // Cierra el modal y actualiza la lista
     } catch (error: any) {
       console.error('Error al agregar el insumo:', error);
-      setError('Error al agregar el insumo: ' + error.response?.data?.message || 'Error desconocido');
+      setError('Error al agregar el insumo: ' + (error.response?.data?.message || 'Error desconocido'));
+      toast.error('Hubo un problema al agregar el insumo.');
     }
   };
 
   return (
-    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen flex items-center justify-center">
-      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md">
-        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Agregar Insumo</h2>
+    <div className="fixed inset-0 flex items-center justify-center ">
+      <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">Agregar Insumo</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-gray-700 tw-font-semibold">Descripción del Insumo</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción del Insumo</label>
             <input
-              type="text"
               id="descripcion"
+              type="text"
               value={descripcionInsumo}
               onChange={(e) => setDescripcionInsumo(e.target.value)}
               className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
@@ -64,28 +69,16 @@ const AddInsumo: React.FC = () => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="precio" className="tw-block tw-text-gray-700 tw-font-semibold">Precio</label>
+            <label htmlFor="precio" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Precio</label>
             <input
-              type="number"
               id="precio"
+              type="number"
               value={precio}
               onChange={(e) => setPrecio(e.target.value)}
               className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
               placeholder="Precio del insumo"
               required
             />
-          </div>
-          <div className="tw-mb-4">
-            <label htmlFor="estado" className="tw-block tw-text-gray-700 tw-font-semibold">Estado</label>
-            <select
-              id="estado"
-              value={estadoInsumo}
-              onChange={(e) => setEstadoInsumo(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
-            >
-              <option value="A">Activo</option>
-              <option value="I">Inactivo</option>
-            </select>
           </div>
           <div className="tw-mb-4">
             <label htmlFor="tipoInsumo" className="tw-block tw-text-gray-700 tw-font-semibold">Tipo de Insumo</label>
@@ -103,14 +96,20 @@ const AddInsumo: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-hover:bg-blue-600 tw-transition"
+            className="tw-bg-blue-500 tw-text-white tw-px-6 tw-py-3 tw-rounded-lg tw-shadow-md tw-hover:bg-blue-600 tw-transition tw-font-semibold"
           >
             Agregar Insumo
           </button>
         </form>
+        <button
+          onClick={onClose}
+          className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition mt-4"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   );
 };
 
-export default AddInsumo;
+export default CreateInsumo;

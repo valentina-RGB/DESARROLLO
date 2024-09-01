@@ -1,8 +1,7 @@
+import { Link } from 'react-router-dom';
 
-import {Link} from 'react-router-dom';
 function Menu() {
   return (
- 
     <div className="sidebar py-3" id="sidebar">
       <h6 className="sidebar-heading">Creamy Soft</h6>
       <ul className="list-unstyled">
@@ -15,115 +14,84 @@ function Menu() {
             aria-expanded="false"
             data-bs-toggle="collapse">
             <svg className="svg-icon svg-icon-md me-3"></svg>
-            <span className="sidebar-link-title"></span>Dashboard
+            <span className="sidebar-link-title">Dashboard</span>
           </Link>
           <ul
-            className="sidebar-menu list-unstyled collapse "//agregarle el "show" hace que despliegue la lista al iniciar la pagina en este elemento
-            id="dashboardsDropdown"
-          >
+            className="sidebar-menu list-unstyled collapse"
+            id="dashboardsDropdown">
             <li className="sidebar-list-item">
               <Link className="sidebar-link active text-muted" to="/Dashboard">
                 Todo
               </Link>
             </li>
             <li className="sidebar-list-item">
-              <a
+              <Link
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/index-cms.html"
-              >
+                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-cms.html">
                 Los productos más vendidos
-              </a>
+              </Link>
             </li>
             <li className="sidebar-list-item">
-              <a
+              <Link
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/index-e-commerce.html"
-              >
+                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-e-commerce.html">
                 Domiciolios y pedidos
-              </a>
+              </Link>
             </li>
             <li className="sidebar-list-item">
-              <a
+              <Link
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/index-projects.html"
-              >
+                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-projects.html">
                 Balance de insumos
-              </a>
+              </Link>
             </li>
-            {/* <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/index-charts.html"
-              >
-                Charts
-              </a>
-            </li> */}
           </ul>
         </li>
         <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
             data-bs-target="#cmsDropdown"
             role="button"
             aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#reading-1"> </use> */}
-            </svg>
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
             <span className="sidebar-link-title">Categorías</span>
-          </a>
-          <ul className="sidebar-menu list-unstyled collapse " id="cmsDropdown">
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="cmsDropdown">
             <li className="sidebar-list-item">
-              <Link to="/Nueva-categorias" className="sidebar-link text-muted">Crear categoría</Link>
+              <Link to="/Nueva-categorias" className="sidebar-link text-muted">
+                Crear categoría
+              </Link>
             </li>
             <li className="sidebar-list-item">
-              <a
+              <Link
                 className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html"
-              >
+                to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
                 Ver detalles de las categorías
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-category.html"
-              >
-                Categories
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-media.html"
-              >
-                Media library
-              </a>
+              </Link>
             </li>
           </ul>
         </li>
         <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
             data-bs-target="#widgetsDropdown"
             role="button"
             aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#reading-1"> </use> */}
-            </svg>
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
             <span className="sidebar-link-title">Insumos</span>
-          </a>
-          <ul className="sidebar-menu list-unstyled collapse " id="widgetsDropdown">
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsDropdown">
             <li className="sidebar-list-item">
-              <Link to="/Insumos" className="sidebar-link text-muted">Lista de insumos</Link>
+              <Link to="/Insumos" className="sidebar-link text-muted">
+                Lista de insumos
+              </Link>
             </li>
             <li className="sidebar-list-item">
-              <a
+              <Link
                 className="sidebar-link text-muted"
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html"
               >
@@ -581,99 +549,11 @@ function Menu() {
               >
                 Datatable
               </a>
+                to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
+                Ver detalles de los insumos
+              </Link>
             </li>
           </ul>
-        </li>
-      </ul>
-      <h6 className="sidebar-heading">Docs</h6>
-      <ul className="list-unstyled">
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted"
-            href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/introduction.html"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#angle-brackets-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Introduction</span>
-          </a>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted"
-            href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/directory-structure.html"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#table-content-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Directory structure</span>
-          </a>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted"
-            href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/gulp.html"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#keyboard-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Gulp.js</span>
-          </a>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#cssDropdown"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#design-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">CSS </span>
-          </a>
-          <ul className="sidebar-menu list-unstyled collapse " id="cssDropdown">
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/components-theme.html"
-              >
-                CSS Components
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/customizing-css.html"
-              >
-                Customizing CSS
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted"
-            href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/credits.html"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#star-medal-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Credits</span>
-          </a>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted"
-            href="https://demo.bootstrapious.com/bubbly/1-3-2/docs/changelog.html"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#new-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Changelog</span>
-          </a>
         </li>
       </ul>
     </div>

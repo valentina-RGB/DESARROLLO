@@ -32,27 +32,27 @@ const createInsumosSchema = Joi.object({
 // Esquema de validación para actualizar un insumo
 const updateInsumosSchema = Joi.object({
     ID_tipo_insumo: Joi.number().integer().positive().optional()
-        .messages({
-            'number.base': 'El tipo de insumo debe ser un número entero.',
-            'number.integer': 'El tipo de insumo debe ser un número entero.',
-            'number.positive': 'El tipo de insumo debe ser un número positivo.'
-        }),
+      .messages({
+        'number.base': 'El tipo de insumo debe ser un número entero.',
+        'number.integer': 'El tipo de insumo debe ser un número entero.',
+        'number.positive': 'El tipo de insumo debe ser un número positivo.'
+      }),
     descripcion_insumo: Joi.string().max(50).optional()
-        .messages({
-            'string.base': 'La descripción del insumo debe ser una cadena de texto.',
-            'string.max': 'La descripción del insumo no puede tener más de 50 caracteres.'
-        }),
-    estado_insumo: Joi.string().valid('D', 'A').optional()
-        .messages({
-            'string.base': 'El estado del insumo debe ser una cadena de texto.',
-            'any.only': 'El estado del insumo debe ser "D" (Desactivado) o "A" (Activo).'
-        }),
+      .messages({
+        'string.base': 'La descripción del insumo debe ser una cadena de texto.',
+        'string.max': 'La descripción del insumo no puede tener más de 50 caracteres.'
+      }),
+      estado_insumo: Joi.string().valid('D', 'A').optional()
+      .messages({
+          'string.base': 'El estado del insumo debe ser una cadena de texto.',
+          'any.only': 'El estado del insumo debe ser "D" (Desactivado) o "A" (Activo).'
+      }),
     precio: Joi.number().positive().optional()
-        .messages({
-            'number.base': 'El precio debe ser un número.',
-            'number.positive': 'El precio debe ser un número positivo.'
-        })
-});
+      .messages({
+        'number.base': 'El precio debe ser un número.',
+        'number.positive': 'El precio debe ser un número positivo.'
+      })
+  });
 
 // Función de validación para crear un insumo
 function validateInsumos(req, res, next) {

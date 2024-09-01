@@ -1,383 +1,205 @@
-// type Props = {}
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DataTable from 'datatables.net-dt';
+import api from '../../api/api';
+import '../../datatables.css';
 
-export default function Categorias() {
+function Categorias() {
+  const [categorias, setCategorias] = useState([]);
+  const [descripcion, setDescripcion] = useState('');
+  const [estado, setEstado] = useState('A');
+  const [imagen, setImagen] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [editID, setEditID] = useState<number | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  useEffect(() => {
+    if (categorias.length > 0) {
+      new DataTable('#categoriasTable');
+    }
+  }, [categorias]);
+
+  const fetchCategorias = async () => {
+    try {
+      const response = await api.get('/categorias');
+      setCategorias(response.data);
+    } catch (error) {
+      console.error('Error al cargar las categorías:', error);
+      setError('Error al cargar las categorías.');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const categoriaData = {
+      descripcion,
+      estado_categoria: estado,
+      imagen,
+    };
+
+    try {
+      if (editID) {
+        await api.put(`/categorias/${editID}`, categoriaData);
+      } else {
+        await api.post('/categorias', categoriaData);
+      }
+      resetForm();
+      fetchCategorias();
+    } catch (error) {
+      console.error('Error al guardar la categoría:', error);
+      setError('Error al guardar la categoría.');
+    }
+  };
+
+  const handleEdit = (categoria: any) => {
+    setDescripcion(categoria.descripcion);
+    setEstado(categoria.estado_categoria);
+    setImagen(categoria.imagen);
+    setEditID(categoria.ID_categoria);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/categorias/${id}`);
+      fetchCategorias();
+    } catch (error) {
+      console.error('Error al eliminar la categoría:', error);
+      setError('Error al eliminar la categoría.');
+    }
+  };
+
+  const resetForm = () => {
+    setDescripcion('');
+    setEstado('A');
+    setImagen('');
+    setEditID(null);
+    setError(null);
+  };
+
   return (
-    <div className="page-holder bg-gray-100">
-      <div className="container-fluid px-lg-4 px-xl-5">
-        {/* Page Header */}
-        <div className="page-header">
-          <h1 className="page-heading">Categories</h1>
-        </div>
-        <section>
-          <div className="row mb-5">
-            <div className="col-lg-4">
-              <div className="card mb-4 mb-lg-0">
-                <div className="card-body">
-                  <div className="mb-4">
-                    <label className="form-label" htmlFor="categoryName">
-                      Name
-                    </label>
-                    <input
-                      className="form-control"
-                      id="categoryName"
-                      type="text"
-                      value={"nombreCategoria"}
-                    />
-                    <div className="form-text">
-                      The name is how it appears on your site.
+    <>
+      <div className="d-flex align-items-stretch">
+        <div className="page-holder bg-gray-100">
+          <div className="container-fluid px-lg-4 px-xl-5">
+            <div className="page-header">
+              <h1 className="page-heading">Categorías</h1>
+            </div>
+            <section>
+              <div className="row mb-5">
+                <div className="col-lg-4">
+                  <div className="card mb-4 mb-lg-0">
+                    <div className="card-body">
+                      <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                          <label className="form-label" htmlFor="descripcion">
+                            Nombre de la categoría
+                          </label>
+                          <input
+                            className="form-control"
+                            id="descripcion"
+                            type="text"
+                            value={descripcion}
+                            onChange={(e) => setDescripcion(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label className="form-label" htmlFor="estado">
+                            Estado
+                          </label>
+                          <select
+                            className="form-select"
+                            id="estado"
+                            value={estado}
+                            onChange={(e) => setEstado(e.target.value)}
+                          >
+                            <option value="A">Activa</option>
+                            <option value="I">Inactiva</option>
+                          </select>
+                        </div>
+                        <div className="mb-4">
+                          <label className="form-label" htmlFor="imagen">
+                            Imagen
+                          </label>
+                          <input
+                            className="form-control"
+                            id="imagen"
+                            type="text"
+                            value={imagen}
+                            onChange={(e) => setImagen(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <button className="btn btn-primary mb-4" type="submit">
+                          {editID ? 'Guardar cambios' : 'Añadir nueva categoría'}
+                        </button>
+                        {editID && (
+                          <button
+                            type="button"
+                            className="btn btn-secondary mb-4"
+                            onClick={resetForm}
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                      </form>
+                      {error && <p className="text-danger">{error}</p>}
                     </div>
                   </div>
-                  <div className="mb-4">
-                    <label className="form-label" htmlFor="categorySlug">
-                      Slug
-                    </label>
-                    <input
-                      className="form-control"
-                      id="categorySlug"
-                      type="text"
-                      value={"Estado"}
-                    />
-                    <div className="form-text">
-                      The “slug” is the URL-friendly version of the name. It is
-                      usually all lowercase and contains only letters, numbers,
-                      and hyphens.
+                </div>
+                <div className="col-lg-8">
+                  <div className="card card-table">
+                    <div className="py-2 px-3">
+                      <table id="categoriasTable" className="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Imagen</th>
+                            <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {categorias.map((categoria: any) => (
+                            <tr key={categoria.ID_categoria}>
+                              <td>{categoria.ID_categoria}</td>
+                              <td>{categoria.descripcion}</td>
+                              <td>{categoria.estado_categoria}</td>
+                              <td>{categoria.imagen}</td>
+                              <td>
+                                <button
+                                  className="btn btn-warning btn-sm me-2"
+                                  onClick={() => handleEdit(categoria)}
+                                >
+                                  Editar
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleDelete(categoria.ID_categoria)}
+                                >
+                                  Eliminar
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <div className="mb-4">
-                    <label className="form-label" htmlFor="categoryParent">
-                      Parent
-                    </label>
-                    <select
-                      className="form-select"
-                      id="categoryParent"
-                      name="categoryParent"
-                    >
-                      <option value="0">None</option>
-                      <option value="0">Gear</option>
-                      <option value="1">Stories</option>
-                      <option value="2">Tips &amp; Tricks</option>
-                      <option value="3">Trips</option>
-                      <option value="4">Gear</option>
-                      <option value="5">Stories</option>
-                      <option value="6">Tips &amp; Tricks</option>
-                      <option value="7">Trips</option>
-                      <option value="8">Uncategorized</option>
-                    </select>
-                    <div className="form-text">
-                      Categories, unlike tags, can have a hierarchy. You might
-                      have a Jazz category, and under that have children
-                      categories htmlFor Bebop and Big Band. Totally optional.
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <label className="form-label" htmlFor="categoryDescription">
-                      Parent
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="categoryDescription"
-                      name="categoryDescription"
-                    ></textarea>
-                    <div className="form-text">
-                      The description is not prominent by default; however, some
-                      themes may show it.
-                    </div>
-                  </div>
-                  <button className="btn btn-primary mb-4">
-                    Add New Category
-                  </button>
                 </div>
               </div>
-            </div>
-            <div className="col-lg-8">
-              <div className="card card-table">
-                <div className="preload-wrapper">
-                  <table
-                    className="table table-hover mb-0"
-                    id="categoryDatatable"
-                  >
-                    <thead>
-                      <tr>
-                        <th style={{ width: "20px" }}> </th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Slug</th>
-                        <th>Count</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Gear
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>gear</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            23
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Stories
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>stories</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            2
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Tips &amp; Tricks
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>tips-&amp; tricks</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            4
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Trips
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>trips</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            5
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Gear
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>gear</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            23
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Stories
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>stories</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            2
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Tips &amp; Tricks
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>tips-&amp; tricks</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            4
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Trips
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>trips</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            5
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                            />
-                          </span>
-                        </td>
-                        <td>
-                          <a
-                            href="javascript:void(0)"
-                            className="text-decoration-none text-reset fw-bolder"
-                          >
-                            Uncategorized
-                          </a>
-                        </td>
-                        <td>-</td>
-                        <td>uncategorized</td>
-                        <td className="text-end">
-                          <a
-                            href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post.html"
-                            className="text-decoration-none"
-                          >
-                            2
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <span className="me-2" id="categoryBulkAction">
-                    <select
-                      className="form-select form-select-sm d-inline w-auto mb-1 mb-lg-0"
-                      name="categoryBulkAction"
-                    >
-                      <option>Bulk Actions</option>
-                      <option>Delete</option>
-                    </select>
-                    <button className="btn btn-sm btn-outline-primary align-top mb-1 mb-lg-0">
-                      Apply
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
+export default Categorias;

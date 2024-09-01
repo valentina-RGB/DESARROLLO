@@ -1,73 +1,149 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { Insumo } from '../../types/insumos';
+import { toast } from 'react-hot-toast';
 
-const EditInsumo: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [descripcionInsumo, setDescripcionInsumo] = useState('');
-    const [precio, setPrecio] = useState(0);
-    const [estadoInsumo, setEstadoInsumo] = useState('A');
-    const navigate = useNavigate();
+interface EditInsumoProps {
+  id: number;
+  onClose: () => void;
+}
 
-    useEffect(() => {
-        api.get(`/insumos/${id}`)
-            .then(response => {
-                const { descripcion_insumo, precio, estado_insumo } = response.data;
-                setDescripcionInsumo(descripcion_insumo);
-                setPrecio(precio);
-                setEstadoInsumo(estado_insumo);
-            })
-            .catch(error => console.error('Error al obtener el insumo:', error));
-    }, [id]);
+const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
+  const [insumo, setInsumo] = useState<Insumo | null>(null);
+  const [descripcionInsumo, setDescripcionInsumo] = useState('');
+  const [precio, setPrecio] = useState<number | string>('');
+  const [tipoInsumo, setTipoInsumo] = useState<number | string>('');
+  const [tiposInsumo, setTiposInsumo] = useState<Array<{ ID_tipo_insumo: number, descripcion_tipo: string }>>([]);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            await api.put(`/insumos/${id}`, { descripcion_insumo: descripcionInsumo, precio, estado_insumo: estadoInsumo });
-            navigate('/Insumos');
-        } catch (error) {
-            console.error('Error al editar el insumo:', error);
-        }
+  useEffect(() => {
+    const fetchInsumo = async () => {
+      try {
+        const response = await api.get(`/insumos/${id}`);
+        setInsumo(response.data);
+        setDescripcionInsumo(response.data.descripcion_insumo);
+        setPrecio(response.data.precio);
+        setTipoInsumo(response.data.ID_tipo_insumo);
+      } catch (error) {
+        console.error('Error al obtener el insumo:', error);
+        setError('Error al cargar el insumo.');
+      }
     };
+  
+    const fetchTiposInsumo = async () => {
+      try {
+        const response = await api.get('/tipoInsumos');
+        setTiposInsumo(response.data);
+      } catch (error) {
+        console.error('Error al obtener los tipos de insumo:', error);
+        setError('Error al cargar los tipos de insumos.');
+      }
+    };
+  
+    if (id) {
+      fetchInsumo();
+      fetchTiposInsumo();
+    }
+  }, [id]);
 
-    return (
-        <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
-            <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Editar Insumo</h2>
-            <form onSubmit={handleSubmit} className="tw-bg-white tw-p-6 tw-rounded-lg tw-shadow-md">
-                <div className="tw-mb-4">
-                    <label className="tw-block tw-text-gray-700">Descripción del Insumo</label>
-                    <input
-                        type="text"
-                        value={descripcionInsumo}
-                        onChange={(e) => setDescripcionInsumo(e.target.value)}
-                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"/>
-                </div>
-                <div className="tw-mb-4">
-                    <label className="tw-block tw-text-gray-700">Precio</label>
-                    <input
-                        type="number"
-                        value={precio}
-                        onChange={(e) => setPrecio(Number(e.target.value))}
-                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md shadow-sm"
-                    />
-                </div>
-                <div className="tw-mb-4">
-                    <label className="tw-block tw-text-gray-700">Estado</label>
-                    <select
-                        value={estadoInsumo}
-                        onChange={(e) => setEstadoInsumo(e.target.value)}
-                        className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm"
-                    >
-                        <option value="A">Activo</option>
-                        <option value="I">Inactivo</option>
-                    </select>
-                </div>
-                <button type="submit" className="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-hover:bg-blue-600 tw-transition">
-                    Guardar Cambios
-                </button>
-            </form>
-        </div>
-    );
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!descripcionInsumo || !precio || !tipoInsumo) {
+      setError('Por favor, completa todos los campos.');
+      return;
+    }
+  
+    try {
+      await api.put(`/insumos/${id}`, {
+        descripcion_insumo: descripcionInsumo,
+        precio: Number(precio),
+        ID_tipo_insumo: Number(tipoInsumo),
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      toast.success('El insumo se ha actualizado correctamente.');
+      onClose();
+      navigate('/Insumos');
+    } catch (error: any) {
+      console.error('Error al editar el insumo:', error.response?.data || error.message);
+      toast.error(`No se pudo actualizar el insumo. Error: ${error.response?.data?.error || error.message}`);
+    }
+  };
+
+  if (!insumo) return <p>Cargando...</p>;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center  z-50">
+      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg max-w-lg w-full">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-6 tw-text-gray-800">Editar Insumo</h2>
+        {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="tw-mb-4">
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción del Insumo</label>
+            <input
+              id="descripcion"
+              type="text"
+              value={descripcionInsumo}
+              onChange={(e) => setDescripcionInsumo(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+              placeholder="Descripción del insumo"
+              required
+            />
+          </div>
+          <div className="tw-mb-4">
+            <label htmlFor="precio" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Precio</label>
+            <input
+              id="precio"
+              type="number"
+              value={precio}
+              onChange={(e) => setPrecio(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+              placeholder="Precio del insumo"
+              required
+            />
+          </div>
+          <div className="tw-mb-4">
+            <label htmlFor="tipoInsumo" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Tipo de Insumo</label>
+            <select
+              id="tipoInsumo"
+              value={tipoInsumo}
+              onChange={(e) => setTipoInsumo(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+            >
+              <option value="" disabled>Selecciona un tipo de insumo</option>
+              {tiposInsumo.length > 0 ? (
+                tiposInsumo.map(tipo => (
+                  <option key={tipo.ID_tipo_insumo} value={tipo.ID_tipo_insumo}>{tipo.descripcion_tipo}</option>
+                ))
+              ) : (
+                <option value="" disabled>No hay tipos de insumo disponibles</option>
+              )}
+            </select>
+          </div>
+          <div className="tw-flex tw-justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-gray-200 tw-text-gray-700 tw-rounded-lg hover:tw-bg-gray-300 tw-transition"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="tw-bg-blue-500 tw-text-white tw-px-6 tw-py-2 tw-rounded-lg hover:tw-bg-blue-600 tw-transition tw-font-semibold"
+            >
+              Actualizar Insumo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default EditInsumo;
