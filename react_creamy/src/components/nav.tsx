@@ -86,6 +86,25 @@ function Menu() {
           </ul>
         </li>
         <li className="sidebar-list-item">
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
+            data-bs-target="#widgetsDropdownbb"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
+            <span className="sidebar-link-title">Ventas</span>
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsDropdownbb">
+            <li className="sidebar-list-item">
+              <Link to="/Ventas" className="sidebar-link text-muted">
+                Lista de Ventas
+              </Link>
+            </li>           
+          </ul>
+        </li>
+        <li className="sidebar-list-item">
           <a
             className="sidebar-link text-muted "
             href="#"
