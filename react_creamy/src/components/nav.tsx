@@ -82,31 +82,7 @@ function Menu() {
               <Link to="/Insumos" className="sidebar-link text-muted">
                 Lista de insumos
               </Link>
-            </li>
-            <li className="sidebar-list-item">
-              {/* <Link
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html"
-              >
-                Ver detalles de las categorías
-              </Link> */}
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-category.html"
-              >
-                Categories
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/cms-media.html"
-              >
-                Media library
-              </a>
-            </li>
+            </li>           
           </ul>
         </li>
         <li className="sidebar-list-item">
