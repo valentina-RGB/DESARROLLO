@@ -161,7 +161,7 @@ const InsumosList: React.FC = () => {
 
   return (
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
-      <h2 className="tw-text-4xl tw-font-extrabold tw-mb-8 tw-text-gray-800">Lista de Insumos</h2>
+     <h1 className="page-heading">Insumos</h1>
       <button onClick={handleAddInsumo} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
         <FontAwesomeIcon icon={faPlus} /> Agregar Insumo
       </button>

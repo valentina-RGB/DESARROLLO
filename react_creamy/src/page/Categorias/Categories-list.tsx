@@ -164,6 +164,7 @@ const Categories: React.FC = () => {
 
   return (
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+         
       <h1 className="page-heading">Categorías</h1>
       <button onClick={handleAddCategoria} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
         <FontAwesomeIcon icon={faPlus} /> Agregar categoría
