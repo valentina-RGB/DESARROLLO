@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes,  Navigate } from 'react-router-
 import Menu from "./components/nav";
 //import Navbar from "./components/navbar";
 import Dashboard from "./page/Dashboard";
-import Categorias from "./page/Categorias/Categorias";
+import Categorias from "./page/Categorias/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
 import AddInsumo from "./page/Insumos/CreateInsumo";
 import EditInsumo from "./page/Insumos/EditInsumo";
@@ -35,14 +35,11 @@ const App: React.FC = () => {
      
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
-            <div className="page-header">
-              <h1 className="page-heading">Dashboard heladeria las valem</h1>
-            </div>
             {/* Definición de rutas */}
             <Routes>
               <Route path="/" element={<Navigate to="/Dashboard" />} />
               <Route path="/Dashboard" element={<Dashboard />} />
-              <Route path="/Nueva-categorias" element={<Categorias />} />
+              <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
               <Route path="/Insumos/Add" element={<AddInsumo />} />
               <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />

@@ -29,6 +29,7 @@
     "dropzone": "^6.0.0-beta.2",
     "express": "^4.19.2",
     "jquery": "^3.7.1",
+    "lucide-react": "^0.438.0",
     "material-react-table": "^2.13.1",
     "postcss": "^8.4.41",
     "react": "^18.2.0",
