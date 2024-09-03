@@ -1,9 +1,9 @@
 
-import React, { useEffect, useState, ChangeEvent, DragEvent  } from "react";
+import React, { useState, ChangeEvent, DragEvent  } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-hot-toast";
-import { Categoria } from "../../types/Categoria";
+
 import { UploadIcon } from 'lucide-react';
 
 interface AddCategories {
@@ -12,7 +12,7 @@ interface AddCategories {
 }
 
 const AddCategories: React.FC<AddCategories> = ({ onClose }) => {
-    const [categories, setCategories] = useState<Categoria | null>(null);
+    // const [categories, setCategories] = useState<Categoria | null>(null);
     const [descripcion, setDescripcion] = useState<string>('');
     const [estado, setEstado] = useState<string>('A');
     const [imagen, setImagen] = useState('');
@@ -104,9 +104,9 @@ const [formData, setFormData] = useState({
   };
 
   const resetForm = () => {
-    setDescripcion('');
-    setEstado('A');
-    setImagen('');
+    setDescripcion(descripcion);
+    setEstado(estado);
+    setImagen(imagen);
 
     // setError(null);
   };
@@ -115,7 +115,7 @@ const [formData, setFormData] = useState({
     <div className="fixed inset-0 flex items-center justify-center ">
       <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
         <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">
-          Agregar Entrada
+          
         </h2>
         <form onSubmit={handleSubmit} className="tw-space-y-6 tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
         <div className="tw-space-y-2">
