@@ -1,12 +1,9 @@
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter as Router, Route, Routes,  Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Menu from "./components/nav";
-//import Navbar from "./components/navbar";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categorias";
 import Insumos from "./page/Insumos/Insumos-list";
-import AddInsumo from "./page/Insumos/CreateInsumo";
-import EditInsumo from "./page/Insumos/EditInsumo";
 import AddRol from './page/Roles/CreateRol';
 import ListarRoles from './page/Roles/ListRol';
 import AddCliente from './page/Clientes/CreateCliente';
@@ -16,23 +13,12 @@ import AddUsuario from './page/Usuarios/CreateUsuario';
 import EditarCliente from './page/Clientes/EditCliente';
 import EditarRol from './page/Roles/EditRol';
 import EditarUsuario from './page/Usuarios/EditUsuario';
-// const [count, setCount] = useState(0)
-
-//import ListadoVentas from './page/Ventas/ventas-list';
-// function App() {
-
-
-
-
 
 const App: React.FC = () => {
   return (
     <Router>
       <div className="d-flex align-items-stretch">
-        {/* No sé */}
-
         <Menu />
-     
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
             <div className="page-header">
@@ -44,8 +30,6 @@ const App: React.FC = () => {
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Nueva-categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
-              <Route path="/Insumos/Add" element={<AddInsumo />} />
-              <Route path="/Insumos/Edit/:id" element={<EditInsumo />} />
               <Route path="/roles" element={<ListarRoles />} />
               <Route path="/agregar-rol" element={<AddRol />} />
               <Route path="/editar-rol/:id" element={<EditarRol />} />
@@ -55,16 +39,6 @@ const App: React.FC = () => {
               <Route path="/Usuarios" element={<ListarUsuarios />} />
               <Route path="/agregar-usuario" element={<AddUsuario />} />
               <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
-            </Routes>
-
-            {/* <Dashboard></Dashboard> */}
-          <div className="container-fluid px-lg-1 px-xl-4">
-            <Routes>
-              <Route path="/" element={<Navigate to="/Dashboard" />} />
-              <Route path="/Dashboard" element={<Dashboard />} />
-              <Route path="/Nueva-categorias" element={<Categorias />} />
-              <Route path="/Insumos" element={<Insumos />} />
-              
             </Routes>
             <footer className="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
               <div className="container-fluid">
@@ -82,7 +56,6 @@ const App: React.FC = () => {
             </footer>
           </div>
         </div>
-      </div>
       </div>
       <Toaster position="top-right" reverseOrder={false} /> {/* Toaster debería estar aquí */}
     </Router>
