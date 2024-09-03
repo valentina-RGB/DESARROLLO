@@ -4,6 +4,7 @@ import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categorias/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
+import Ventas from "./page/Ventas/VentasList";
 import AddRol from './page/Roles/CreateRol';
 import ListarRoles from './page/Roles/ListRol';
 import AddCliente from './page/Clientes/CreateCliente';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
+              <Route path="/Ventas" element={<Ventas/>} />
               <Route path="/roles" element={<ListarRoles />} />
               <Route path="/agregar-rol" element={<AddRol />} />
               <Route path="/editar-rol/:id" element={<EditarRol />} />
