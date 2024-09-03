@@ -35,25 +35,47 @@ const InsumoDetails: React.FC<InsumoDetailsProps> = ({ id, onClose }) => {
   }, [id]);
 
   if (!insumo) {
-    return <div>Cargando detalles...</div>;
+    return <div className="tw-text-center tw-text-gray-600">Cargando detalles...</div>;
   }
 
   return (
-    <div className="tw-bg-white tw-p-4 tw-rounded-lg tw-shadow-lg">
-      <h2 className="tw-text-2xl tw-font-bold tw-mb-4">Detalles del Insumo</h2>
-      <p><strong>Nombre:</strong> {insumo.descripcion_insumo}</p>
-      <p><strong>Precio:</strong> ${insumo.precio.toFixed(2)}</p>
-      <p><strong>Estado:</strong> {insumo.estado_insumo === 'A' ? 'Activo' : 'Inactivo'}</p>
-      <p><strong>Stock Actual:</strong> {insumo.stock.stock_actual}</p>
-      <p><strong>Stock Mínimo:</strong> {insumo.stock.stock_min}</p>
-      <p><strong>Stock Máximo:</strong> {insumo.stock.stock_max}</p>
-      <div className="tw-flex tw-justify-end tw-mt-4">
-        <button
-          onClick={onClose}
-          className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition"
-        >
-          Cerrar
-        </button>
+    <div className="tw-p-0 tw-flex tw-items-center tw-justify-center">
+      <div className="tw-bg-white tw-p-6 tw-rounded-xl  tw-w-full tw-max-w-md">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-5 tw-text-gray-800">Detalles del Insumo</h2>
+        <div className="tw-mb-4 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Nombre:</span>
+          <span className="tw-text-gray-900">{insumo.descripcion_insumo}</span>
+        </div>
+        <div className="tw-mb-4 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Precio:</span>
+          <span className="tw-text-gray-900">${insumo.precio.toFixed(2)}</span>
+        </div>
+        <div className="tw-mb-4 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Estado:</span>
+          <span className={`tw-font-semibold ${insumo.estado_insumo === 'A' ? 'tw-text-green-600' : 'tw-text-red-600'}`}>
+            {insumo.estado_insumo === 'A' ? 'Activo' : 'Inactivo'}
+          </span>
+        </div>
+        <div className="tw-mb-4 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Stock Actual:</span>
+          <span className="tw-text-gray-900">{insumo.stock.stock_actual}</span>
+        </div>
+        <div className="tw-mb-4 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Stock Mínimo:</span>
+          <span className="tw-text-gray-900">{insumo.stock.stock_min}</span>
+        </div>
+        <div className="tw-mb-6 tw-flex tw-justify-between">
+          <span className="tw-text-gray-600">Stock Máximo:</span>
+          <span className="tw-text-gray-900">{insumo.stock.stock_max}</span>
+        </div>
+        <div className="tw-flex tw-justify-end">
+          <button
+            onClick={onClose}
+            className="tw-bg-gray-500 tw-text-white tw-rounded-lg tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition"
+          >
+            Cerrar
+          </button>
+        </div>
       </div>
     </div>
   );
