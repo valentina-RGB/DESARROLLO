@@ -51,7 +51,7 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center ">
+    <div className="fixed inset-0 flex items-center justify-center">
       <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
         <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">Agregar Insumo</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
@@ -63,7 +63,7 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
               type="text"
               value={descripcionInsumo}
               onChange={(e) => setDescripcionInsumo(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 tw-transition"
               placeholder="Descripción del insumo"
               required
             />
@@ -75,18 +75,18 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
               type="number"
               value={precio}
               onChange={(e) => setPrecio(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
               placeholder="Precio del insumo"
               required
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="tipoInsumo" className="tw-block tw-text-gray-700 tw-font-semibold">Tipo de Insumo</label>
+            <label htmlFor="tipoInsumo" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Tipo de Insumo</label>
             <select
               id="tipoInsumo"
               value={tipoInsumo}
               onChange={(e) => setTipoInsumo(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
             >
               <option value="" disabled>Selecciona un tipo de insumo</option>
               {tiposInsumo.map(tipo => (
@@ -94,19 +94,22 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
               ))}
             </select>
           </div>
-          <button
-            type="submit"
-            className="tw-bg-blue-500 tw-text-white tw-px-6 tw-py-3 tw-rounded-lg tw-shadow-md tw-hover:bg-blue-600 tw-transition tw-font-semibold"
-          >
-            Agregar Insumo
-          </button>
+          <div className="tw-flex tw-justify-end">
+            <button
+              type="submit"
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-green-500 tw-text-white tw-rounded-lg hover:tw-bg-green-600 tw-transition"
+            >
+              Agregar Insumo
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-px-4 tw-py-2 tw-bg-gray-200 tw-text-gray-700 tw-rounded-lg hover:tw-bg-gray-300 tw-transition"
+            >
+              Cerrar
+            </button>
+          </div>
         </form>
-        <button
-          onClick={onClose}
-          className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition mt-4"
-        >
-          Cerrar
-        </button>
       </div>
     </div>
   );

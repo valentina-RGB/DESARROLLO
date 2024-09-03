@@ -135,7 +135,7 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
             </button>
             <button
               type="submit"
-              className="tw-bg-blue-500 tw-text-white tw-px-6 tw-py-2 tw-rounded-lg hover:tw-bg-blue-600 tw-transition tw-font-semibold"
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-green-500 tw-text-white tw-rounded-lg hover:tw-bg-green-600 tw-transition"
             >
               Actualizar Insumo
             </button>
