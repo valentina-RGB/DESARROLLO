@@ -60,15 +60,8 @@ function Menu() {
           </Link>
           <ul className="sidebar-menu list-unstyled collapse" id="cmsDropdown">
             <li className="sidebar-list-item">
-              <Link to="/Nueva-categorias" className="sidebar-link text-muted">
+              <Link to="/Categorias" className="sidebar-link text-muted">
                 Crear categoría
-              </Link>
-            </li>
-            <li className="sidebar-list-item">
-              <Link
-                className="sidebar-link text-muted"
-                to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
-                Ver detalles de las categorías
               </Link>
             </li>
           </ul>

@@ -2,7 +2,7 @@ import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
-import Categorias from "./page/Categorias/Categorias";
+import Categorias from "./page/Categorias/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
 import AddRol from './page/Roles/CreateRol';
 import ListarRoles from './page/Roles/ListRol';
@@ -21,13 +21,11 @@ const App: React.FC = () => {
         <Menu />
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
-            <div className="page-header">
-            </div>
             {/* Definición de rutas */}
             <Routes>
               <Route path="/" element={<Navigate to="/Dashboard" />} />
               <Route path="/Dashboard" element={<Dashboard />} />
-              <Route path="/Nueva-categorias" element={<Categorias />} />
+              <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
               <Route path="/roles" element={<ListarRoles />} />
               <Route path="/agregar-rol" element={<AddRol />} />

@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       defaultValue: 'A',
     },
     imagen: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
       allowNull: false,
     },
   }, {
