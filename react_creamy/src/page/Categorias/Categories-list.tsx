@@ -2,8 +2,9 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+// import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
+// import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 // import AddInsumo from './CreateInsumo';
 // import EditInsumo from './EditInsumo';
@@ -144,29 +145,17 @@ const Categories: React.FC = () => {
         header: 'Acciones',
         Cell: ({ row }) => (
           <div className="tw-flex tw-justify-center tw-gap-2">
-            {/* <button onClick={() => handleEdit(row.original.ID_categoria)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+            <button onClick={() => handleEdit(row.original.ID_categoria)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faEdit} />
             </button>
             <button onClick={() => handleDelete(row.original.ID_categoria)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-            <button onClick={() => handleAddEntry(row.original.ID_categoria)} className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
+            <button className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faBoxOpen} />
             </button>
-            <button
-              onClick={() => handleViewDetails(row.original.ID_categoria)}
-              className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
-            >
-              <FontAwesomeIcon icon={faSignInAlt} />
-            </button> */}
-            <button onClick={() => handleDelete(row.original.ID_categoria)} type="button" className="btn btn-outline-danger btn-sm">
-            <FontAwesomeIcon icon={faTrash} />
-            </button>
-  <button onClick={() => handleEdit(row.original.ID_categoria)}  type="button" className="btn btn-outline-info btn-sm " >
-  <FontAwesomeIcon icon={faEdit} />
-  </button>
-  <button type="button" className="btn btn-outline-primary btn-sm"><FontAwesomeIcon icon={faSignInAlt} /></button>
-          </div>
+           
+            </div>
         ),
       },
     ],
