@@ -44,7 +44,7 @@ const Categories: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  async function handleDelete(id: number) {
     toast.promise(
       api.delete(`categorias/${id}`),
       {
@@ -55,23 +55,22 @@ const Categories: React.FC = () => {
     ).then(() => {
       fetchCategorias(); // Actualiza la lista después de eliminar
     });
-  };
+  }
 
-  const handleToggleEstado = async (id: number, estadoActual: string) => {
+  async function handleToggleEstado(id: number, estadoActual: string) {
     const nuevoEstado = estadoActual === 'A' ? 'D' : 'A';
 
     try {
       await api.put(`/categorias/${id}`, { estado_categoria: nuevoEstado });
-      setCategorias(categorias.map(categorias =>
-        categorias.ID_categoria === id ? { ...categorias, estado_categoria: nuevoEstado } : categorias
-        
+      setCategorias(categorias.map(categorias => categorias.ID_categoria === id ? { ...categorias, estado_categoria: nuevoEstado } : categorias
+
       ));
       toast.success('El estado de la categoría ha sido actualizado.');
     } catch (error) {
       console.error('Error al cambiar el estado de la categoría:', error);
       toast.error('Hubo un problema al cambiar el estado de la categoría.');
     }
-  };
+  }
 
   const handleAddCategoria= () => {
     setModalType('add');
@@ -102,11 +101,17 @@ const Categories: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCategorias(); // Carga las categorías cuando el componente se monta
+    fetchCategorias(); 
+    
+    
+    
+    
+    // Carga las categorías cuando el componente se monta
   }, []);
 
-  const columns = useMemo<MRT_ColumnDef<Categoria>[]>(
-    () => [
+  const columns  = useMemo<MRT_ColumnDef<Categoria>[]> (
+    
+    ()  => [
       {
         accessorKey: 'ID_categoria',
         header: '#',
@@ -159,29 +164,33 @@ const Categories: React.FC = () => {
         ),
       },
     ],
-    [categorias],
+    [],
   );
 
   return (
-    <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+    <body className="g-sidenav-show" >
+        {/* <div class="min-height-300 bg-primary position-absolute w-100"></div> */}
+       <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
          
-      <h1 className="page-heading">Categorías</h1>
-      <button onClick={handleAddCategoria} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
-        <FontAwesomeIcon icon={faPlus} /> Agregar categoría
-      </button>
-      <MaterialReactTable columns={columns} data={categorias} />
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
-        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
-      >
-        {modalType === 'add' && <AddCategories onClose={handleModalCloseAndFetch} />}
-        {/* {modalType === 'edit' && selectedCategoriaId !== null && <EditCategoria id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
-        {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
-      </Modal>
-    </div>
+         <h1 className="page-heading">Categorías</h1>
+         <button onClick={handleAddCategoria} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+           <FontAwesomeIcon icon={faPlus} /> Agregar categoría
+         </button>
+         <MaterialReactTable columns={columns} data={categorias} />
+         <Modal
+           isOpen={isModalOpen}
+           onRequestClose={handleCloseModal}
+           className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
+           overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+         >
+           {modalType === 'add' && <AddCategories onClose={handleModalCloseAndFetch} />}
+           {/* {modalType === 'edit' && selectedCategoriaId !== null && <EditCategoria id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+           {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
+           {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+         </Modal>
+       </div>
+    </body>
+   
   );
 };
 
