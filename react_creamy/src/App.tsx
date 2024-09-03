@@ -22,7 +22,6 @@ const App: React.FC = () => {
         <div className="page-holder bg-gray-100">
           <div className="container-fluid px-lg-4 px-xl-5">
             <div className="page-header">
-              <h1 className="page-heading">Dashboard heladeria las valem</h1>
             </div>
             {/* Definición de rutas */}
             <Routes>
