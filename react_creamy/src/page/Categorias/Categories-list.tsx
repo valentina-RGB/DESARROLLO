@@ -12,7 +12,7 @@ import { toast } from 'react-hot-toast';
 import Modal from 'react-modal';
 import { Categoria } from '../../types/Categoria';
 import AddCategories from './categories-add';
-import EditCategoria from './categories-edit';
+// import EditCategoria from './categories-edit';
 
 
 Modal.setAppElement('#root');
