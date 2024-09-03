@@ -17,9 +17,12 @@ import EditarUsuario from './page/Usuarios/EditUsuario';
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="d-flex align-items-stretch">
+      <div className="d-flex align-items-stretch ">
+        <div className=''></div>
         <Menu />
-        <div className="page-holder bg-gray-100">
+        {/* <div className=' min-height-200 bg-primary position-absolute w-100'></div> */}
+        <div className="page-holder">
+          
           <div className="container-fluid px-lg-4 px-xl-5">
             {/* Definición de rutas */}
             <Routes>
