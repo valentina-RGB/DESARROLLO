@@ -3,44 +3,41 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import { toast } from 'react-hot-toast';
 import { Categoria } from '../../types/Categoria';
-import { File, UploadIcon } from 'lucide-react';
+import {  UploadIcon } from 'lucide-react';
 
 interface Props {
   id: number;
   onClose: () => void;
 }
 
-
-
-// interface Categoria {
-//     ID_categoria: number;
-//     nombre: string;
-//     estado: string;
-//     descripcion: string;
-//     imagen: File;
-//   }
-  
-
 const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
-    const [Categoria, setCategoria] = useState<Categoria | null>(null);
-    const [estado, setEstado] = useState<string>('A');
-    const [descripcion, setDescripcion] = useState<string>('');
-    const [imagen, setImagen] = useState('');
+    // const [Categoria, setCategoria] = useState<Categoria | null>(null);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-  const [errors, setErrors] = useState({
-    descripcion: ''
+    const [dragActive, setDragActive] = useState(false);
+    const [preview, setPreview] = useState<string | null>(null);
+    const [errors, setErrors] = useState({descripcion: ''});
+
+  const [formEdit, setFormEdit] = useState<Categoria>({
+    ID_categoria:id,
+    descripcion: '',
+    estado_categoria:'A',
+    imagen: null as File | null,
   });
-
-
 
   useEffect(() => {
     const fetchCategoria = async () => {
       try {
         const response = await api.get(`/categorias/${id}`);
-        setCategoria(response.data);
-        setDescripcion(response.data.descripcion);
-        setImagen(response.data.imagen);    
+
+        setFormEdit({
+          ID_categoria: id,
+          descripcion: response.data.descripcion,
+          estado_categoria: response.data.estado_categoria,
+          imagen: response.data.imagen
+        });
+        setPreview(response.data.imagen);
+         
       } catch (error) {
         console.error('Error al obtener el insumo:', error);
         setError('Error al cargar el insumo.');
@@ -49,19 +46,13 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
     if (id) {
     fetchCategoria()
     }
-}, [id]);
-
-  const [dragActive, setDragActive] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-
-
-    
+}, [id, setPreview]);
+  
   
  // 2. Manejo de cambio en los inputs
  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value } = e.target;
-    setDescripcion(value)
-    setFormEdit(prev => ({ ...prev, [descripcion]: value }));
+    setFormEdit(prev => ({ ...prev, [name]: value }));
     if (name === 'descripcion') {
       setErrors(prev => ({ ...prev, descripcion: '' }));
     }
@@ -69,8 +60,8 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
 
   const handleImageChange = (file: File | null) => {
     if (file) {
-      setFormEdit(prev => ({ ...prev, image: file }));
-      setErrors(prev => ({ ...prev, image: '' }));
+      setFormEdit(prev => ({ ...prev, imagen: file }));
+      setErrors(prev => ({ ...prev, imagen: '' }));
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -93,24 +84,14 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
     }
   };
 
-  const [formEdit, setFormEdit] = useState({
-    descripcion: '',
-    estado:'A',
-    image: null as File | null,
-  });
+ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const data = {
-    //     descripcion: 'df',
-    //     estado_categoria: formEdit.estado,
-    //     imagen: formEdit.image||''
-    //     // imagen: ''
-    // };
 
     const newErrors = { descripcion: ''};
-    if (!descripcion) {
+    if (!formEdit.descripcion) {
       newErrors.descripcion = 'El nombre de la categoría es obligatorio';
     }
  
@@ -120,9 +101,9 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
     try {
       await api.put(`/categorias/${id}`,{
         ID_categoria: id,
-        descripcion:descripcion,
+        descripcion:formEdit.descripcion,
         estado:'',
-        imagen: formEdit.image||'N/A'
+        imagen: formEdit.imagen||'N/A'
       },{
         headers: {
         //   'Content-Type': 'multipart/form-data',
@@ -141,13 +122,10 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
     }
   };
 
-  if (!Categoria) return <p>Cargando...</p>;
+  if (!formEdit.ID_categoria) return <p>Cargando...</p>;
 
   const resetForm = () => {
-    setDescripcion('');
-    setEstado('');
-    setImagen('');
-    // setError(null);
+     setError(error);
   };
 
 
@@ -168,7 +146,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
           type="text"
           id="descripcion"
           name="descripcion"
-          value={descripcion}
+          value={formEdit.descripcion}
           onChange={handleInputChange}
           className={`tw-mt-1 tw-block tw-w-full tw-rounded-md tw-shadow-sm ${
             errors.descripcion ? 'tw-border-red-500' : 'tw-border-gray-300'
@@ -177,7 +155,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
         {errors.descripcion && <p className="tw-mt-2 tw-text-sm tw-text-red-600">{errors.descripcion}</p>}
       </div>
       <div className="tw-space-y-2">
-        <label htmlFor="image" className="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+        <label htmlFor="imagen" className="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
           Imagen
         </label>
         <div
@@ -209,7 +187,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
                 type="button"
                 className="tw-absolute tw-top-2 tw-right-2 tw-px-2 tw-py-1 tw-bg-white tw-text-gray-700 tw-text-sm tw-rounded tw-shadow"
                 onClick={() => {
-                  setFormEdit(prev => ({ ...prev, image: null }));
+                  setFormEdit(prev => ({ ...prev, imagen: null }));
                   setPreview(null);
                 }}
               >
@@ -244,3 +222,4 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
 };
 
 export default EditCategoria;
+
