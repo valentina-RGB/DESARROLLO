@@ -19,6 +19,7 @@ const rolRoutes = require('./v1/routers/roles');
 const configuracionRouters = require('./v1/routers/configuracion');
 const pedidosRouters = require('./v1/routers/pedidos');
 const VentasRouters = require('./v1/routers/ventasRoutes');
+const EstadoVentasRouters = require('./v1/routers/estado_ventas')
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
 
@@ -72,6 +73,7 @@ class Server {
 
       //Rutas de venta
       .use('/Ventas', VentasRouters)
+      .use('/estadoventas', EstadoVentasRouters)
 
       .use('/Clientes', clientsRoutes)
 

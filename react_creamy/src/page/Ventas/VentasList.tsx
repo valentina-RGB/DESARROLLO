@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-import { Ventas } from '../../types/ventas'; 
+import { Ventas } from '../../types/Ventas'; 
 import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -51,7 +51,7 @@ const VentasList: React.FC = () => {
   const columns = useMemo<MRT_ColumnDef<Ventas>[]>(
     () => [
       {
-        accessorFn: (row) => row.Cliente ? row.Cliente.nombre : 'Sin Cliente',
+        accessorFn: (row) => (row.Cliente ? row.Cliente.nombre : 'Sin Cliente'),
         id: 'clienteNombre',
         header: 'Cliente',
       },
@@ -99,7 +99,7 @@ const VentasList: React.FC = () => {
         className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-max-w-lg tw-w-full tw-mx-auto tw-transform tw-translate-y-1/4 tw-transition-all tw-duration-300"
         overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-z-50 tw-flex tw-justify-center tw-items-center"
       >
-        {modalType === 'add' && <AddVenta onClose={handleCloseModal} />}
+        {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} />}
         {modalType === 'detail' && selectedVentaId !== null && <VentaDetails id={selectedVentaId} onClose={handleCloseModal} />}
         <div className="tw-flex tw-justify-end tw-mt-4">
           <button
