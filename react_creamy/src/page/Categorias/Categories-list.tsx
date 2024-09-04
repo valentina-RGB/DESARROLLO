@@ -13,7 +13,7 @@ import { toast } from 'react-hot-toast';
 import Modal from 'react-modal';
 import { Categoria } from '../../types/Categoria';
 import AddCategories from './categories-add';
-// import EditCategoria from './categories-edit';
+import EditCategoria from './categories-edit';
 
 
 Modal.setAppElement('#root');
@@ -164,7 +164,7 @@ const Categories: React.FC = () => {
         ),
       },
     ],
-    [],
+    [categorias],
   );
 
   return (
@@ -184,7 +184,7 @@ const Categories: React.FC = () => {
            overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
          >
            {modalType === 'add' && <AddCategories onClose={handleModalCloseAndFetch} />}
-           {/* {modalType === 'edit' && selectedCategoriaId !== null && <EditCategoria id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+           {modalType === 'edit' && selectedCategoriaId !== null && <EditCategoria id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
            {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
            {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
          </Modal>

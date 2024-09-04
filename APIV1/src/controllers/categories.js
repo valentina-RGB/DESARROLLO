@@ -71,17 +71,22 @@ const CrearCategorias = async (req = request, res = response) => {
 
 
   const ModificarCategorias = async (req = request, res = response) => {
-    try {
-      const { id } = req.params;
-      const updatecategorie = await categorieService.PatchCategories(
-        id,
-        req.body
-      );
+    const {id} = req.params;
+    const {descripcion, estado_categoria,imagen} = req.body
 
-      if (updatecategorie) {
+    const data ={
+      descripcion: descripcion,
+      estado_categoria: estado_categoria,
+      imagen: imagen
+    }
+    try {
+      
+      const updatecategories = await categorieService.PatchCategories(id, data);
+
+      if (updatecategories) {
         res
           .status(200)
-          .json({ message: "Categoria updated successfully", updatecategorie });
+          .json({ message: "Categoria updated successfully", updatecategories });
       }
     } catch (error) {
       res.status(400).json({ message: error.message });
