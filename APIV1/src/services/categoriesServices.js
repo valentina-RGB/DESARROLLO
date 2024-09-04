@@ -24,15 +24,16 @@ const Categoria = db.Categorias;
     },
         
     PatchCategories = async (id, datos) => {
-      const [updated] = await Categoria.update(datos, {
+      
+      const [updated]= await Categoria.update(datos, {
         where: { ID_categoria:id },
       });
 
       if (updated) {
-        const updatedCategoria = await Categoria.findByPk(id);
-        return updatedCategoria;
+       
+        return updated;
       }else{
-        return { status: 404, message: 'categoria not found' };
+        return { status: 404, message: 'categoria no encontrada' };
       }
     },
 

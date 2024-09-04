@@ -27,21 +27,21 @@ function Menu() {
             <li className="sidebar-list-item">
               <Link
                 className="sidebar-link text-muted"
-                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-cms.html">
+                to="#">
                 Los productos más vendidos
               </Link>
             </li>
             <li className="sidebar-list-item">
               <Link
                 className="sidebar-link text-muted"
-                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-e-commerce.html">
-                Domiciolios y pedidos
+                to="#">
+                Domicilios y pedidos
               </Link>
             </li>
             <li className="sidebar-list-item">
               <Link
                 className="sidebar-link text-muted"
-                to="https://demo.bootstrapious.com/bubbly/1-3-2/index-projects.html">
+                to="#">
                 Balance de insumos
               </Link>
             </li>
@@ -127,22 +127,22 @@ function Menu() {
             className="sidebar-menu list-unstyled collapse "
             id="widgetsDropdow"
           >
-            <li className="sidebar-list-item">
+            {/* <li className="sidebar-list-item">
               <a
                 className="sidebar-link text-muted"
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/widgets-stats.html"
               >
                 Stats
               </a>
-            </li>
-            <li className="sidebar-list-item">
+            </li> */}
+            {/* <li className="sidebar-list-item">
               <a
                 className="sidebar-link text-muted"
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/widgets-data.html"
               >
                 Data
               </a>
-            </li>
+            </li> */}
           </ul>
         </li>
         <li className="sidebar-list-item">
