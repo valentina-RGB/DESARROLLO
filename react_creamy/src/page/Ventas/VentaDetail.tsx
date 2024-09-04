@@ -1,30 +1,52 @@
-import React from 'react';
-import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import api from '../../api/api';
+import { DetalleVenta } from '../../types/Ventas';
+import { toast } from 'react-hot-toast';
 
-interface VentaDetailModalProps {
-    isOpen: boolean;
-    venta: any;
-    onClose: () => void;
-}
+const VentaDetails: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
+  const [venta, setVenta] = useState<DetalleVenta | null>(null);
 
-const VentaDetailModal: React.FC<VentaDetailModalProps> = ({ isOpen, venta, onClose }) => {
-    if (!venta) return null;
+  useEffect(() => {
+    const fetchVentaDetails = async () => {
+      try {
+        const response = await api.get<DetalleVenta>(`/ventas/${id}`);
+        setVenta(response.data);
+      } catch (error) {
+        toast.error('Error al obtener los detalles de la venta');
+      }
+    };
 
-    return (
-        <Modal isOpen={isOpen} toggle={onClose}>
-            <ModalHeader toggle={onClose}>Detalle de Venta</ModalHeader>
-            <ModalBody>
-                <p>ID Venta: {venta.id}</p>
-                <p>Fecha: {venta.fecha}</p>
-                <p>Cliente: {venta.cliente}</p>
-                <p>Total: {venta.total}</p>
-                {/* Mostrar más detalles aquí */}
-            </ModalBody>
-            <Button color="secondary" onClick={onClose}>
-                Cerrar
-            </Button>
-        </Modal>
-    );
+    fetchVentaDetails();
+  }, [id]);
+
+  if (!venta) {
+    return <div>Cargando...</div>;
+  }
+
+  return (
+    <div>
+      <div>
+        <strong>Cliente:</strong> {venta.cliente?.nombre || 'N/A'}
+      </div>
+      <div>
+        <strong>Productos:</strong>
+        <ul>
+          {venta.productos?.length > 0 ? (
+            venta.productos.map((producto) => (
+              <li key={producto.ID_producto}>
+                {producto.nombre} - {producto.cantidad} unidades
+              </li>
+            ))
+          ) : (
+            <li>No hay productos asociados a esta venta</li>
+          )}
+        </ul>
+      </div>
+      <div>
+        <strong>Estado de Venta:</strong> {venta.estado_venta?.nombre || 'N/A'}
+      </div>
+    </div>
+  );
 };
 
-export default VentaDetailModal;
+export default VentaDetails;

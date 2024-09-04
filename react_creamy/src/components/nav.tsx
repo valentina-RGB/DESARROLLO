@@ -82,7 +82,12 @@ function Menu() {
               <Link to="/Insumos" className="sidebar-link text-muted">
                 Lista de insumos
               </Link>
-            </li>           
+            </li>   
+            <li className="sidebar-list-item">
+              <Link to="/Entradas" className="sidebar-link text-muted">
+                Historial de Entradas
+              </Link>
+            </li>         
           </ul>
         </li>
         <li className="sidebar-list-item">
