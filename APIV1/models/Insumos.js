@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     estado_insumo: {
       type: DataTypes.CHAR(1),
-      defaultValue: 'D',
-      allowNull: false,
+      defaultValue: 'A',
+      allowNull: true,
     },
     precio: {
       type: DataTypes.FLOAT,

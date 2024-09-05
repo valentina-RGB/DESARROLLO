@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     email: {
-      type: DataTypes.STRING(100), // Cambiado a STRING
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     telefono: {
-      type: DataTypes.BIGINT, // Cambiado a BIGINT, puedes usar STRING si prefieres
+      type: DataTypes.BIGINT, 
       defaultValue: '1234567899',
       unique: true,
       allowNull: true,
@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Roles',
         key: 'ID_rol',
       },
-      onDelete: 'CASCADE', // Añadido ON DELETE CASCADE
-      onUpdate: 'CASCADE' // Añadido ON UPDATE CASCADE
+      onDelete: 'CASCADE', 
+      onUpdate: 'CASCADE' 
     },
     estado: {
       type: DataTypes.CHAR(1),

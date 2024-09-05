@@ -28,14 +28,14 @@ const VentasList: React.FC = () => {
       const response = await api.get('/ventas');
       setVentas(response.data);
     } catch (error: unknown) {
-      if (error instanceof Error) { 
+      if (error instanceof Error) {
         console.error('Error al obtener las ventas:', error.message);
       } else {
         console.error('Error desconocido al obtener las ventas');
       }
     }
   };
-  
+
   const fetchEstadosVenta = async () => {
     try {
       const response = await api.get('/estadoventas');
@@ -84,20 +84,20 @@ const VentasList: React.FC = () => {
               onClick={async () => {
                 toast.dismiss(toastId);
                 try {
-  await api.put(`/ventas/${id}/estado`, { ID_estado_venta: siguienteEstado.ID_estado_venta });
-  setVentas(ventas.map((venta) =>
-    venta.ID_venta === id ? { ...venta, ID_estado_venta: siguienteEstado.ID_estado_venta } : venta
-  ));
-  toast.success('El estado de la venta ha sido actualizado.');
-} catch (error: unknown) {
-  if (error instanceof Error) {
-    console.error('Error al cambiar el estado de la venta:', error.message);
-    toast.error(`Hubo un problema al cambiar el estado de la venta: ${error.message}`);
-  } else {
-    console.error('Error desconocido al cambiar el estado de la venta');
-    toast.error('Hubo un problema desconocido al cambiar el estado de la venta');
-  }
-}
+                  await api.put(`/ventas/${id}/estado`, { ID_estado_venta: siguienteEstado.ID_estado_venta });
+                  setVentas(ventas.map((venta) =>
+                    venta.ID_venta === id ? { ...venta, ID_estado_venta: siguienteEstado.ID_estado_venta } : venta
+                  ));
+                  toast.success('El estado de la venta ha sido actualizado.');
+                } catch (error: unknown) {
+                  if (error instanceof Error) {
+                    console.error('Error al cambiar el estado de la venta:', error.message);
+                    toast.error(`Hubo un problema al cambiar el estado de la venta: ${error.message}`);
+                  } else {
+                    console.error('Error desconocido al cambiar el estado de la venta');
+                    toast.error('Hubo un problema desconocido al cambiar el estado de la venta');
+                  }
+                }
               }}
             >
               Confirmar
@@ -124,8 +124,8 @@ const VentasList: React.FC = () => {
       toast.success('El estado de la venta ha sido actualizado.');
     } catch (error: unknown) {
       if (error instanceof Error) {
-   
-        const axiosError = error as any; 
+
+        const axiosError = error as any;
         const errorMessage = axiosError.response?.data?.message || error.message;
         console.error('Error al cambiar el estado de la venta:', errorMessage);
         toast.error(`Hubo un problema al cambiar el estado de la venta: ${errorMessage}`);
@@ -134,7 +134,7 @@ const VentasList: React.FC = () => {
         toast.error('Hubo un problema desconocido al cambiar el estado de la venta');
       }
     }
-    
+
   }, [ventas, estadosVenta]);
 
   useEffect(() => {
@@ -168,9 +168,9 @@ const VentasList: React.FC = () => {
           const nombreEstado = estado ? estado.descripcion : 'Desconocido';
           const color = estado
             ? {
-                'Pagado': 'tw-bg-green-100 tw-text-green-800',
-                'Cancelado': 'tw-bg-red-100 tw-text-red-800',
-              }[estado.descripcion]
+              'Pagado': 'tw-bg-green-100 tw-text-green-800',
+              'Cancelado': 'tw-bg-red-100 tw-text-red-800',
+            }[estado.descripcion]
             : 'tw-bg-gray-100 tw-text-gray-800';
 
           return (
