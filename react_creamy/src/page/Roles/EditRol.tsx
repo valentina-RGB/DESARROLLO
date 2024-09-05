@@ -1,99 +1,140 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { Rol } from '../../types/roles';
+import { toast } from 'react-hot-toast';
 
-
-interface Rol {
-  ID_rol: number;
-  descripcion: string;
-  estado: string;
+interface EditRolProps {
+  id: number;
+  onClose: () => void;
 }
 
-const EditarRol: React.FC = () => {
+const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
   const [rol, setRol] = useState<Rol | null>(null);
+  const [descripcionRol, setDescripcionRol] = useState('');
+  const [estado_rol, setEstadoRol] = useState<number | string>('');
+  const [permiso, setPermiso] = useState<number | string>('');
+  const [tiposPermiso, setTiposPermiso] = useState<Array<{ ID_tipo_Rol: number, descripcion_tipo: string }>>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+
+  const permisoRol = [
+    { ID_permiso: 1, descripcion_tipo: 'Leer' },
+    { ID_permiso: 2, descripcion_tipo: 'Crear' },
+    { ID_permiso: 3, descripcion_tipo: 'Editar' }
+  ];
 
   useEffect(() => {
     const fetchRol = async () => {
       try {
         const response = await api.get(`/roles/${id}`);
         setRol(response.data);
+        setDescripcionRol(response.data.descripcion);
+        setEstadoRol(response.data.estado_rol);
+        setPermiso(response.data.ID_tipo_Rol);
       } catch (error) {
-        console.error('Error fetching rol:', error);
-        setError('Error al cargar los datos del rol.');
-      } finally {
-        setLoading(false);
+        console.error('Error al obtener el rol:', error);
+        setError('Error al cargar el rol.');
       }
     };
-
-    fetchRol();
+  
+    // const fetchTiposPermiso = async () => {
+    //   try {
+    //     const response = await api.get('/tipoPermiso');
+    //     setTiposPermiso(response.data);
+    //   } catch (error) {
+    //     console.error('Error al obtener los tipos de permisos:', error);
+    //     setError('Error al cargar los tipos de permisos.');
+    //   }
+    // };
+  
+    if (id) {
+      fetchRol();
+      // fetchTiposPermiso();
+    }
   }, [id]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setRol((prevRol) => prevRol ? { ...prevRol, [name]: value } : null);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!rol) return;
-
+  
+    if (!descripcionRol || !permiso || !tiposPermiso) {
+      setError('Por favor, completa todos los campos.');
+      return;
+    }
+  
     try {
-      await api.put(`/roles/${rol.ID_rol}`, rol);
+      await api.put(`/roles/${id}`, {
+        descripcion: descripcionRol,
+        ID_permiso: Number(permiso)
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      toast.success('El rol se ha actualizado correctamente.');
+      onClose();
       navigate('/roles');
     } catch (error: any) {
-      console.error('Error al actualizar el rol:', error);
-      setError('Error al actualizar el rol: ' + (error.response?.data?.message || 'Error desconocido'));
+      console.error('Error al editar el rol:', error.response?.data || error.message);
+      toast.error(`No se pudo actualizar el rol. Error: ${error.response?.data?.error || error.message}`);
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div className="tw-text-red-500">{error}</div>;
-  if (!rol) return <div>Rol no encontrado</div>;
+  if (!rol) return <p>Cargando...</p>;
 
   return (
-    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
-      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md tw-mx-auto">
-        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Editar Rol</h2>
+    <div className="fixed inset-0 flex items-center justify-center  z-50">
+      <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg max-w-lg w-full">
+        <h2 className="tw-text-2xl tw-font-semibold tw-mb-6 tw-text-gray-800">Editar Rol</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-gray-700 tw-font-semibold">Descripción</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Nombre del Rol</label>
             <input
-              type="text"
               id="descripcion"
-              name="descripcion"
-              value={rol.descripcion}
-              onChange={handleInputChange}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              type="text"
+              value={descripcionRol}
+              onChange={(e) => setDescripcionRol(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+              placeholder={descripcionRol}
               required
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="estado" className="tw-block tw-text-gray-700 tw-font-semibold">Estado</label>
-            <input
-              type="text"
-              id="estado"
-              name="estado"
-              value={rol.estado}
-              onChange={handleInputChange}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
-              required
-            />
+            <label htmlFor="tipoPermiso" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Permisos</label>
+            <select
+              id="tipoPermisos"
+              value={permiso}
+              onChange={(e) => setPermiso(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+            >
+              <option value="" disabled>Selecciona un tipo de permiso</option>
+              {permisoRol.map(permiso => (
+                <option key={permiso.ID_permiso} value={permiso.ID_permiso}>
+                  {permiso.descripcion_tipo}
+                </option>
+))}
+            </select>
           </div>
-          <button
-            type="submit"
-            className="tw-bg-blue-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-hover:bg-blue-600 tw-transition"
-          >
-            Guardar Cambios
-          </button>
+          <div className="tw-flex tw-justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-gray-200 tw-text-gray-700 tw-rounded-lg hover:tw-bg-gray-300 tw-transition"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="tw-mr-4 tw-px-4 tw-py-2 tw-bg-green-500 tw-text-white tw-rounded-lg hover:tw-bg-green-600 tw-transition"
+            >
+              Actualizar Rol
+            </button>
+          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default EditarRol;
+export default EditRol;

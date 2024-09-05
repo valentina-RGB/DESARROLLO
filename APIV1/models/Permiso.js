@@ -5,20 +5,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    ID_usuario: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Usuarios',
-        key: 'ID_usuario',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
-    }, 
-    contrasena: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
+     
+     
     descripcion: {
       type: DataTypes.STRING(100),
       unique: true,

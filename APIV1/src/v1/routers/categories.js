@@ -6,7 +6,7 @@ const {validateCategoria } = require('../../validation/validations_PCP');
 router
     .get('/', controllerCategories.obtenercategorias)
     .get('/:id', controllerCategories.obtenerCategoriasPorId)
-    .post('/', controllerCategories.upload.single('imagen'), validateCategoria, controllerCategories.CrearCategorias)
+    .post('/', validateCategoria, controllerCategories.CrearCategorias)
     .put('/:id', controllerCategories.ModificarCategorias)
     .delete('/:id', controllerCategories.eliminarCategorias)
 

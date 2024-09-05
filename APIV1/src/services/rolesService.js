@@ -3,12 +3,15 @@ const {request , response} = require('express');
 
 const db = require('../../models');
 const Roles = db.Roles;
+const Permisos = db.Permisos;
 
     const 
 
 
     getRol = async (res,req) => {
-      const roles = await Roles.findAll();
+      const roles = await Roles.findAll({
+        include: Permisos
+      });
         res.status(200).json(roles);
     },
         
