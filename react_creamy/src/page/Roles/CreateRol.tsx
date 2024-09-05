@@ -28,7 +28,7 @@ const AddRol: React.FC<CreateRolProps> = ({ onClose }) => {
     try {
       await api.post('/roles', {
         descripcion: descripcionRol,
-        ID_permiso: Number(selectedPermiso),
+        ID_permisos: Number(selectedPermiso),
       });
       toast.success('Rol agregado correctamente.');
       onClose(); // Cierra el modal y actualiza la lista

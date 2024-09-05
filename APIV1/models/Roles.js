@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     descripcion: {
       type: DataTypes.STRING(100),
     },
-    ID_permiso: {
+    ID_permisos: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
   });
 
-
+  Roles.associate = function(models) {
+    Roles.hasMany(models.Permiso, { foreignKey: 'ID_permiso' });
+  }
   return Roles;
 };

@@ -14,12 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, 
   {
-    tableName: 'Permisos',
+    tableName: 'Permiso',
     timestamps: false,
   });
 
   Permiso.associate = function(models) {
     Permiso.hasMany(models.Usuarios, { foreignKey: 'ID_usuario' });
+    
     Permiso.belongsTo(models.Usuarios, { foreignKey: 'ID_usuario' });
   };
 
