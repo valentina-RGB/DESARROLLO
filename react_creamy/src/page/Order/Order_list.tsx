@@ -253,3 +253,4 @@ const Pedidos: React.FC = () => {
 };
 
 export default Pedidos;
+
