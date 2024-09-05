@@ -2,8 +2,9 @@ import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
-import Categorias from "./page/Categorias/Categories-list";
+import Categorias from "./page/Categories/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
+import EntriesList from "./page/Insumos/EntriesList";
 import Ventas from "./page/Ventas/VentasList";
 import ListarRoles from './page/Roles/ListRol';
 import AddCliente from './page/Clientes/CreateCliente';
@@ -11,7 +12,10 @@ import ListarClientes from './page/Clientes/ListCliente';
 import ListarUsuarios from './page/Usuarios/ListUsuario';
 /* import AddUsuario from './page/Usuarios/CreateUsuario'; */
 import EditarCliente from './page/Clientes/EditCliente';
-/* import EditarUsuario from './page/Usuarios/EditUsuario'; */
+import EditarRol from './page/Roles/EditRol';
+import EditarUsuario from './page/Usuarios/EditUsuario';
+import Productos from './page/Products/products-list';
+import Pedidos from './page/Order/Order_list';
 
 const App: React.FC = () => {
   return (
@@ -29,7 +33,10 @@ const App: React.FC = () => {
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
+              <Route path="/historial-entradas" element={<EntriesList />} />
               <Route path="/Ventas" element={<Ventas/>} />
+              <Route path="/Productos" element={<Productos/>} />
+              <Route path="/Pedidos" element={<Pedidos/>} />
               <Route path="/roles" element={<ListarRoles />} />
               <Route path="/Clientes" element={<ListarClientes />} />
               <Route path="/agregar-cliente" element={<AddCliente />} />

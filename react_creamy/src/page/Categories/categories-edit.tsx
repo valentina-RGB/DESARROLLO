@@ -36,11 +36,10 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
           estado_categoria: response.data.estado_categoria,
           imagen: response.data.imagen
         });
-        setPreview(response.data.imagen);
+        setPreview(`http://localhost:3300${response.data.imagen}`);
          
       } catch (error) {
-        console.error('Error al obtener el insumo:', error);
-        setError('Error al cargar el insumo.');
+        setError('Error al cargar el categoría.');
       }
     };
     if (id) {
@@ -97,6 +96,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
  
 
     setErrors(newErrors);
+    setError(error);
     if (!newErrors.descripcion) {
     try {
       await api.put(`/categorias/${id}`,{
@@ -106,8 +106,8 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
         imagen: formEdit.imagen||'N/A'
       },{
         headers: {
-        //   'Content-Type': 'multipart/form-data',
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'application/json',
         }});  
       toast.success('La categoria se ha actualizado correctamente.');
       onClose();
@@ -118,6 +118,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
       catch (error) {
       console.error('Error al editar la categoría:', error);
       toast.error('No se pudo actualizar la categoría');
+      
     }
     }
   };
@@ -125,7 +126,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
   if (!formEdit.ID_categoria) return <p>Cargando...</p>;
 
   const resetForm = () => {
-     setError(error);
+    
   };
 
 
@@ -134,9 +135,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center ">
     <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
-      <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">
-        Agregar Entrada
-      </h2>
+    <h3 className="page-heading">Editar</h3>
       <form onSubmit={handleSubmit} className="tw-space-y-6 tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
       <div className="tw-space-y-2">
         <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-700">

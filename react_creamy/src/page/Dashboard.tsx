@@ -1,10 +1,7 @@
 
 // type Props = {}
-
-
 export default function Dashboard() {
 return(
-
 <section className="mb-3 mb-lg-5">
     <div className="row mb-3">
          {/* Widget 1  */}
@@ -184,7 +181,7 @@ return(
               <div className="list-group list-group-flush list-group-timeline">
                 <div className="list-group-item px-0">
                   <div className="row">
-                    <div className="col-auto"><img className="avatar p-1 me-2" src="https://demo.bootstrapious.com/bubbly/1-3-2/img/avatar-0.jpg" alt="Nielsen Cobb"/></div>
+                    <div className="col-auto"><img className="avatar p-1 me-2" src="" alt="Nielsen Cobb"/></div>
                     <div className="col ms-n3 pt-2 text-sm text-gray-800"><strong className="text-dark">Nielsen Cobb </strong> subscribed to your newsletter.
                       <div className="text-gray-500 small">3m ago</div>
                     </div>
@@ -193,7 +190,7 @@ return(
                 {/* list-group-item */}
                 <div className="list-group-item px-0">
                   <div className="row">
-                    <div className="col-auto"><img className="avatar p-1 me-2" src="https://demo.bootstrapious.com/bubbly/1-3-2/img/avatar-8.jpg" alt="Erika Whitaker"/></div>
+                    <div className="col-auto"><img className="avatar p-1 me-2" src="" alt="Erika Whitaker"/></div>
                     <div className="col ms-n3 pt-2 text-sm text-gray-800"><strong className="text-dark">Erika Whitaker </strong> subscribed to your newsletter.
                       <div className="text-gray-500 small">11m ago</div>
                     </div>
@@ -202,7 +199,7 @@ return(
                 {/* list-group-item */}
                 <div className="list-group-item px-0">
                   <div className="row">
-                    <div className="col-auto"><img className="avatar p-1 me-2" src="https://demo.bootstrapious.com/bubbly/1-3-2/img/avatar-9.jpg" alt="Meyers Swanson"/></div>
+                    <div className="col-auto"><img className="avatar p-1 me-2" src="" alt="Meyers Swanson"/></div>
                     <div className="col ms-n3 pt-2 text-sm text-gray-800"><strong className="text-dark">Meyers Swanson </strong> liked your post 🎉
                       <div className="text-gray-500 small">12m ago</div>
                     </div>
@@ -211,7 +208,7 @@ return(
               {/* list-group-item */}
                 <div className="list-group-item px-0">
                   <div className="row">
-                    <div className="col-auto"><img className="avatar p-1 me-2" src="https://demo.bootstrapious.com/bubbly/1-3-2/img/avatar-10.jpg" alt="Townsend Sloan"/></div>
+                    <div className="col-auto"><img className="avatar p-1 me-2" src="" alt="Townsend Sloan"/></div>
                     <div className="col ms-n3 pt-2 text-sm text-gray-800"><strong className="text-dark">Townsend Sloan </strong> placed an order.
                       <div className="text-gray-500 small">13m ago</div>
                     </div>
@@ -220,7 +217,7 @@ return(
                 {/* list-group-item */}
                 <div className="list-group-item px-0">
                   <div className="row">
-                    <div className="col-auto"><img className="avatar p-1 me-2" src="https://demo.bootstrapious.com/bubbly/1-3-2/img/avatar-11.jpg" alt="Millicent Henry"/></div>
+                    <div className="col-auto"><img className="avatar p-1 me-2" src="" alt="Millicent Henry"/></div>
                     <div className="col ms-n3 pt-2 text-sm text-gray-800"><strong className="text-dark">Millicent Henry </strong>commented on &quot;How to season your new grill.&quot;
                       <div className="text-gray-500 small">14m ago</div>
                     </div>

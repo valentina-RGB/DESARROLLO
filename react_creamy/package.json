@@ -41,7 +41,6 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "reactstrap": "^9.2.2",
-    "simple-datatables": "^9.0.4",
     "styled-components": "^6.1.12",
     "sweetalert2": "^11.12.4"
   },

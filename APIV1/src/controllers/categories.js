@@ -19,40 +19,88 @@ const
             const {id} = req.params;
             const categorias = await categorieService.getCategoriesID(id);
 
-            if(categorias){
-                res.status(200).json(categorias)      
-            }else{
-                res.status(404).json({message: 'Categorias not found' })
-            }               
-            
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
+      if (categorias) {
+        res.status(200).json(categorias);
+      } else {
+        res.status(404).json({ message: "Categorias not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+const CrearCategorias = async (req = request, res = response) => {
+  try {
+  
+    const { estado, descripcion} = req.body;
+    let imagen = null;
+
+    // Si hay un archivo, obtener la ruta del archivo
+    if (req.file) {
+      imagen = `/imagenes/${req.file.filename}`; // Ruta de la imagen
     }
 
-    CrearCategorias = async  (req = request, res= response) => {
-        try {        
-            const categorias = await categorieService.CreateCategories(req.body);
-            res.status(201).json({ message: 'Categorie created successfully', categorias });
-            
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+    const data = {
+       descripcion,
+       estado,
+       imagen: imagen||'',
+    };
+
+    const categorias = await categorieService.CreateCategories(data);
+    res
+      .status(201)
+      .json({ message: "Categorie created successfully", categorias });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+  const ModificarCategorias = async (req = request, res = response) => {
+    const { id } = req.params;
+    const { descripcion, estado_categoria } = req.body;
+    let imagen = null;
+  
+    try {
+      // Obtener la categoría actual para acceder a la imagen existente
+      const categoriaExistente = await categorieService.getCategoriesID(id);
+  
+      if (!categoriaExistente) {
+        return res.status(404).json({ message: "Categoría no encontrada" });
+      }
+  
+      // Si hay un archivo, obtener la ruta del archivo
+      if (req.file) {
+        imagen = `/imagenes/${req.file.filename}`; // Ruta de la nueva imagen
+  
+        // Eliminar la imagen antigua si existe
+        if (categoriaExistente.imagen) {
+          const imagenPath = path.join(__dirname, '../../uploads', path.basename(categoriaExistente.imagen));
+          if (fs.existsSync(imagenPath)) {
+            fs.unlinkSync(imagenPath); // Eliminar el archivo del sistema
+          }
         }
-    
-    } ,
+      } else {
+        // Si no hay nuevo archivo, conservar la imagen existente
+        imagen = categoriaExistente.imagen;
+      }
+  
+      const data = {
+        descripcion: descripcion || categoriaExistente.descripcion,
+        estado_categoria: estado_categoria || categoriaExistente.estado_categoria,
+        imagen: imagen,
+      };
+  
+      const updatecategories = await categorieService.PatchCategories(id, data);
+  
+      res.status(200).json({ message: "Categoría actualizada exitosamente", updatecategories });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
 
-    ModificarCategorias = async (req = request, res= response) =>{
-        try {
-            const { id } = req.params;
-            const updatecategorie = await categorieService.PatchCategories(id, req.body);
 
-            if(updatecategorie){
-                res.status(200).json({ message: 'Categoria updated successfully', updatecategorie });
-            }
-        }catch(error){
-            res.status(400).json({ message: error.message });
-            }     
-    } ,
 
     eliminarCategorias= async (req = request, res= response) =>{
         const { id } = req.params;

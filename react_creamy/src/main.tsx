@@ -10,7 +10,7 @@ import './datatables.css';
 // import 'bootstrap/dist/css/bootstrap.min.css'
  import './App.css'
 // import  'bootstrap/dist/js/bootstrap.min'
-// import   'react-chartjs-2';
+//  import   'react-chartjs-2';
 
 
 

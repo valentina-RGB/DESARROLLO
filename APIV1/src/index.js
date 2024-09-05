@@ -1,6 +1,7 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
 const cors = require('cors');
+const path = require("path");
 
 const db = require('./../models')
 const detalleRoutes = require('./v1/routers/detallePedido');
@@ -19,6 +20,7 @@ const rolRoutes = require('./v1/routers/roles');
 const configuracionRouters = require('./v1/routers/configuracion');
 const pedidosRouters = require('./v1/routers/pedidos');
 const VentasRouters = require('./v1/routers/ventasRoutes');
+const EstadoVentasRouters = require('./v1/routers/estado_ventas')
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
 
@@ -72,6 +74,7 @@ class Server {
 
       //Rutas de venta
       .use('/Ventas', VentasRouters)
+      .use('/estadoventas', EstadoVentasRouters)
 
       .use('/Clientes', clientsRoutes)
 
@@ -88,6 +91,9 @@ class Server {
       .use('/usuarios', usuariosRoutes)
 
       .use('/permiso', permisoRoutes)
+
+      // Configura la carpeta pública para servir archivos estáticos
+      .use('/imagenes', express.static(path.join(__dirname, '../uploads')));
 
 
     this.app.get('/', (req, res) => {

@@ -41,7 +41,7 @@ const getAllVentas = async (req, res) => {
     try {
         const ventas = await Ventas.findAll({
             include: [
-                { model: Clientes, as: 'Cliente' },
+                { model: Clientes, as: 'Cliente', attributes: ['nombre'] }, // Incluye el campo nombre
                 { model: Productos, as: 'Productos', through: { attributes: ['cantidad', 'precio'] } },
                 { model: Estado_ventas, as: 'Estado_venta' }
             ]
@@ -53,13 +53,12 @@ const getAllVentas = async (req, res) => {
     }
 };
 
-// Obtener una venta por ID
 const getVentaById = async (req, res) => {
     try {
         const { id } = req.params;
         const venta = await Ventas.findByPk(id, {
             include: [
-                { model: Clientes, as: 'Cliente' },  // Usar el alias correcto
+                { model: Clientes, as: 'Cliente', attributes: ['nombre'] }, // Incluye el campo nombre
                 { model: Productos, as: 'Productos', through: { attributes: ['cantidad', 'precio'] } },
                 { model: Estado_ventas }
             ]
@@ -71,6 +70,34 @@ const getVentaById = async (req, res) => {
 
         res.status(200).json(venta);
     } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+const updateEstadoVenta = async (req, res) => {
+    try {
+        console.log('Update Estado Venta called');
+        const { id } = req.params;
+        const { ID_estado_venta } = req.body;
+
+        // Verificar si el estado de venta existe
+        const estadoVenta = await Estado_ventas.findByPk(ID_estado_venta);
+        if (!estadoVenta) {
+            return res.status(400).json({ error: 'Estado de venta no encontrado' });
+        }
+
+        // Verificar si la venta existe
+        const venta = await Ventas.findByPk(id);
+        if (!venta) {
+            return res.status(404).json({ error: 'Venta no encontrada' });
+        }
+
+        // Actualizar el estado de la venta
+        venta.ID_estado_venta = ID_estado_venta;
+        await venta.save();
+
+        res.status(200).json(venta);
+    } catch (error) {
+        console.error(error); // Agrega esta línea para ver errores en los logs
         res.status(500).json({ error: error.message });
     }
 };
@@ -98,5 +125,7 @@ module.exports = {
     createVenta,
     getAllVentas,
     getVentaById,
+    updateEstadoVenta,
     deleteVenta
+    
 };
