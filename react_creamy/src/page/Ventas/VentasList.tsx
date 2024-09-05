@@ -27,17 +27,25 @@ const VentasList: React.FC = () => {
     try {
       const response = await api.get('/ventas');
       setVentas(response.data);
-    } catch (error) {
-      console.error('Error al obtener las ventas:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) { 
+        console.error('Error al obtener las ventas:', error.message);
+      } else {
+        console.error('Error desconocido al obtener las ventas');
+      }
     }
   };
-
+  
   const fetchEstadosVenta = async () => {
     try {
       const response = await api.get('/estadoventas');
       setEstadosVenta(response.data);
-    } catch (error) {
-      console.error('Error al obtener los estados de ventas:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error al obtener los estados de ventas:', error.message);
+      } else {
+        console.error('Error desconocido al obtener los estados de ventas');
+      }
     }
   };
 
@@ -76,16 +84,20 @@ const VentasList: React.FC = () => {
               onClick={async () => {
                 toast.dismiss(toastId);
                 try {
-                  console.log(`Actualizando estado de venta ${id} a ${siguienteEstado.ID_estado_venta}`);
-                  await api.put(`/ventas/${id}/estado`, { ID_estado_venta: siguienteEstado.ID_estado_venta });
-                  setVentas(ventas.map((venta) =>
-                    venta.ID_venta === id ? { ...venta, ID_estado_venta: siguienteEstado.ID_estado_venta } : venta
-                  ));
-                  toast.success('El estado de la venta ha sido cambiado a "Cancelado".');
-                } catch (error) {
-                  console.error('Error al cambiar el estado de la venta:', error);
-                  toast.error(`Hubo un problema al cambiar el estado de la venta: ${error.response?.data?.message || error.message}`);
-                }
+  await api.put(`/ventas/${id}/estado`, { ID_estado_venta: siguienteEstado.ID_estado_venta });
+  setVentas(ventas.map((venta) =>
+    venta.ID_venta === id ? { ...venta, ID_estado_venta: siguienteEstado.ID_estado_venta } : venta
+  ));
+  toast.success('El estado de la venta ha sido actualizado.');
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.error('Error al cambiar el estado de la venta:', error.message);
+    toast.error(`Hubo un problema al cambiar el estado de la venta: ${error.message}`);
+  } else {
+    console.error('Error desconocido al cambiar el estado de la venta');
+    toast.error('Hubo un problema desconocido al cambiar el estado de la venta');
+  }
+}
               }}
             >
               Confirmar

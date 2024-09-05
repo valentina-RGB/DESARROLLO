@@ -150,7 +150,6 @@ const Categories: React.FC = () => {
          >
            {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
            {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />}
-            {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
            {modalConfig.type === 'detail' && modalConfig.id !== null && <CategoriaDetail id={modalConfig.id} onClose={handleCloseModal} />}
          </Modal>
        </div>
