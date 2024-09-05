@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     telefono: {
-      type: DataTypes.BIGINT, // Cambiado a BIGINT, puedes usar STRING si prefieres
+      type:DataTypes.STRING, // Cambiado a BIGINT, puedes usar STRING si prefieres
       defaultValue: '1234567899',
       unique: true,
       allowNull: true,

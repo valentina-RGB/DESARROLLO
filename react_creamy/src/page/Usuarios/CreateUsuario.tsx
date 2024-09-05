@@ -1,38 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
+import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 
-const AddUsuario: React.FC = () => {
+
+interface AddUsuario { 
+  onClose: () => void;
+}
+
+const AddUsuario: React.FC<AddUsuario> = ({onClose}) => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rol, setRol]= useState<number | string>('');
+  const [roles, setRoles]= useState<Array<{ ID_rol: number, descripcion: string }>>([]);
   const [telefono, setTelefono] = useState('');
-  const [ID_rol, setIDRol] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await api.get('/roles');
+        setRoles(response.data);
+      } catch (error) {
+        console.error('Error fetching types of insumos:', error);
+        setError('Error al cargar los tipos de insumos.');
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
+
   const handleSubmit = async (e: React.FormEvent) => {
+
+    
     e.preventDefault();
 
-    if (!nombre || !email || !password || !telefono || !ID_rol) {
+    if (!nombre || !email || !password || !telefono || !rol) {
       setError('Por favor, completa todos los campos.');
       return;
     }
 
     try {
       await api.post('/usuarios', {
-        nombre,
-        email,
-        password,
-        telefono,
-        ID_rol,
+        nombre:nombre,
+        email:email,
+        telefono: telefono,
+        password:password,
+        ID_rol:Number(rol),
         estado: 'A', 
       });
-      navigate('/Usuarios');
-    } catch (error: any) {
-      console.error('Error al agregar el usuario:', error);
-      setError('Error al agregar el usuario: ' + (error.response?.data?.message || 'Error desconocido'));
+      onClose();
+      toast.success('La categoría ha agregada exitosamente.');
+      navigate('/Usuarios')
+      
+    } catch (error) {
+      toast.error('No se pudo agregar la usuario. Por favor, intente nuevamente.');
+      // console.error('Error al agregar el usuario:', error);
+      // setError('Error al agregar el usuario: ' + (error.response?.data?.message || 'Error desconocido'));
     }
+
   };
 
   return (
@@ -80,7 +109,7 @@ const AddUsuario: React.FC = () => {
           <div className="tw-mb-4">
             <label htmlFor="telefono" className="tw-block tw-text-gray-700 tw-font-semibold">Teléfono</label>
             <input
-              type="text"
+              type="number"
               id="telefono"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
@@ -91,15 +120,17 @@ const AddUsuario: React.FC = () => {
           </div>
           <div className="tw-mb-4">
             <label htmlFor="ID_rol" className="tw-block tw-text-gray-700 tw-font-semibold">ID Rol</label>
-            <input
-              type="text"
+            <select
               id="ID_rol"
-              value={ID_rol}
-              onChange={(e) => setIDRol(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
-              placeholder="ID del Rol"
-              required
-            />
+              value={rol}
+              onChange={(e) => setRol(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
+            >
+              <option value="" disabled>Selecciona el rol</option>
+              {roles.map(tipo => (
+                <option key={tipo.ID_rol} value={tipo.ID_rol}>{tipo.descripcion}</option>
+              ))}
+            </select>
           </div>
           <button
             type="submit"

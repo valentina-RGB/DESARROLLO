@@ -1,48 +1,58 @@
-import React, { useState } from 'react';
-import api from '../../api/api';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import api from "../../api/api";
+import { useNavigate } from "react-router-dom";
 
 const EditUsuario: React.FC = () => {
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [ID_rol, setIDRol] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [ID_rol, setIDRol] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nombre ||!email || !password || !telefono || !ID_rol) {
-      setError('Por favor, completa todos los campos.');
+    if (!nombre || !email || !password || !telefono || !ID_rol) {
+      setError("Por favor, completa todos los campos.");
       return;
     }
 
     try {
-      await api.post('/usuarios', {
+      await api.put("/usuarios", {
         nombre,
         email,
         password,
         telefono,
         ID_rol,
-        estado: 'A', 
+        estado: "A",
       });
-      navigate('/Usuarios');
+      navigate("/Usuarios");
     } catch (error: any) {
-      console.error('Error al Actualizar el usuario:', error);
-      setError('Error al Actualizar el usuario: ' + (error.response?.data?.message || 'Error desconocido'));
+      console.error("Error al Actualizar el usuario:", error);
+      setError(
+        "Error al Actualizar el usuario: " +
+          (error.response?.data?.message || "Error desconocido")
+      );
     }
   };
 
   return (
     <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
       <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md tw-mx-auto">
-        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Actualizar Usuario</h2>
+        <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">
+          Actualizar Usuario
+        </h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
-        <div className="tw-mb-4">
-            <label htmlFor="nombre" className="tw-block tw-text-gray-700 tw-font-semibold">Nombre</label>
+          <div className="tw-mb-4">
+            <label
+              htmlFor="nombre"
+              className="tw-block tw-text-gray-700 tw-font-semibold"
+            >
+              Nombre
+            </label>
             <input
               type="nombre"
               id="nombre"
@@ -54,7 +64,12 @@ const EditUsuario: React.FC = () => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="email" className="tw-block tw-text-gray-700 tw-font-semibold">Email</label>
+            <label
+              htmlFor="email"
+              className="tw-block tw-text-gray-700 tw-font-semibold"
+            >
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -66,7 +81,12 @@ const EditUsuario: React.FC = () => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="password" className="tw-block tw-text-gray-700 tw-font-semibold">Contraseña</label>
+            <label
+              htmlFor="password"
+              className="tw-block tw-text-gray-700 tw-font-semibold"
+            >
+              Contraseña
+            </label>
             <input
               type="password"
               id="password"
@@ -78,7 +98,12 @@ const EditUsuario: React.FC = () => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="telefono" className="tw-block tw-text-gray-700 tw-font-semibold">Teléfono</label>
+            <label
+              htmlFor="telefono"
+              className="tw-block tw-text-gray-700 tw-font-semibold"
+            >
+              Teléfono
+            </label>
             <input
               type="text"
               id="telefono"
@@ -90,7 +115,12 @@ const EditUsuario: React.FC = () => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="ID_rol" className="tw-block tw-text-gray-700 tw-font-semibold">ID Rol</label>
+            <label
+              htmlFor="ID_rol"
+              className="tw-block tw-text-gray-700 tw-font-semibold"
+            >
+              ID Rol
+            </label>
             <input
               type="text"
               id="ID_rol"

@@ -8,7 +8,6 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';
 import AddRol from './CreateRol';
 import EditRol from './EditRol';
-// import AddEntry from './AddEntry';
 import RolDetails from './RolDetails';
 import Modal from 'react-modal';
 
