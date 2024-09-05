@@ -7,7 +7,7 @@ const db = new Sequelize('api_final', 'root', '', {
   logging: console.log
 });
 
-
+// broooo?
 db.authenticate()
   .then(() => {
     console.log('Conectado a la base de datos.');

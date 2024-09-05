@@ -11,15 +11,14 @@ module.exports = (sequelize) => {
     },
     descripcion: {
       type: DataTypes.STRING(100), 
-      allowNull: false, 
-      unique: true 
+      allowNull: false,  
     },
     estado_categoria: {
       type: DataTypes.CHAR(1),
       defaultValue: 'A',
     },
     imagen: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
   }, {

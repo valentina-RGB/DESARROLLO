@@ -3,6 +3,7 @@ import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 
 const AddUsuario: React.FC = () => {
+  const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -13,13 +14,14 @@ const AddUsuario: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password || !telefono || !ID_rol) {
+    if (!nombre || !email || !password || !telefono || !ID_rol) {
       setError('Por favor, completa todos los campos.');
       return;
     }
 
     try {
       await api.post('/usuarios', {
+        nombre,
         email,
         password,
         telefono,
@@ -39,7 +41,19 @@ const AddUsuario: React.FC = () => {
         <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Agregar Usuario</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <div className="tw-mb-4">
+        <div className="tw-mb-4">
+            <label htmlFor="nombre" className="tw-block tw-text-gray-700 tw-font-semibold">Nombre</label>
+            <input
+              type="nombre"
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
+              placeholder="Nombre completo"
+              required
+            />
+          </div>
+          <div className="tw-mb-4"> 
             <label htmlFor="email" className="tw-block tw-text-gray-700 tw-font-semibold">Email</label>
             <input
               type="email"

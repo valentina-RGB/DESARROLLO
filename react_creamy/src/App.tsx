@@ -6,12 +6,11 @@ import Categorias from "./page/Categories/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
 import EntriesList from "./page/Insumos/EntriesList";
 import Ventas from "./page/Ventas/VentasList";
-import AddRol from './page/Roles/CreateRol';
 import ListarRoles from './page/Roles/ListRol';
 import AddCliente from './page/Clientes/CreateCliente';
 import ListarClientes from './page/Clientes/ListCliente';
 import ListarUsuarios from './page/Usuarios/ListUsuario';
-import AddUsuario from './page/Usuarios/CreateUsuario';
+/* import AddUsuario from './page/Usuarios/CreateUsuario'; */
 import EditarCliente from './page/Clientes/EditCliente';
 import EditarRol from './page/Roles/EditRol';
 import EditarUsuario from './page/Usuarios/EditUsuario';
@@ -39,14 +38,12 @@ const App: React.FC = () => {
               <Route path="/Productos" element={<Productos/>} />
               <Route path="/Pedidos" element={<Pedidos/>} />
               <Route path="/roles" element={<ListarRoles />} />
-              <Route path="/agregar-rol" element={<AddRol />} />
-              <Route path="/editar-rol/:id" element={<EditarRol />} />
               <Route path="/Clientes" element={<ListarClientes />} />
               <Route path="/agregar-cliente" element={<AddCliente />} />
               <Route path="/editar-cliente/:id" element={<EditarCliente />} />
-              <Route path="/Usuarios" element={<ListarUsuarios />} />
-              <Route path="/agregar-usuario" element={<AddUsuario />} />
-              <Route path="/editar-usuario/:id" element={<EditarUsuario />} />
+              <Route path="/Usuarios" element={<ListarUsuarios />} />{/* 
+              <Route path="/agregar-usuario" element={<AddUsuario />}  */}{/* /> */}{/* 
+              <Route path="/editar-usuario/:id" element={<EditarUsuario />} /> */}
             </Routes>
             <footer className="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
               <div className="container-fluid">

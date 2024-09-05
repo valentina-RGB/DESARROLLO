@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       
     },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(100), // Cambiado a STRING
       allowNull: false,
@@ -18,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     password: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     ID_rol: {

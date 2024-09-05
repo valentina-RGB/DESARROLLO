@@ -147,6 +147,30 @@ function Menu() {
             </li>           
           </ul>
         </li>
+        <li className="sidebar-list-item">
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
+            data-bs-target="#widgetsDropdown"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
+            <span className="sidebar-link-title">Usuarios</span>
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsDropdown">
+            <li className="sidebar-list-item">
+              <Link to="/Roles" className="sidebar-link text-muted">
+                Roles
+              </Link>
+            </li>   
+            <li className="sidebar-list-item">
+              <Link to="/Usuarios" className="sidebar-link text-muted">
+                Usuarios
+              </Link>
+            </li>         
+          </ul>
+        </li>
           <ul
             className="sidebar-menu list-unstyled collapse "
             id="widgetsDropdow"
