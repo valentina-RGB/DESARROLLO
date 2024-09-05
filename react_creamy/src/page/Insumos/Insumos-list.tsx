@@ -11,6 +11,7 @@ import EditInsumo from './EditInsumo';
 import AddEntry from './AddEntry';
 import InsumoDetails from './InsumoDetails';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 
 Modal.setAppElement('#root');
@@ -20,6 +21,7 @@ const InsumosList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'add' | 'edit' | 'entry' | 'detail' | null>(null);
   const [selectedInsumoId, setSelectedInsumoId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchInsumos();
@@ -83,6 +85,10 @@ const InsumosList: React.FC = () => {
     setSelectedInsumoId(id);
     setModalType('detail');
     setIsModalOpen(true);
+  };
+
+  const handleGoToHistorial = (id: number) => {
+    navigate(`/historial-entradas/${id}`);  
   };
 
   const handleCloseModal = () => {
@@ -161,11 +167,23 @@ const InsumosList: React.FC = () => {
 
   return (
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
-     <h1 className="page-heading">Insumos</h1>
-      <button onClick={handleAddInsumo} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
-        <FontAwesomeIcon icon={faPlus} /> Agregar Insumo
-      </button>
+      <h1 className="page-heading">Insumos</h1>
+      <div className="tw-mb-4 tw-flex tw-gap-4">
+        {/* Botón para agregar un insumo */}
+        <button onClick={handleAddInsumo} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+          <FontAwesomeIcon icon={faPlus} /> Agregar Insumo
+        </button>
+        
+        {/* Botón para ir al historial de entradas */}
+        <button onClick={() => navigate('/historial-entradas')} className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300">
+          <FontAwesomeIcon icon={faBoxOpen} /> Ver Historial de Entradas
+        </button>
+      </div>
+      
+      {/* Tabla de insumos */}
       <MaterialReactTable columns={columns} data={insumos} />
+      
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}

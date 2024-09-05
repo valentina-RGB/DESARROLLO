@@ -84,7 +84,7 @@ function Menu() {
               </Link>
             </li>   
             <li className="sidebar-list-item">
-              <Link to="/Entradas" className="sidebar-link text-muted">
+              <Link to="/historial-entradas" className="sidebar-link text-muted">
                 Historial de Entradas
               </Link>
             </li>         
