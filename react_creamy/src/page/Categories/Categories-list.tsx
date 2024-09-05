@@ -18,7 +18,7 @@ Modal.setAppElement('#root');
 const Categories: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'| null; id: number | null }>({ type: null, id: null });
+  const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'|'imagen'| null; id: number | null }>({ type: null, id: null });
 
 
   
@@ -32,7 +32,7 @@ const Categories: React.FC = () => {
   };
 
 
-  const handleModal = (type: 'add' | 'edit'|'detail'|'entry' , id: number | null = null) => {
+  const handleModal = (type: 'add' | 'edit'|'detail'|'entry'|'imagen' , id: number | null = null) => {
     setModalConfig({type, id});
     setIsModalOpen(true);
   };
@@ -69,6 +69,9 @@ const Categories: React.FC = () => {
     setModalConfig({type:null, id:null});
     fetchCategorias(); 
   };
+
+
+
 
   useEffect(() => {
     fetchCategorias(); 
@@ -108,7 +111,19 @@ const Categories: React.FC = () => {
       {
         accessorKey: 'imagen',
         header: 'Imagen',
-        Cell: ({ cell }) => cell.getValue<string>() ?? 'N/A',
+        Cell: ({ row }) => (
+          <button 
+          onClick={() => handleModal('imagen', row.original.ID_categoria)} 
+          className="tw-bg-gray-300 tw-text-gray-80 tw-text-white tw-rounded-full tw-p-3 tw-shadow-lg tw-hover:bg-blue-600 tw-transition-all tw-duration-300 tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12"
+        >
+          <img 
+            src={`http://localhost:3300${row.original.imagen}`} 
+            alt="Imagen categoría" 
+            className="tw-w-8 tw-h-8 tw-object-cover tw-rounded-full"
+          />
+        </button>
+      
+      ),
       },
       {
         id: 'acciones',
@@ -142,6 +157,7 @@ const Categories: React.FC = () => {
            <FontAwesomeIcon icon={faPlus} /> Agregar categoría
          </button>
          <MaterialReactTable columns={columns} data={categorias} />
+
          <Modal
            isOpen={isModalOpen}
            onRequestClose={handleCloseModal}
@@ -151,6 +167,7 @@ const Categories: React.FC = () => {
            {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
            {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />}
            {modalConfig.type === 'detail' && modalConfig.id !== null && <CategoriaDetail id={modalConfig.id} onClose={handleCloseModal} />}
+           {modalConfig.type === 'imagen' && modalConfig.id !== null && <CategoriaDetail id={modalConfig.id} onClose={handleCloseModal} />}
          </Modal>
        </div>
     </>
