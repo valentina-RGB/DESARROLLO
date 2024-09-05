@@ -4,12 +4,13 @@ import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 // import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faSignInAlt, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 import Modal from 'react-modal';
 import { Categoria } from '../../types/Categoria';
 import AddCategories from './categories-add';
 import EditCategoria from './categories-edit';
+import CategoriaDetail from './categories-details';
 
 
 Modal.setAppElement('#root');
@@ -31,7 +32,7 @@ const Categories: React.FC = () => {
   };
 
 
-  const handleModal = (type: 'add' | 'edit'|'entry'|'detail' , id: number | null = null) => {
+  const handleModal = (type: 'add' | 'edit'|'detail'|'entry' , id: number | null = null) => {
     setModalConfig({type, id});
     setIsModalOpen(true);
   };
@@ -120,8 +121,11 @@ const Categories: React.FC = () => {
             <button onClick={() => handleDelete(row.original.ID_categoria)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-            <button className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faBoxOpen} />
+            <button
+              onClick={() => handleModal('detail',row.original.ID_categoria)}
+              className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
+            >
+              <FontAwesomeIcon icon={faSignInAlt} />
             </button>
            
             </div>
@@ -146,8 +150,8 @@ const Categories: React.FC = () => {
          >
            {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
            {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />}
-           {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
-           {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+            {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+           {modalConfig.type === 'detail' && modalConfig.id !== null && <CategoriaDetail id={modalConfig.id} onClose={handleCloseModal} />}
          </Modal>
        </div>
     </>
