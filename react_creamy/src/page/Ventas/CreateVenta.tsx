@@ -22,6 +22,7 @@ interface EstadoVenta {
 interface CreateVentaProps {
   onClose: () => void;
   isOpen: boolean;
+  onVentaCreated: () => void;
 }
 
 const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
@@ -112,14 +113,14 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedCliente || !selectedEstadoVenta) {
-      toast.error('Debe seleccionar un cliente y un estado de venta');
+    if (!selectedEstadoVenta) {
+      toast.error('Debe seleccionar un estado de venta');
       return;
     }
 
     try {
       await api.post('/ventas', {
-        ID_cliente: selectedCliente,
+        ID_cliente: selectedCliente || null, // Permitir que sea null
         productos: selectedProductos.map(({ ID_producto, cantidad, precio }) => ({
           ID_producto,
           cantidad,
@@ -130,6 +131,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
       });
       toast.success('Venta creada con éxito');
       onClose();
+      onVentaCreated();
     } catch (error) {
       toast.error('Error al crear la venta');
       console.error('Error al crear la venta:', error);
@@ -154,7 +156,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
             onChange={(e) => setSelectedCliente(Number(e.target.value))}
             className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm"
           >
-            <option value="">Seleccionar Cliente</option>
+            <option value="">Sin Cliente</option>
             {clientes.map((cliente) => (
               <option key={cliente.ID_cliente} value={cliente.ID_cliente}>
                 {cliente.nombre}
@@ -234,7 +236,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
           <button
             type="button"
             onClick={onClose}
-            className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
+            className="tw-bg-gray-300 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
           >
             Cancelar
           </button>
@@ -251,3 +253,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
 };
 
 export default CreateVenta;
+function onVentaCreated() {
+  throw new Error('Function not implemented.');
+}
+

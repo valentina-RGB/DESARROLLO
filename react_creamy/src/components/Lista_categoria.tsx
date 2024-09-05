@@ -1,6 +1,5 @@
 
- // Asegúrate de importar el CSS de DataTables
-// import SimpleDatatables from 'simple-datatables';  
+ // Asegúrate de importar el CSS de DataTables 
 import DataTable from 'datatables.net-dt';
 import { useState, useEffect } from 'react';
 // import { getItems } from '../services/categoriaServices';
