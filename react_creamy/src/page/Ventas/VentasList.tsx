@@ -122,10 +122,19 @@ const VentasList: React.FC = () => {
         venta.ID_venta === id ? { ...venta, ID_estado_venta: siguienteEstado.ID_estado_venta } : venta
       ));
       toast.success('El estado de la venta ha sido actualizado.');
-    } catch (error) {
-      console.error('Error al cambiar el estado de la venta:', error);
-      toast.error(`Hubo un problema al cambiar el estado de la venta: ${error.response?.data?.message || error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+   
+        const axiosError = error as any; 
+        const errorMessage = axiosError.response?.data?.message || error.message;
+        console.error('Error al cambiar el estado de la venta:', errorMessage);
+        toast.error(`Hubo un problema al cambiar el estado de la venta: ${errorMessage}`);
+      } else {
+        console.error('Error desconocido al cambiar el estado de la venta');
+        toast.error('Hubo un problema desconocido al cambiar el estado de la venta');
+      }
     }
+    
   }, [ventas, estadosVenta]);
 
   useEffect(() => {
