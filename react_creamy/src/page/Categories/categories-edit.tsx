@@ -135,9 +135,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center ">
     <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-max-w-lg w-full">
-      <h2 className="tw-text-2xl tw-font-semibold tw-mb-4 tw-text-gray-800">
-        Agregar Entrada
-      </h2>
+    <h3 className="page-heading">Editar</h3>
       <form onSubmit={handleSubmit} className="tw-space-y-6 tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
       <div className="tw-space-y-2">
         <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
