@@ -1,6 +1,22 @@
 const express = require('express');
 const {request , response} = require('express');
 const categorieService = require('../services/categoriesServices');
+const multer = require('multer');
+const  path  = require('path');
+const fs= require('fs'); 
+
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Ruta donde se guardarán las imágenes
+  },
+  filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const 
     obtenercategorias = async (req, res) => {
@@ -102,7 +118,7 @@ const CrearCategorias = async (req = request, res = response) => {
 
 
 
-    eliminarCategorias= async (req = request, res= response) =>{
+   const eliminarCategorias= async (req = request, res= response) =>{
         const { id } = req.params;
             try{
                 const dato = await categorieService.DeleteCategories(id);
@@ -118,5 +134,6 @@ module.exports = {
    obtenerCategoriasPorId,
    CrearCategorias,
    ModificarCategorias,
-   eliminarCategorias
+   eliminarCategorias,
+   upload
 }
