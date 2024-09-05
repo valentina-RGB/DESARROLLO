@@ -40,10 +40,10 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
         descripcion_insumo: descripcionInsumo,
         precio: Number(precio),
         ID_tipo_insumo: Number(tipoInsumo),
-        estado_insumo: 'A'  // Estado predeterminado
+        estado_insumo: 'A' 
       });
       toast.success('Insumo agregado correctamente.');
-      onClose(); // Cierra el modal y actualiza la lista
+      onClose(); 
     } catch (error: any) {
       console.error('Error al agregar el insumo:', error);
       setError('Error al agregar el insumo: ' + (error.response?.data?.message || 'Error desconocido'));
