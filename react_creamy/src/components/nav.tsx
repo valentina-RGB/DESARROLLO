@@ -151,14 +151,14 @@ function Menu() {
           <Link
             className="sidebar-link text-muted"
             to="#"
-            data-bs-target="#widgetsDropdown"
+            data-bs-target="#widgetsDropdownss"
             role="button"
             aria-expanded="false"
             data-bs-toggle="collapse">
             <svg className="svg-icon svg-icon-md me-3"></svg>
             <span className="sidebar-link-title">Usuarios</span>
           </Link>
-          <ul className="sidebar-menu list-unstyled collapse" id="widgetsDropdown">
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsDropdownss">
             <li className="sidebar-list-item">
               <Link to="/Roles" className="sidebar-link text-muted">
                 Roles

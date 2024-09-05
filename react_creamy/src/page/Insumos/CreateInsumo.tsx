@@ -40,6 +40,7 @@ const CreateInsumo: React.FC<CreateInsumoProps> = ({ onClose }) => {
         descripcion_insumo: descripcionInsumo,
         precio: Number(precio),
         ID_tipo_insumo: Number(tipoInsumo),
+        estado_insumo: 'A'  // Estado predeterminado
       });
       toast.success('Insumo agregado correctamente.');
       onClose(); // Cierra el modal y actualiza la lista
