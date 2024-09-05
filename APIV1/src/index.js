@@ -1,6 +1,7 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
 const cors = require('cors');
+const path = require("path");
 
 const db = require('./../models')
 const detalleRoutes = require('./v1/routers/detallePedido');
@@ -88,6 +89,9 @@ class Server {
       .use('/usuarios', usuariosRoutes)
 
       .use('/permiso', permisoRoutes)
+
+      // Configura la carpeta pública para servir archivos estáticos
+      .use('/imagenes', express.static(path.join(__dirname, '../uploads')));
 
 
     this.app.get('/', (req, res) => {

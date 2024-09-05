@@ -3,16 +3,13 @@ import React, { useState, ChangeEvent, DragEvent  } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-hot-toast";
-
 import { UploadIcon } from 'lucide-react';
 
-interface AddCategories {
-  
+interface AddCategories { 
   onClose: () => void;
 }
 
 const AddCategories: React.FC<AddCategories> = ({ onClose }) => {
-    // const [categories, setCategories] = useState<Categoria | null>(null);
     const [descripcion, setDescripcion] = useState<string>('');
     const [estado, setEstado] = useState<string>('A');
     const [imagen, setImagen] = useState('');
@@ -169,8 +166,7 @@ const [formData, setFormData] = useState({
                     setFormData(prev => ({ ...prev, image: null }));
                     setPreview(null);
                   }}
-                >
-                  Cambiar
+                > Cambiar
                 </button>
               </div>
             ) : (
@@ -190,11 +186,9 @@ const [formData, setFormData] = useState({
         <button
           type="submit"
           className="tw-w-full tw-px-4 tw-py-2 tw-bg-indigo-600 tw-text-white tw-rounded-md hover:tw-bg-indigo-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-indigo-500"
-        >
-          Guardar categoría
+        > Guardar categoría
         </button>
       </form>
-
       </div>
     </div>
   );

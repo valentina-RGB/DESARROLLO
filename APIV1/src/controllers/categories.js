@@ -50,7 +50,7 @@ const CrearCategorias = async (req = request, res = response) => {
 
     // Si hay un archivo, obtener la ruta del archivo
     if (req.file) {
-      imagen = `/uploads/${req.file.filename}`; // Ruta de la imagen
+      imagen = `/imagenes/${req.file.filename}`; // Ruta de la imagen
     }
 
     const data = {
@@ -71,23 +71,43 @@ const CrearCategorias = async (req = request, res = response) => {
 
 
   const ModificarCategorias = async (req = request, res = response) => {
-    const {id} = req.params;
-    const {descripcion, estado_categoria,imagen} = req.body
-
-    const data ={
-      descripcion: descripcion,
-      estado_categoria: estado_categoria,
-      imagen: imagen
-    }
+    const { id } = req.params;
+    const { descripcion, estado_categoria } = req.body;
+    let imagen = null;
+  
     try {
-      
-      const updatecategories = await categorieService.PatchCategories(id, data);
-
-      if (updatecategories) {
-        res
-          .status(200)
-          .json({ message: "Categoria updated successfully", updatecategories });
+      // Obtener la categoría actual para acceder a la imagen existente
+      const categoriaExistente = await categorieService.getCategoriesID(id);
+  
+      if (!categoriaExistente) {
+        return res.status(404).json({ message: "Categoría no encontrada" });
       }
+  
+      // Si hay un archivo, obtener la ruta del archivo
+      if (req.file) {
+        imagen = `/imagenes/${req.file.filename}`; // Ruta de la nueva imagen
+  
+        // Eliminar la imagen antigua si existe
+        if (categoriaExistente.imagen) {
+          const imagenPath = path.join(__dirname, '../../uploads', path.basename(categoriaExistente.imagen));
+          if (fs.existsSync(imagenPath)) {
+            fs.unlinkSync(imagenPath); // Eliminar el archivo del sistema
+          }
+        }
+      } else {
+        // Si no hay nuevo archivo, conservar la imagen existente
+        imagen = categoriaExistente.imagen;
+      }
+  
+      const data = {
+        descripcion: descripcion || categoriaExistente.descripcion,
+        estado_categoria: estado_categoria || categoriaExistente.estado_categoria,
+        imagen: imagen,
+      };
+  
+      const updatecategories = await categorieService.PatchCategories(id, data);
+  
+      res.status(200).json({ message: "Categoría actualizada exitosamente", updatecategories });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }

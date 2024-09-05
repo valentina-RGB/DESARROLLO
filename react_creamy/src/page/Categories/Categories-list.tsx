@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,10 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
-// import AddInsumo from './CreateInsumo';
-// import EditInsumo from './EditInsumo';
-// import AddEntry from './AddEntry';
-// import InsumoDetails from './InsumoDetails';
 import Modal from 'react-modal';
 import { Categoria } from '../../types/Categoria';
 import AddCategories from './categories-add';
@@ -21,13 +17,10 @@ Modal.setAppElement('#root');
 const Categories: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'add' | 'edit' | 'entry' | 'detail' | null>(null);
-  const [selectedCategoriaId, setSelectedCategoriaId] = useState<number | null>(null);
+  const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'| null; id: number | null }>({ type: null, id: null });
 
-  // useEffect(() => {
-  //   fetchCategorias();
-  // }, []);
 
+  
   const fetchCategorias = async () => {
     try {
       const response = await api.get('/categorias');
@@ -38,15 +31,13 @@ const Categories: React.FC = () => {
   };
 
 
-  const handleEdit = (id: number) => {
-    setSelectedCategoriaId(id);
-    setModalType('edit');
+  const handleModal = (type: 'add' | 'edit'|'entry'|'detail' , id: number | null = null) => {
+    setModalConfig({type, id});
     setIsModalOpen(true);
   };
 
-  async function handleDelete(id: number) {
-    toast.promise(
-      api.delete(`categorias/${id}`),
+  const handleDelete = useCallback(async(id: number)=>{
+    toast.promise(api.delete(`categorias/${id}`),
       {
         loading: 'Eliminando categoría...',
         success: '¡La categorpia ha sido eliminada!',
@@ -55,14 +46,14 @@ const Categories: React.FC = () => {
     ).then(() => {
       fetchCategorias(); // Actualiza la lista después de eliminar
     });
-  }
+  },[]);
 
-  async function handleToggleEstado(id: number, estadoActual: string) {
+  const handleToggleEstado = useCallback (async(id: number, estadoActual: string) =>{
     const nuevoEstado = estadoActual === 'A' ? 'D' : 'A';
 
     try {
       await api.put(`/categorias/${id}`, { estado_categoria: nuevoEstado });
-      setCategorias(categorias.map(categorias => categorias.ID_categoria === id ? { ...categorias, estado_categoria: nuevoEstado } : categorias
+      setCategorias(categorias.map(cat => cat.ID_categoria === id ? { ...cat, estado_categoria: nuevoEstado } : cat
 
       ));
       toast.success('El estado de la categoría ha sido actualizado.');
@@ -70,43 +61,16 @@ const Categories: React.FC = () => {
       console.error('Error al cambiar el estado de la categoría:', error);
       toast.error('Hubo un problema al cambiar el estado de la categoría.');
     }
-  }
-
-  const handleAddCategoria= () => {
-    setModalType('add');
-    setIsModalOpen(true);
-  };
-
-  // const handleAddEntry = (id: number) => {
-  //   setSelectedCategoriaId(id);
-  //   setModalType('entry');
-  //   setIsModalOpen(true);
-  // };
-
-  // const handleViewDetails = (id: number) => {
-  //   setSelectedCategoriaId(id);
-  //   setModalType('detail');
-  //   setIsModalOpen(true);
-  // };
+  },[categorias]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setModalType(null);
-    setSelectedCategoriaId(null);
-  };
-
-  const handleModalCloseAndFetch = async () => {
-    handleCloseModal();
-    await fetchCategorias(); // Actualiza la lista después de agregar/editar entrada
+    setModalConfig({type:null, id:null});
+    fetchCategorias(); 
   };
 
   useEffect(() => {
     fetchCategorias(); 
-    
-    
-    
-    
-    // Carga las categorías cuando el componente se monta
   }, []);
 
   const columns  = useMemo<MRT_ColumnDef<Categoria>[]> (
@@ -150,7 +114,7 @@ const Categories: React.FC = () => {
         header: 'Acciones',
         Cell: ({ row }) => (
           <div className="tw-flex tw-justify-center tw-gap-2">
-            <button onClick={() => handleEdit(row.original.ID_categoria)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+            <button onClick={() => handleModal('edit',row.original.ID_categoria)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faEdit} />
             </button>
             <button onClick={() => handleDelete(row.original.ID_categoria)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
@@ -163,17 +127,14 @@ const Categories: React.FC = () => {
             </div>
         ),
       },
-    ],
-    [categorias],
-  );
+    ], [handleToggleEstado, handleDelete]);
 
   return (
-    <body className="g-sidenav-show" >
-        {/* <div class="min-height-300 bg-primary position-absolute w-100"></div> */}
-       <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+    <>
+    <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
          
          <h1 className="page-heading">Categorías</h1>
-         <button onClick={handleAddCategoria} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+         <button onClick={()=>handleModal('add')} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
            <FontAwesomeIcon icon={faPlus} /> Agregar categoría
          </button>
          <MaterialReactTable columns={columns} data={categorias} />
@@ -183,14 +144,13 @@ const Categories: React.FC = () => {
            className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
            overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
          >
-           {modalType === 'add' && <AddCategories onClose={handleModalCloseAndFetch} />}
-           {modalType === 'edit' && selectedCategoriaId !== null && <EditCategoria id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
+           {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
+           {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />}
            {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
            {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
          </Modal>
        </div>
-    </body>
-   
+    </>
   );
 };
 

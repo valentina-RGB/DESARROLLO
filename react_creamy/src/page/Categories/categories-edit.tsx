@@ -36,11 +36,10 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
           estado_categoria: response.data.estado_categoria,
           imagen: response.data.imagen
         });
-        setPreview(response.data.imagen);
+        setPreview(`http://localhost:3300${response.data.imagen}`);
          
       } catch (error) {
-        console.error('Error al obtener el insumo:', error);
-        setError('Error al cargar el insumo.');
+        setError('Error al cargar el categoría.');
       }
     };
     if (id) {
@@ -97,6 +96,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
  
 
     setErrors(newErrors);
+    setError(error);
     if (!newErrors.descripcion) {
     try {
       await api.put(`/categorias/${id}`,{
@@ -106,8 +106,8 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
         imagen: formEdit.imagen||'N/A'
       },{
         headers: {
-        //   'Content-Type': 'multipart/form-data',
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'application/json',
         }});  
       toast.success('La categoria se ha actualizado correctamente.');
       onClose();
@@ -118,6 +118,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
       catch (error) {
       console.error('Error al editar la categoría:', error);
       toast.error('No se pudo actualizar la categoría');
+      
     }
     }
   };
@@ -125,7 +126,7 @@ const EditCategoria: React.FC<Props> = ({ id, onClose }) => {
   if (!formEdit.ID_categoria) return <p>Cargando...</p>;
 
   const resetForm = () => {
-     setError(error);
+    
   };
 
 

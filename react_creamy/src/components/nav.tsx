@@ -89,6 +89,44 @@ function Menu() {
           <Link
             className="sidebar-link text-muted"
             to="#"
+            data-bs-target="#widgetsProducto"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
+            <span className="sidebar-link-title">Productos</span>
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsProducto">
+            <li className="sidebar-list-item">
+              <Link to="/Productos" className="sidebar-link text-muted">
+                Lista de Productos
+              </Link>
+            </li>           
+          </ul>
+        </li>
+        <li className="sidebar-list-item">
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
+            data-bs-target="#widgetsPedidos"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="collapse">
+            <svg className="svg-icon svg-icon-md me-3"></svg>
+            <span className="sidebar-link-title">Pedidos</span>
+          </Link>
+          <ul className="sidebar-menu list-unstyled collapse" id="widgetsPedidos">
+            <li className="sidebar-list-item">
+              <Link to="/Pedidos" className="sidebar-link text-muted">
+                Crear pedido
+              </Link>
+            </li>           
+          </ul>
+        </li>
+        <li className="sidebar-list-item">
+          <Link
+            className="sidebar-link text-muted"
+            to="#"
             data-bs-target="#widgetsDropdownbb"
             role="button"
             aria-expanded="false"
@@ -104,42 +142,12 @@ function Menu() {
             </li>           
           </ul>
         </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#widgetsDropdow"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#statistic-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Widgets </span>
-          </a>
           <ul
             className="sidebar-menu list-unstyled collapse "
             id="widgetsDropdow"
           >
-            {/* <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/widgets-stats.html"
-              >
-                Stats
-              </a>
-            </li> */}
-            {/* <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/widgets-data.html"
-              >
-                Data
-              </a>
-            </li> */}
+       
           </ul>
-        </li>
         <li className="sidebar-list-item">
           <a
             className="sidebar-link text-muted "
@@ -172,238 +180,6 @@ function Menu() {
                 href="https://demo.bootstrapious.com/bubbly/1-3-2/e-commerce-product-new.html"
               >
                 Products - New
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/e-commerce-orders.html"
-              >
-                Orders
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/e-commerce-order.html"
-              >
-                Order - Detail
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/e-commerce-customers.html"
-              >
-                Customers
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#pagesDropdown"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#paper-stack-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Pages </span>
-          </a>
-          <ul
-            className="sidebar-menu list-unstyled collapse "
-            id="pagesDropdown"
-          >
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-profile.html"
-              >
-                Profile
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-pricing.html"
-              >
-                Pricing table
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-contacts.html"
-              >
-                Contacts
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-invoice.html"
-              >
-                Invoice
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-knowledge-base.html"
-              >
-                Knowledge base
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/pages-knowledge-base-topic.html"
-              >
-                Knowledge base - Topic
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#userDropdown"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#man-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Usuarios </span>
-          </a>
-          <ul
-            className="sidebar-menu list-unstyled collapse "
-            id="userDropdown"
-          >
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/login.html"
-              >
-                Login page
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/register.html"
-              >
-                <li className="sidebar-list-item">
-              <Link to="/Clientes" className="sidebar-link text-muted">Clientes</Link>
-            </li>
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-               // href="https://demo.bootstrapious.com/bubbly/1-3-2/login-2.html"
-              >
-                <li className="sidebar-list-item">
-              <Link to="/Roles" className="sidebar-link text-muted">Roles</Link>
-            </li>
-                <span className="badge bg-info ms-2 text-decoration-none">
-                  New
-                </span>
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="../../Roles/ListRol"
-              >
-                 <li className="sidebar-list-item">
-              <Link to="/Usuarios" className="sidebar-link text-muted">Usuarios</Link>
-            </li>
-                <span className="badge bg-info ms-2 text-decoration-none">
-                  New
-                </span>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#componentsDropdown"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#sorting-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Components </span>
-          </a>
-          <ul
-            className="sidebar-menu list-unstyled collapse "
-            id="componentsDropdown"
-          >
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-cards.html"
-              >
-                Cards
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-calendar.html"
-              >
-                Calendar
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-gallery.html"
-              >
-                Gallery
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-loading-buttons.html"
-              >
-                Loading buttons
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-map.html"
-              >
-                Maps
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-notifications.html"
-              >
-                Notifications
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/components-preloader.html"
-              >
-                Preloaders
               </a>
             </li>
           </ul>
@@ -463,81 +239,26 @@ function Menu() {
             id="formsDropdown"
           >
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/forms.html"
-              >
-                Basic forms
-              </a>
+             
             </li>
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/forms-advanced.html"
-              >
-                Advanced forms
-              </a>
+             
             </li>
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/forms-dropzone.html"
-              >
-                Files upload
-              </a>
             </li>
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/forms-texteditor.html"
-              >
-                Text editor
-              </a>
             </li>
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/forms-validation.html"
-              >
-                Validation
-              </a>
             </li>
           </ul>
         </li>
         <li className="sidebar-list-item">
-          <a
-            className="sidebar-link text-muted "
-            href="#"
-            data-bs-target="#tablesDropdown"
-            role="button"
-            aria-expanded="false"
-            data-bs-toggle="collapse"
-          >
-            <svg className="svg-icon svg-icon-md me-3">
-              {/* <use xlink:href="https://demo.bootstrapious.com/bubbly/1-3-2/icons/orion-svg-sprite.71e9f5f2.svg#grid-1"> </use> */}
-            </svg>
-            <span className="sidebar-link-title">Tables </span>
-          </a>
+
           <ul
             className="sidebar-menu list-unstyled collapse "
             id="tablesDropdown"
           >
             <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/tables.html"
-              >
-                Bootstrap tables
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a
-                className="sidebar-link text-muted"
-                href="https://demo.bootstrapious.com/bubbly/1-3-2/tables-datatable.html"
-              >
-                Datatable
-              </a>
-
                 <Link  to="https://demo.bootstrapious.com/bubbly/1-3-2/cms-post-new.html">
                 Ver detalles de los insumos
               </Link>

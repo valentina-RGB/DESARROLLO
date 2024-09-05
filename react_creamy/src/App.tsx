@@ -2,7 +2,7 @@ import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
-import Categorias from "./page/Categorias/Categories-list";
+import Categorias from "./page/Categories/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
 import Ventas from "./page/Ventas/VentasList";
 import AddRol from './page/Roles/CreateRol';
@@ -14,6 +14,8 @@ import AddUsuario from './page/Usuarios/CreateUsuario';
 import EditarCliente from './page/Clientes/EditCliente';
 import EditarRol from './page/Roles/EditRol';
 import EditarUsuario from './page/Usuarios/EditUsuario';
+import Productos from './page/Products/products-list';
+import Pedidos from './page/Order/Order_list';
 
 const App: React.FC = () => {
   return (
@@ -32,6 +34,8 @@ const App: React.FC = () => {
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
               <Route path="/Ventas" element={<Ventas/>} />
+              <Route path="/Productos" element={<Productos/>} />
+              <Route path="/Pedidos" element={<Pedidos/>} />
               <Route path="/roles" element={<ListarRoles />} />
               <Route path="/agregar-rol" element={<AddRol />} />
               <Route path="/editar-rol/:id" element={<EditarRol />} />
