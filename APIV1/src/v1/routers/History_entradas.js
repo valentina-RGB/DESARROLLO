@@ -1,26 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { getAllEntries, getEntriesByInsumoId } = require('../../controllers/HistoryEntrada');
+const historialEntradasController = require('../../controllers/HistoryEntrada');
 
-// Ruta para obtener todas las entradas
-router.get('/entradas', async (req, res) => {
-  try {
-    const entries = await getAllEntries();
-    res.status(200).json(entries);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Obtener todo el historial de entradas
+router.get('/', historialEntradasController.getAllEntradas);
 
-// Ruta para obtener entradas por ID de insumo
-router.get('/entradas/:ID_insumo', async (req, res) => {
-  const { ID_insumo } = req.params;
-  try {
-    const entries = await getEntriesByInsumoId(ID_insumo);
-    res.status(200).json(entries);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Obtener una entrada específica por ID
+router.get('/:id', historialEntradasController.getEntradaById);
+
+// Eliminar una entrada por ID
+router.delete('/:id', historialEntradasController.deleteEntrada);
 
 module.exports = router;

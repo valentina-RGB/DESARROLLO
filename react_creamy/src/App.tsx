@@ -4,6 +4,7 @@ import Menu from "./components/nav";
 import Dashboard from "./page/Dashboard";
 import Categorias from "./page/Categories/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
+import EntriesList from "./page/Insumos/EntriesList";
 import Ventas from "./page/Ventas/VentasList";
 import AddRol from './page/Roles/CreateRol';
 import ListarRoles from './page/Roles/ListRol';
@@ -33,6 +34,7 @@ const App: React.FC = () => {
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
+              <Route path="/historial-entradas" element={<EntriesList />} />
               <Route path="/Ventas" element={<Ventas/>} />
               <Route path="/Productos" element={<Productos/>} />
               <Route path="/Pedidos" element={<Pedidos/>} />

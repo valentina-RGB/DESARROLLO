@@ -1,7 +1,11 @@
 
-// import DataTable from 'datatables.net-dt';
-// import { useState, useEffect } from 'react';
-//  import axios from 'axios';
+ // Asegúrate de importar el CSS de DataTables
+// import SimpleDatatables from 'simple-datatables';  
+import DataTable from 'datatables.net-dt';
+import { useState, useEffect } from 'react';
+// import { getItems } from '../services/categoriaServices';
+ 
+import axios from 'axios';
 
 // interface Item {
 //   ID_categoria: number;
