@@ -94,22 +94,22 @@ const VentasList: React.FC = () => {
       </button>
       <MaterialReactTable columns={columns} data={ventas} />
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-max-w-lg tw-w-full tw-mx-auto tw-transform tw-translate-y-1/4 tw-transition-all tw-duration-300"
-        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-z-50 tw-flex tw-justify-center tw-items-center"
-      >
-        {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} />}
-        {modalType === 'detail' && selectedVentaId !== null && <VentaDetails id={selectedVentaId} onClose={handleCloseModal} />}
-        <div className="tw-flex tw-justify-end tw-mt-4">
-          <button
-            onClick={handleCloseModal}
-            className="tw-bg-gray-300 tw-text-gray-800 tw-rounded-full tw-px-4 tw-py-2 tw-mr-2 tw-shadow-md tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
-          >
-            Cerrar
-          </button>
-        </div>
-      </Modal>
+  isOpen={isModalOpen}
+  onRequestClose={handleCloseModal}
+  className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-max-w-lg tw-w-full tw-mx-auto tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2 tw-transition-all tw-duration-300"
+  overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-z-50"
+>
+  {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} />}
+  {modalType === 'detail' && selectedVentaId !== null && <VentaDetails id={selectedVentaId} onClose={handleCloseModal} />}
+  <div className="tw-flex tw-justify-end tw-mt-4">
+    <button
+      onClick={handleCloseModal}
+      className="tw-bg-red-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300"
+    >
+      Cerrar
+    </button>
+  </div>
+</Modal>
     </div>
   );
 };

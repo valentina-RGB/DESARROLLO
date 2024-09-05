@@ -5,8 +5,8 @@ import Modal from 'react-modal';
 
 interface Producto {
   ID_producto: number;
-  nombre: string;
-  precio: number;
+  descripcion: string;
+  precio_neto: number;
 }
 
 interface Cliente {
@@ -31,7 +31,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
   const [selectedCliente, setSelectedCliente] = useState<number | null>(null);
   const [selectedEstadoVenta, setSelectedEstadoVenta] = useState<number | null>(null);
   const [selectedProductos, setSelectedProductos] = useState<
-    { ID_producto: number; cantidad: number; precio: number; nombre: string }[]
+    { ID_producto: number; cantidad: number; precio: number; descripcion: string }[]
   >([]);
   const [precioTotal, setPrecioTotal] = useState<number>(0);
 
@@ -75,27 +75,36 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
   const handleAddProducto = () => {
     setSelectedProductos([
       ...selectedProductos,
-      { ID_producto: 0, cantidad: 1, precio: 0, nombre: '' },
+      { ID_producto: 0, cantidad: 1, precio: 0, descripcion: '' },
     ]);
   };
 
   const handleProductoChange = (index: number, field: string, value: number | string) => {
-    const updatedProductos = selectedProductos.map((prod, i) => {
-      if (i === index) {
+    setSelectedProductos((prev) => {
+      const updatedProductos = [...prev];
+      if (field === 'ID_producto') {
         const producto = productos.find((p) => p.ID_producto === Number(value));
-        if (field === 'ID_producto' && producto) {
-          return { ...prod, ID_producto: producto.ID_producto, precio: producto.precio, nombre: producto.nombre };
+        if (producto) {
+          updatedProductos[index] = {
+            ...updatedProductos[index],
+            ID_producto: producto.ID_producto,
+            precio: producto.precio_neto,
+            descripcion: producto.descripcion,
+          };
         }
-        return { ...prod, [field]: value };
+      } else {
+        updatedProductos[index] = {
+          ...updatedProductos[index],
+          [field]: value,
+        };
       }
-      return prod;
+      return updatedProductos;
     });
-    setSelectedProductos(updatedProductos);
   };
 
   const calculatePrecioTotal = () => {
     const total = selectedProductos.reduce(
-      (sum, prod) => sum + prod.cantidad * prod.precio,
+      (sum, prod) => sum + (prod.cantidad || 0) * (prod.precio || 0),
       0,
     );
     setPrecioTotal(total);
@@ -123,6 +132,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
       onClose();
     } catch (error) {
       toast.error('Error al crear la venta');
+      console.error('Error al crear la venta:', error);
     }
   };
 
@@ -130,8 +140,8 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="tw-fixed tw-z-10 tw-inset-0 tw-flex tw-items-center tw-justify-center"
-      overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-opacity-50"
+      className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-max-w-lg tw-w-full tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2 tw-transition-all tw-duration-300"
+      overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50 tw-z-50"
       contentLabel="Crear Venta"
       ariaHideApp={false}
     >
@@ -181,7 +191,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
                 <option value={0}>Seleccionar Producto</option>
                 {productos.map((producto) => (
                   <option key={producto.ID_producto} value={producto.ID_producto}>
-                    {producto.nombre}
+                    {producto.descripcion}
                   </option>
                 ))}
               </select>
@@ -197,7 +207,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
               />
               <input
                 type="text"
-                value={`$${prod.precio.toFixed(2)}`}
+                value={prod.precio !== undefined ? `$${prod.precio.toFixed(2)}` : '$0.00'}
                 readOnly
                 className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm tw-w-20"
               />
@@ -220,19 +230,19 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
             className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm"
           />
         </div>
-        <div className="tw-flex tw-justify-end tw-gap-2">
+        <div className="tw-flex tw-gap-4 tw-justify-end tw-mt-4">
           <button
             type="button"
             onClick={onClose}
-            className="tw-bg-gray-300 tw-text-gray-800 tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
+            className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="tw-bg-green-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300"
+            className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
           >
-            Guardar Venta
+            Crear Venta
           </button>
         </div>
       </form>
