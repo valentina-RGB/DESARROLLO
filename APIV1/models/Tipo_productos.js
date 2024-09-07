@@ -17,9 +17,5 @@ module.exports = (sequelize) => {
     timestamps: false,
   });
 
-  Tipo_productos.associate = (models) => {
-  Tipo_productos.belongsTo(models.Productos, {foreignKey: 'ID_tipo_productos'});
-  };
-
   return Tipo_productos;
 };

@@ -35,6 +35,13 @@ module.exports = (sequelize, DataTypes) => {
     Insumos.hasMany(models.HistorialEntradas, { foreignKey: 'ID_insumo' });
     Insumos.hasMany(models.Tipo_insumos, {foreignKey: 'ID_tipo_insumo',as: 'Tipos_insumos', });
     Insumos.hasOne(models.StockInsumos, { foreignKey: 'ID_insumo', as: 'stock' });
+        // Asociación con productos
+            Insumos.belongsToMany(models.Productos, { 
+          through: 'Producto_insumos', 
+          foreignKey: 'ID_insumos_tipo', 
+          otherKey: 'ID_productos_tipo',
+          as: 'productos'
+        });
   };
 
   const StockInsumos = require('./StockInsumo'); // Importa el modelo de StockInsumos

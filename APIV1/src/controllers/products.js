@@ -1,6 +1,20 @@
 const express = require('express');
 const {request , response} = require('express');
 const ProductosService = require('../services/productsServices');
+const multer = require('multer');
+const  path  = require('path');
+const fs= require('fs'); 
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Ruta donde se guardarán las imágenes
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+  });
+  
+  const upload = multer({ storage: storage });
 
 const 
     obtenerProductos = async (req, res) => {
@@ -17,10 +31,11 @@ const
     obtenerProductosPorId = async (req, res) => {
         try {
             const {id} = req.params;
+
             const productos = await ProductosService.getProductosID(id);
 
             if(productos){
-                res.status(200).json(productoss)      
+                res.status(200).json(productos)      
             }else{
                 res.status(404).json({message: 'Product not found' })
             }               
@@ -31,12 +46,24 @@ const
     },
 
     CrearProductos = async  (req = request, res= response) => {
+        const { ID_tipo_productos, Insumos, precio, cantidad, nombre, descripcion, precio_neto,ID_estado_productos, ID_categorias } = req.body;
+
+        let imagen = null;
+
+        // Si hay un archivo, obtener la ruta del archivo
+          if (req.file) {
+            imagen = `/imagenes/${req.file.filename}`; // Ruta de la imagen
+          }   
+          
         try {        
-            const productos = await ProductosService.CreateProdutos(req.body);
-            res.status(201).json({ message: 'Product created successfully', productos });
+            const productos = await ProductosService.CreateProdutos(ID_tipo_productos, Insumos, precio, cantidad, nombre, descripcion, precio_neto,ID_estado_productos, ID_categorias,imagen );
+
+            if(productos){
+            res.json(productos);
+            }
             
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(error.status || 500).json({ message: error.message });
         }
     
     } ,
@@ -70,5 +97,6 @@ module.exports = {
    obtenerProductosPorId,
    CrearProductos,
    ModificarProductos,
-   EliminarProductos
+   EliminarProductos,
+   upload
 }
