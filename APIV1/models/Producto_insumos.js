@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_insumo',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
     },
     ID_productos_tipo: {
         type: DataTypes.INTEGER,
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_producto',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
     },
     cantidad: {
         type: DataTypes.INTEGER,

@@ -4,7 +4,7 @@ const { Insumos, Producto_insumos, Productos, Tipo_productos, Estado_producto,Ca
 
 
   
-
+const
 
     getProductos = async (res,req) => {
       const productos = await Productos.findAll(
@@ -102,7 +102,7 @@ const { Insumos, Producto_insumos, Productos, Tipo_productos, Estado_producto,Ca
               ID_insumos_tipo: insumo.ID_insumo,
               cantidad: insumo.Producto_insumos.cantidad,
               configuracion: insumo.Producto_insumos.configuracion,
-              precio: insumo.precio
+              precio: insumo.precio * cantidad
             });
      
           } else {
