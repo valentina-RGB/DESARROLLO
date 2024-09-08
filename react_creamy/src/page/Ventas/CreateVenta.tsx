@@ -31,8 +31,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
   const [estadoVentas, setEstadoVentas] = useState<EstadoVenta[]>([]);
   const [selectedCliente, setSelectedCliente] = useState<number | null>(null);
   const [selectedEstadoVenta, setSelectedEstadoVenta] = useState<number | null>(null);
-  const [selectedProductos, setSelectedProductos] = useState<
-    { ID_producto: number; cantidad: number; precio: number; descripcion: string }[]
+  const [selectedProductos, setSelectedProductos] = useState<{ ID_producto: number; cantidad: number; precio: number; descripcion: string }[]
   >([]);
   const [precioTotal, setPrecioTotal] = useState<number>(0);
 

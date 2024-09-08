@@ -91,7 +91,7 @@ const Productos: React.FC = () => {
         header: 'Descripcion',
       },
       {
-        accessorKey: 'estado_producto',
+        accessorKey: 'ID_estado_producto',
         header: 'Estado',
         Cell: ({ cell, row }) => (
           <div className="tw-flex tw-items-center">

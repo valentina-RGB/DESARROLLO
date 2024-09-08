@@ -16206,12 +16206,12 @@ img.bg-image {
 .mh-full-screen {
   min-height: 100vh;
 }
-@media screen and (-ms-high-contrast: active),
+/* @media screen and (-ms-high-contrast: active),
   screen and (-ms-high-contrast: none) {
   .mh-full-screen {
     height: 100vh;
   }
-}
+} */
 .list-group {
   border-radius: 0.25rem;
 }
@@ -16227,7 +16227,7 @@ img.bg-image {
     padding: 0 !important;
   }
 }
-@media screen and (-ms-high-contrast: active),
+/* @media screen and (-ms-high-contrast: active),
   screen and (-ms-high-contrast: none) {
   .card {
     display: block;
@@ -16239,7 +16239,7 @@ img.bg-image {
     min-width: 100%;
     height: auto;
   }
-}
+} */
 #style-switch-button {
   position: fixed;
   top: 120px;
