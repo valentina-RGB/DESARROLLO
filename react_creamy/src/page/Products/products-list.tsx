@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import Modal from 'react-modal';
 
 import { Producto } from '../../types/Producto';
+import AddProductos from './products-add';
 // import AddCategories from './categories-add';
 // import EditCategoria from './categories-edit';
 
@@ -18,8 +19,8 @@ Modal.setAppElement('#root');
 const Productos: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'| null; id: number | null }>({ type: null, id: null });
-
+  const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'| null; id: number | null }>({ type: null, id: null });
+  // const [isModalOpen2, setIsModalOpen2] = useState(false);
 
   
   const fetchProducto = async () => {
@@ -32,10 +33,10 @@ const Productos: React.FC = () => {
   };
 
 
-//   const handleModal = (type: 'add' | 'edit'|'entry'|'detail' , id: number | null = null) => {
-//     setModalConfig({type, id});
-//     setIsModalOpen(true);
-//   };
+  const handleModal = (type: 'add' | 'edit'|'entry'|'detail' , id: number | null = null) => {
+    setModalConfig({type, id});
+    setIsModalOpen(true);
+  };
 
   const handleDelete = useCallback(async(id: number)=>{
     toast.promise(api.delete(`productos/${id}`),
@@ -82,11 +83,15 @@ const Productos: React.FC = () => {
         header: '#',
       },
       {
-        accessorKey: 'descripcion',
+        accessorKey: 'nombre',
         header: 'Nombre',
       },
       {
-        accessorKey: 'estado_producto',
+        accessorKey: 'descripcion',
+        header: 'Descripcion',
+      },
+      {
+        accessorKey: 'ID_estado_producto',
         header: 'Estado',
         Cell: ({ cell, row }) => (
           <div className="tw-flex tw-items-center">
@@ -135,16 +140,18 @@ const Productos: React.FC = () => {
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
          
          <h1 className="page-heading">Productos</h1>
-         {/* <button onClick={()=>handleModal('add')} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
-           <FontAwesomeIcon icon={faPlus} /> Agregar categoría
-         </button> */}
+         <button onClick={()=>handleModal('add')} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+           <FontAwesomeIcon icon={faPlus} /> Agregar producto
+         </button>
          <MaterialReactTable columns={columns} data={productos} /> 
          <Modal
            isOpen={isModalOpen}
            onRequestClose={handleCloseModal}
-           className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
-           overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+            className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-w-full tw-max-w-3xl tw-max-h-full tw-overflow-y-auto tw-mx-auto"
+  overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+            
          >
+            {modalConfig.type === 'add' && <AddProductos onClose={handleCloseModal} />}
            {/* {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
            {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />} */}
            {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}

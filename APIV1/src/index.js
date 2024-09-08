@@ -21,6 +21,8 @@ const configuracionRouters = require('./v1/routers/configuracion');
 const pedidosRouters = require('./v1/routers/pedidos');
 const VentasRouters = require('./v1/routers/ventasRoutes');
 const EstadoVentasRouters = require('./v1/routers/estado_ventas')
+const Tipo_productoRouters = require('./v1/routers/tipo_productos')
+const PI = require('./v1/routers/productos_insumos')
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
 
@@ -47,7 +49,7 @@ class Server {
    syncDatabase =async()=> {
       try {
         //  await db.sequelize.sync({ force: true }); 
-          // await db.sequelize.sync({ alter: true })
+          //await db.sequelize.sync({ alter: true })
         console.log('Todas las tablas han sido sincronizadas o creadas.');
     
       } catch (error) {
@@ -57,6 +59,9 @@ class Server {
 
   Routers() {
     this.app
+
+    
+      .use('/producto_insumos',PI)
       // Rutas de productos
       .use('/productos', routerProduct)
       // Rutas de categorías
@@ -71,9 +76,11 @@ class Server {
       .use('/historial_entradas', historyEntradasRouter)
       //Rutas de estado del pedidoo
       .use('/Estado',Estado_pedidoRoutes)
-
+      //Rutas de tipo del producto
+      .use('/tipo_producto',Tipo_productoRouters)
       //Rutas de venta
       .use('/Ventas', VentasRouters)
+
       .use('/estadoventas', EstadoVentasRouters)
 
       .use('/Clientes', clientsRoutes)

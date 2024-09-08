@@ -11,7 +11,8 @@ module.exports = (sequelize) => {
     },
     descripcion: {
       type: DataTypes.STRING(100), 
-      allowNull: false,  
+      allowNull: false,
+      unique: true
     },
     estado_categoria: {
       type: DataTypes.CHAR(1),

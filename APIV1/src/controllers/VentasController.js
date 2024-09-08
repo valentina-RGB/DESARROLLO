@@ -82,7 +82,7 @@ const updateEstadoVenta = async (req, res) => {
         // Verificar si el estado de venta existe
         const estadoVenta = await Estado_ventas.findByPk(ID_estado_venta);
         if (!estadoVenta) {
-            return res.status(400).json({ error: 'Estado de venta no encontrado' });
+            return res.status(400).json({ menssage: 'Estado de venta no encontrado' });
         }
 
         // Verificar si la venta existe
