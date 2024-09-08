@@ -11,7 +11,7 @@ interface AddEntryProps {
 
 const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
   const [insumo, setInsumo] = useState<Insumo | null>(null);
-  const [cantidad, setCantidad] = useState<number>(0);
+  const [cantidad, setCantidad] = useState<string>('');  // Inicialmente vacío
   const [descripcion, setDescripcion] = useState<string>('');
   const navigate = useNavigate();
 
@@ -31,8 +31,15 @@ const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Valida que la cantidad no sea una cadena vacía y conviértela a número
+    const cantidadNumerica = Number(cantidad);
+    if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+      toast.error('Por favor ingrese una cantidad válida.');
+      return;
+    }
+
     try {
-      await api.post(`/insumos/${id}/entradas`, { cantidad, descripcion });
+      await api.post(`/insumos/${id}/entradas`, { cantidad: cantidadNumerica, descripcion });
       onClose(); 
       toast.success('La entrada del insumo se ha agregado exitosamente.');
       navigate('/Insumos'); 
@@ -53,8 +60,9 @@ const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
               id="cantidad"
               type="number"
               value={cantidad}
-              onChange={(e) => setCantidad(Number(e.target.value))}
+              onChange={(e) => setCantidad(e.target.value)}  // Actualiza el valor de la cantidad
               className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 tw-transition"
+              placeholder="Ingrese una cantidad"
             />
           </div>
           <div className="tw-mb-4">
@@ -65,6 +73,7 @@ const AddEntry: React.FC<AddEntryProps> = ({ id, onClose }) => {
               onChange={(e) => setDescripcion(e.target.value)}
               className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-green-500 tw-transition"
               rows={3}
+              placeholder="Descripción de la entrada"
             />
           </div>
           <div className="tw-flex tw-justify-end">

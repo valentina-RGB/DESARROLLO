@@ -31,8 +31,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
   const [estadoVentas, setEstadoVentas] = useState<EstadoVenta[]>([]);
   const [selectedCliente, setSelectedCliente] = useState<number | null>(null);
   const [selectedEstadoVenta, setSelectedEstadoVenta] = useState<number | null>(null);
-  const [selectedProductos, setSelectedProductos] = useState<{ ID_producto: number; cantidad: number; precio: number; descripcion: string }[]
-  >([]);
+  const [selectedProductos, setSelectedProductos] = useState<{ ID_producto: number; cantidad: number; precio: number; descripcion: string }[]>([]);
   const [precioTotal, setPrecioTotal] = useState<number>(0);
 
   useEffect(() => {
@@ -146,113 +145,128 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen }) => {
       contentLabel="Crear Venta"
       ariaHideApp={false}
     >
-      <form onSubmit={handleSubmit} className="tw-bg-white tw-rounded-lg tw-shadow-lg tw-p-8 tw-w-full tw-max-w-lg tw-mx-auto">
-        <h2 className="tw-text-2xl tw-font-bold tw-mb-4">Crear Venta</h2>
-        <div className="tw-flex tw-flex-col tw-gap-2">
-          <label className="tw-font-semibold">Cliente</label>
-          <select
-            value={selectedCliente || ''}
-            onChange={(e) => setSelectedCliente(Number(e.target.value))}
-            className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm"
-          >
-            <option value="">Sin Cliente</option>
-            {clientes.map((cliente) => (
-              <option key={cliente.ID_cliente} value={cliente.ID_cliente}>
-                {cliente.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="tw-flex tw-flex-col tw-gap-2">
-          <label className="tw-font-semibold">Estado de Venta</label>
-          <select
-            value={selectedEstadoVenta || ''}
-            onChange={(e) => setSelectedEstadoVenta(Number(e.target.value))}
-            className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm"
-          >
-            <option value="">Seleccionar Estado</option>
-            {estadoVentas.map((estado) => (
-              <option key={estado.ID_estado_venta} value={estado.ID_estado_venta}>
-                {estado.descripcion}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="tw-flex tw-flex-col tw-gap-2">
-          <label className="tw-font-semibold">Productos</label>
-          {selectedProductos.map((prod, index) => (
-            <div key={index} className="tw-flex tw-gap-2 tw-items-center tw-mb-2">
+      <div className="tw-bg-[#f8faf] tw-p-6 tw-rounded-lg tw-shadow-lg">
+        <form onSubmit={handleSubmit}>
+          <div className="tw-mb-4">
+            <h2 className="tw-text-2xl tw-font-bold tw-text-[#6b46c1]">Nueva Venta</h2>
+            <p className="tw-text-gray-500">Completa los siguientes campos para crear una venta.</p>
+          </div>
+          
+          <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+            {/* Cliente */}
+            <div className="tw-flex tw-flex-col">
+              <label className="tw-font-semibold">Cliente</label>
               <select
-                value={prod.ID_producto}
-                onChange={(e) =>
-                  handleProductoChange(index, 'ID_producto', e.target.value)
-                }
-                className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm tw-flex-grow"
+                value={selectedCliente || ''}
+                onChange={(e) => setSelectedCliente(Number(e.target.value))}
+                className="tw-bg-white tw-border tw-rounded tw-px-2 tw-py-1 tw-shadow-sm"
               >
-                <option value={0}>Seleccionar Producto</option>
-                {productos.map((producto) => (
-                  <option key={producto.ID_producto} value={producto.ID_producto}>
-                    {producto.descripcion}
+                <option value="">Sin Cliente</option>
+                {clientes.map((cliente) => (
+                  <option key={cliente.ID_cliente} value={cliente.ID_cliente}>
+                    {cliente.nombre}
                   </option>
                 ))}
               </select>
-              <input
-                type="number"
-                min="1"
-                value={prod.cantidad}
-                onChange={(e) =>
-                  handleProductoChange(index, 'cantidad', Number(e.target.value))
-                }
-                className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm tw-w-20"
-                placeholder="Cantidad"
-              />
-              <input
-                type="text"
-                value={prod.precio !== undefined ? `$${prod.precio.toFixed(2)}` : '$0.00'}
-                readOnly
-                className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm tw-w-20"
-              />
             </div>
-          ))}
-          <button
-            type="button"
-            onClick={handleAddProducto}
-            className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300 tw-self-start"
-          >
-            + Añadir Producto
-          </button>
-        </div>
-        <div className="tw-flex tw-flex-col tw-gap-2">
-          <label className="tw-font-semibold">Precio Total</label>
-          <input
-            type="text"
-            value={`$${precioTotal.toFixed(2)}`}
-            readOnly
-            className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm"
-          />
-        </div>
-        <div className="tw-flex tw-gap-4 tw-justify-end tw-mt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="tw-bg-gray-300 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
-          >
-            Crear Venta
-          </button>
-        </div>
-      </form>
+            {/* Estado Venta */}
+            <div className="tw-flex tw-flex-col">
+              <label className="tw-font-semibold">Estado de Venta</label>
+              <select
+                value={selectedEstadoVenta || ''}
+                onChange={(e) => setSelectedEstadoVenta(Number(e.target.value))}
+                className="tw-bg-white tw-border tw-rounded tw-px-2 tw-py-1 tw-shadow-sm"
+              >
+                <option value="">Seleccionar Estado</option>
+                {estadoVentas.map((estado) => (
+                  <option key={estado.ID_estado_venta} value={estado.ID_estado_venta}>
+                    {estado.descripcion}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Productos */}
+          <div className="tw-mt-6">
+            <label className="tw-font-semibold">Productos</label>
+            {selectedProductos.map((prod, index) => (
+              <div key={index} className="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-2 tw-mb-2">
+                <select
+                  value={prod.ID_producto}
+                  onChange={(e) =>
+                    handleProductoChange(index, 'ID_producto', e.target.value)
+                  }
+                  className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm"
+                >
+                  <option value={0}>Seleccionar Producto</option>
+                  {productos.map((producto) => (
+                    <option key={producto.ID_producto} value={producto.ID_producto}>
+                      {producto.descripcion}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="number"
+                  min="1"
+                  value={prod.cantidad}
+                  onChange={(e) =>
+                    handleProductoChange(index, 'cantidad', Number(e.target.value))
+                  }
+                  className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-white tw-shadow-sm"
+                  placeholder="Cantidad"
+                />
+                <input
+                  type="text"
+                  value={prod.precio !== undefined ? `$${prod.precio.toFixed(2)}` : '$0.00'}
+                  readOnly
+                  className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm"
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={handleAddProducto}
+              className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300 tw-self-start"
+            >
+              + Añadir Producto
+            </button>
+          </div>
+
+          {/* Precio Total */}
+          <div className="tw-mt-6">
+            <label className="tw-font-semibold">Precio Total</label>
+            <input
+              type="text"
+              value={`$${precioTotal.toFixed(2)}`}
+              readOnly
+              className="tw-border tw-rounded tw-px-2 tw-py-1 tw-bg-gray-100 tw-shadow-sm tw-w-full"
+            />
+          </div>
+
+          {/* Botones */}
+          <div className="tw-mt-6 tw-flex tw-justify-end tw-gap-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-bg-gray-300 tw-text-gray-700 tw-px-4 tw-py-2 tw-rounded tw-hover:bg-gray-400 tw-transition-all tw-duration-300"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="tw-bg-green-500 tw-text-white tw-px-4 tw-py-2 tw-rounded tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300"
+            >
+              Crear Venta
+            </button>
+          </div>
+        </form>
+      </div>
     </Modal>
   );
 };
 
 export default CreateVenta;
 function onVentaCreated() {
-  throw new Error('Function not implemented.');
 }
 

@@ -53,7 +53,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   const [descripcion, setDescripcion] = useState<string>("");
   const [estado, setEstado] = useState<string>("A");
   const [imagen, setImagen] = useState("");
-  const [categorias, setCategorias] = useState<Array<{ ID_categoria: number; descripcion: string }> >([]);
+  const [categorias, setCategorias] = useState<Array<{ ID_categoria: number; descripcion: string }>>([]);
   // const [Insumos, setInsumos] = useState<Insumo[]>([]);
   const [tipo, setTipo] = useState<Array<{ ID_tipo_producto: number; descripcion: string }>>([]);
   const [error, setError] = useState<string | unknown>(null);
@@ -68,8 +68,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     nombre: string;
     descripcion: string;
     precio_neto: number;
-    ID_estado_productos: number|string;
-    ID_tipo_productos: number|string;
+    ID_estado_productos: number | string;
+    ID_tipo_productos: number | string;
     ID_categorias: number | string;
     imagen: File | null;
     Insumos: Insumo[]
@@ -168,7 +168,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
       ID_tipo_productos: formData.ID_tipo_productos,
       ID_categorias: formData.ID_categorias, // Por ejemplo, inicializar como 0
       imagen: formData.imagen || '',
-      Insumos:inputs
+      Insumos: inputs
     };
     console.log(data)
 
@@ -207,44 +207,44 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
   }
 
-    // DESDE AQUI SE HACE LA CREACIÓN DE INSUMOS
+  // DESDE AQUI SE HACE LA CREACIÓN DE INSUMOS
 
-    const [searchTerm, setSearchTerm] = useState("") //LO USARE PARA BUSCAR INSUMOS
+  const [searchTerm, setSearchTerm] = useState("") //LO USARE PARA BUSCAR INSUMOS
 
-    const [inputs, setInputs] = useState<Insumo[]>([]);
-    const [searchResults, setSearchResults] =  useState<Insumo[]>([]);
-    const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Insumo seleccionado
-    
+  const [inputs, setInputs] = useState<Insumo[]>([]);
+  const [searchResults, setSearchResults] = useState<Insumo[]>([]);
+  const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Insumo seleccionado
 
-    const loadInputs = async () => {
-      try {
-        const response = await api.get("/Insumos");
-        const data:  Insumo[] = await response.data; // Filtra los resultados según el término de búsqueda
-        const filteredInputs = data.filter((input) =>
-          input.descripcion_insumo.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setSearchResults(filteredInputs);
-      } catch (error) {
-        console.error("Error al cargar los insumos:", error);
-      }
-    };
+
+  const loadInputs = async () => {
+    try {
+      const response = await api.get("/Insumos");
+      const data: Insumo[] = await response.data; // Filtra los resultados según el término de búsqueda
+      const filteredInputs = data.filter((input) =>
+        input.descripcion_insumo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchResults(filteredInputs);
+    } catch (error) {
+      console.error("Error al cargar los insumos:", error);
+    }
+  };
 
 
 
   // Llama a la función de búsqueda cada vez que cambia el término de búsqueda
   // useEffect(() => {
-   
+
   // }, [searchTerm]);
 
-   // Función para agregar un insumo a la lista
-   const addInput = (insumo:Insumo) => {
+  // Función para agregar un insumo a la lista
+  const addInput = (insumo: Insumo) => {
     const productExists = inputs.some((input) => input.ID_insumo === insumo.ID_insumo);
 
     if (!productExists) {
       setInputs([
         ...inputs,
-        { 
-          ID_insumo: insumo.ID_insumo, 
+        {
+          ID_insumo: insumo.ID_insumo,
           descripcion_insumo: insumo.descripcion_insumo,
           estado_insumo: insumo.estado_insumo,
           precio: insumo.precio,
@@ -260,48 +260,48 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   };
 
 
-    // const addInput = () => {
-    //   // setInputs([...se, { ID_insumo: inputs.length + 1, descripcion_insumo: ""}]);
-    // };
+  // const addInput = () => {
+  //   // setInputs([...se, { ID_insumo: inputs.length + 1, descripcion_insumo: ""}]);
+  // };
 
-    const updateQuantity = (id: number, amount: number) => {
-      const newInputs = inputs.map((input) => {
-        if (input.ID_insumo === id) {
-          const newQuantity = isNaN(input.Producto_insumos.cantidad + amount)? 1: input.Producto_insumos.cantidad + amount;
-          const precio = isNaN(input.precio * newQuantity)? 1: input.precio * newQuantity;
-          return {
-            ...input,
-            Producto_insumos: {
-              ...input.Producto_insumos,
-              cantidad: newQuantity,
-              precio: precio  ,
-            },
-          };
-        }
-        return input;
-      });
-      setInputs(newInputs);
-     
-    };
-
-    const removeInput = (id: number) => {
-      const newInputs = inputs.filter((input) => input.ID_insumo !== id);
-      setInputs(newInputs);
-    };
-
-    useEffect(() => {
-      fetchTipo();
-      fetchCategorias();
-      if (searchTerm) {
-        loadInputs();
-      } else {
-        setSearchResults([]);
+  const updateQuantity = (id: number, amount: number) => {
+    const newInputs = inputs.map((input) => {
+      if (input.ID_insumo === id) {
+        const newQuantity = isNaN(input.Producto_insumos.cantidad + amount) ? 1 : input.Producto_insumos.cantidad + amount;
+        const precio = isNaN(input.precio * newQuantity) ? 1 : input.precio * newQuantity;
+        return {
+          ...input,
+          Producto_insumos: {
+            ...input.Producto_insumos,
+            cantidad: newQuantity,
+            precio: precio,
+          },
+        };
       }
-    }, [searchTerm]);
+      return input;
+    });
+    setInputs(newInputs);
 
-  
+  };
 
-     // Función para manejar la selección de un insumo
+  const removeInput = (id: number) => {
+    const newInputs = inputs.filter((input) => input.ID_insumo !== id);
+    setInputs(newInputs);
+  };
+
+  useEffect(() => {
+    fetchTipo();
+    fetchCategorias();
+    if (searchTerm) {
+      loadInputs();
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm]);
+
+
+
+  // Función para manejar la selección de un insumo
   const handleSelectInsumo = (insumo: Insumo) => {
     setSelectedInsumo(insumo);
   };
@@ -310,24 +310,24 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   console.log("inputs:", inputs);
   console.log("selectedInsumo:", selectedInsumo);
   console.log("Renderizando componente");
-  
+
   return (
     <>
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
-        <form  onSubmit={handleSubmit}>
-        <div className="tw-mb-4">
-          <div className="tw-flex tw-flex-col tw-items-start tw-gap-2">
-            <h2 className="tw-text-2xl tw-font-bold tw-text-[#6b46c1]">
-              Nuevo Producto
-            </h2>
-            <p className="tw-text-gray-500 dark:tw-text-gray-400">
-              Completa los siguientes campos para agregar un nuevo producto a tu
-              catálogo.
-            </p>
+        <form onSubmit={handleSubmit}>
+          <div className="tw-mb-4">
+            <div className="tw-flex tw-flex-col tw-items-start tw-gap-2">
+              <h2 className="tw-text-2xl tw-font-bold tw-text-[#6b46c1]">
+                Nuevo Producto
+              </h2>
+              <p className="tw-text-gray-500 dark:tw-text-gray-400">
+                Completa los siguientes campos para agregar un nuevo producto a tu
+                catálogo.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="tw-mb-6 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
-        
+          <div className="tw-mb-6 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+
             {/* Columna de información del producto */}
             <div className="tw-col-span-2 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
               <div className="tw-grid tw-gap-2">
@@ -440,9 +440,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                 Imagen
               </label>
               <div
-                className={`tw-border-2 tw-border-dashed tw-rounded-lg tw-p-4 tw-text-center ${
-                  dragActive ? "tw-border-indigo-400" : "tw-border-gray-300"
-                } `}
+                className={`tw-border-2 tw-border-dashed tw-rounded-lg tw-p-4 tw-text-center ${dragActive ? "tw-border-indigo-400" : "tw-border-gray-300"
+                  } `}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -497,44 +496,44 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                 </button>
               </div>
             </div>
-       
-        </div>
-       
+
+          </div>
 
 
-{/* 
+
+          {/* 
       AGREGAR INSUMOS */}
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
-           overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
-         >
-        
-        <div className="tw-w-full tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
-      <div className="tw-flex tw-items-center tw-justify-between tw-mb-6">
-        <h2 className="tw-text-2xl tw-font-bold">Agregar Insumos</h2>
-       
+          <Modal
+            isOpen={isModalOpen}
+            onRequestClose={handleCloseModal}
+            className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
+            overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+          >
 
-      </div>
-      
-      <div className="tw-space-y-4">
-        <div className="tw-flex tw-items-center tw-gap-4 tw-mb-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar insumo..."
-            className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
-          />
-        </div>
+            <div className="tw-w-full tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
+              <div className="tw-flex tw-items-center tw-justify-between tw-mb-6">
+                <h2 className="tw-text-2xl tw-font-bold">Agregar Insumos</h2>
 
-        {searchResults.map((input) => (
-          <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
-            <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
-              <span className="tw-font-medium">{input.descripcion_insumo}</span>
-              <div className="tw-flex tw-items-center tw-gap-2">
-                {/* <button
+
+              </div>
+
+              <div className="tw-space-y-4">
+                <div className="tw-flex tw-items-center tw-gap-4 tw-mb-4">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Buscar insumo..."
+                    className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
+                  />
+                </div>
+
+                {searchResults.map((input) => (
+                  <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
+                    <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
+                      <span className="tw-font-medium">{input.descripcion_insumo}</span>
+                      <div className="tw-flex tw-items-center tw-gap-2">
+                        {/* <button
                   onClick={() => updateQuantity(input.ID_insumo, -1)}
                   disabled={input.cantidad <= 1}
                   className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white disabled:tw-opacity-50"
@@ -548,105 +547,105 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                 >
                   <PlusIcon className="tw-w-4 tw-h-4" />
                 </button> */}
-              </div>
-            </div>
-            <button
-              onClick={() => removeInput(input.ID_insumo)}
-              className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-            >
-              <XIcon className="tw-w-4 tw-h-4" />
-            </button>
-            <button
-                   onClick={() => addInput(input)}
-                  className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-                >
-                  <PlusIcon className="tw-w-4 tw-h-4" />
-                </button>
-
-            
-          </div>
-                  
-        ))}
-
-      </div>
-      <div className="tw-flex tw-items-center tw-justify-end">
-          <button 
-           onClick={() => {
-            if (selectedInsumo) {
-              addInput(selectedInsumo);
-              setSearchTerm(""); // Limpiar el término de búsqueda
-            }
-          }}
-          disabled={!selectedInsumo}
-            className="tw-flex tw-items-center tw-gap-2 tw-bg-[#ff6b00] tw-text-white tw-py-2 tw-px-4 tw-rounded-lg"
-          >
-            <PlusIcon className="tw-w-4 tw-h-4" />
-            Agregar Insumo
-          </button>
-        </div>
-      
-        <div className="tw-mt-6">
-          <h3 className="tw-text-xl tw-font-semibold">Insumos Agregados</h3>
-          <div className="tw-space-y-4">
-            {inputs.map((input) => (
-              <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
-                <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
-                  <span className="tw-font-medium">{input.descripcion_insumo} </span>
-                  <div className="tw-flex tw-items-center tw-gap-2">
+                      </div>
+                    </div>
                     <button
-                      onClick={() => updateQuantity(input.ID_insumo, -1)}
-                      disabled={input.Producto_insumos.cantidad <= 1}
-                      className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white disabled:tw-opacity-50"
+                      onClick={() => removeInput(input.ID_insumo)}
+                      className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
                     >
-                      <MinusIcon className="tw-w-4 tw-h-4" />
+                      <XIcon className="tw-w-4 tw-h-4" />
                     </button>
-                    <span className="tw-font-medium">{input.Producto_insumos.cantidad}</span>
                     <button
-                      onClick={() => updateQuantity(input.ID_insumo, 1)}
+                      onClick={() => addInput(input)}
                       className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
                     >
                       <PlusIcon className="tw-w-4 tw-h-4" />
                     </button>
+
+
                   </div>
-                </div>
-                <span>
-                <span className="tw-font-medium">{input.Producto_insumos.precio} </span>
-                </span>
+
+                ))}
+
+              </div>
+              <div className="tw-flex tw-items-center tw-justify-end">
                 <button
-                  onClick={() => removeInput(input.ID_insumo)}
-                  className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+                  onClick={() => {
+                    if (selectedInsumo) {
+                      addInput(selectedInsumo);
+                      setSearchTerm(""); // Limpiar el término de búsqueda
+                    }
+                  }}
+                  disabled={!selectedInsumo}
+                  className="tw-flex tw-items-center tw-gap-2 tw-bg-[#ff6b00] tw-text-white tw-py-2 tw-px-4 tw-rounded-lg"
                 >
-                  <XIcon className="tw-w-4 tw-h-4" />
+                  <PlusIcon className="tw-w-4 tw-h-4" />
+                  Agregar Insumo
                 </button>
               </div>
-            ))}
+
+              <div className="tw-mt-6">
+                <h3 className="tw-text-xl tw-font-semibold">Insumos Agregados</h3>
+                <div className="tw-space-y-4">
+                  {inputs.map((input) => (
+                    <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
+                      <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
+                        <span className="tw-font-medium">{input.descripcion_insumo} </span>
+                        <div className="tw-flex tw-items-center tw-gap-2">
+                          <button
+                            onClick={() => updateQuantity(input.ID_insumo, -1)}
+                            disabled={input.Producto_insumos.cantidad <= 1}
+                            className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white disabled:tw-opacity-50"
+                          >
+                            <MinusIcon className="tw-w-4 tw-h-4" />
+                          </button>
+                          <span className="tw-font-medium">{input.Producto_insumos.cantidad}</span>
+                          <button
+                            onClick={() => updateQuantity(input.ID_insumo, 1)}
+                            className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+                          >
+                            <PlusIcon className="tw-w-4 tw-h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <span>
+                        <span className="tw-font-medium">{input.Producto_insumos.precio} </span>
+                      </span>
+                      <button
+                        onClick={() => removeInput(input.ID_insumo)}
+                        className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+                      >
+                        <XIcon className="tw-w-4 tw-h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
+
+
+            </div>
+
+
+
+          </Modal>
+
+
+
+
+
+
+
+
+
+          <div className="tw-mt-4">
+            <button
+              type="submit"
+              className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2">
+              Guardar Producto
+            </button>
           </div>
-        </div>
- 
-    
-    
-    
-    </div>
-    
-  
-      
-      </Modal>
-
-
-
-
-
-
-
-
-
-      <div className="tw-mt-4">
-          <button
-            type="submit"
-          className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2">
-            Guardar Producto
-          </button>
-        </div>
 
         </form>
       </div>
@@ -713,5 +712,6 @@ function XIcon(props) {
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
     </svg>
-  );}
+  );
+}
 export default AddProductos;
