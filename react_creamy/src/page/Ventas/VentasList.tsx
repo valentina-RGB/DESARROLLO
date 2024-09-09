@@ -116,6 +116,7 @@ const VentasList: React.FC = () => {
         </div>,
         { duration: 8000 }
       );
+      
       return;
     }
 
@@ -168,6 +169,15 @@ const VentasList: React.FC = () => {
       {
         accessorKey: 'fecha',
         header: 'Fecha',
+        Cell: ({ cell }) => {
+          const fechaOriginal = cell.getValue<string>();
+          const fechaFormateada = new Date(fechaOriginal).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          return fechaFormateada;
+        },
       },
       {
         accessorKey: 'ID_estado_venta',
