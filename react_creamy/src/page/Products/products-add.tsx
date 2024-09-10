@@ -58,8 +58,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
-    descripcion: "",
-    imagen: "",
+    nombre:"",
+    insumos:""
   });
 
   const [formData, setFormData] = useState<{
@@ -180,15 +180,17 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     };
     console.log(data)
 
-    const newErrors = { descripcion: "", imagen: "" };
-    if (!formData.descripcion.trim()) {
-      newErrors.descripcion = "El nombre de la categoría es obligatorio";
+    const newErrors = { nombre: "", insumos:""};
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre de la categoría es obligatorio";
     }
-    //   if (!formData.imagen) {
-    //     newErrors.imagen = 'La imagen es obligatoria';
-    //   }
+      if (inputs.length <=0){
+        newErrors.insumos= 'Debes agregar almenos 1 insumo';
+      
+      }
     setErrors(newErrors);
-    if (!newErrors.descripcion) {
+
+    if (!newErrors.insumos && !newErrors.nombre) {
       try {
         await api.post("/productos", data, {
           headers: {
@@ -269,13 +271,16 @@ useEffect(() => {
   // Función para agregar un insumo a la lista
   const addInput = (insumo: Insumo) => {
     const productExists = inputs.some((input) => input.ID_insumo === insumo.ID_insumo);
-
+   
     if (productExists) {
     updateQuantity(insumo.ID_insumo, 1);
     // Mostramos un mensaje toast
     toast.success(`La cantidad de ${insumo.descripcion_insumo} ha sido actualizada.`);
   } else {
+   
+   
     setInputs([
+      
       ...inputs,
       { 
         ID_insumo: insumo.ID_insumo, 
@@ -284,14 +289,16 @@ useEffect(() => {
         precio: insumo.precio,
         ID_tipo_insumo: insumo.ID_tipo_insumo,
         Producto_insumos: {
-          cantidad: 1,
+          cantidad: + 1 ,
           configuracion: "",
           precio: insumo.precio,
         }
-      },
+      }
     ]);
+    
     // Mostramos un mensaje toast
     toast.success(`${insumo.descripcion_insumo} ha sido actualizado.`);
+    return inputs;
   }
   };
 
@@ -403,8 +410,11 @@ useEffect(() => {
                   value={formData.nombre}
                   onChange={handleInputChange}
                   placeholder="Nombre del producto"
-                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
+                  className={`tw-mt-1 tw-block tw-w-full tw-rounded-md tw-shadow-sm ${
+                    errors.nombre ? 'tw-border-red-500' : 'tw-border-gray-300'
+                  } tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]`}
                 />
+                 {errors.nombre && <p className="tw-mt-2 tw-text-sm tw-text-red-600">{errors.nombre}</p>}
               </div>
               <div className="tw-grid tw-gap-2">
                 <label
@@ -485,7 +495,7 @@ useEffect(() => {
                   value={formData.descripcion}
                   onChange={handleInputChange}
                   placeholder="Describe el producto"
-                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-300 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
+                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
                 />
               </div>
             </div>
@@ -669,12 +679,13 @@ useEffect(() => {
             Guardar Producto
           </button>
           <div className="">
-                <button
+                <button             
                   onClick={() => handleModal()}
                   className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2"
                 >Añadir insumos +
                 </button>
               </div>
+              {errors.insumos && <p className="tw-mt-2 tw-text-sm tw-text-red-600">{errors.insumos}</p>}
         </div>
 
         </form>
