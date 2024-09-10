@@ -8,7 +8,6 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 import AddUsuario from './CreateUsuario';
 import EditUsuario from './EditUsuario';
-import AddEntry from './AddEntry';
 /* import usuarioDetails from './UsuarioDetails'; */
 import Modal from 'react-modal';
 
@@ -70,12 +69,6 @@ const UsuarioList: React.FC = () => {
 
   const handleAddusuario = () => {
     setModalType('add');
-    setIsModalOpen(true);
-  };
-
-  const handleAddEntry = (id: number) => {
-    setSelectedUsuarioId(id);
-    setModalType('entry');
     setIsModalOpen(true);
   };
 
@@ -179,7 +172,6 @@ const UsuarioList: React.FC = () => {
       >
         {modalType === 'add' && <AddUsuario onClose={handleModalCloseAndFetch} />}
         {modalType === 'edit' && selectedUsuarioId !== null && <EditUsuario id={selectedUsuarioId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'entry' && selectedUsuarioId !== null && <AddEntry id={selectedUsuarioId} onClose={handleModalCloseAndFetch} />}
         {/* {modalType === 'detail' && selectedusuarioId !== null && <usuarioDetails id={selectedusuarioId} onClose={handleModalCloseAndFetch} />} */}
       </Modal>
     </div>

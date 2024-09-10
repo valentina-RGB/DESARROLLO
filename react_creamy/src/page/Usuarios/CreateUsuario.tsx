@@ -24,8 +24,8 @@ const AddUsuario: React.FC<AddUsuario> = ({onClose}) => {
         const response = await api.get('/roles');
         setRoles(response.data);
       } catch (error) {
-        console.error('Error fetching types of insumos:', error);
-        setError('Error al cargar los tipos de insumos.');
+        console.error('Error fetching types of usuario:', error);
+        setError('Error al cargar los usuarios.');
       }
     };
 
@@ -44,16 +44,21 @@ const AddUsuario: React.FC<AddUsuario> = ({onClose}) => {
     }
 
     try {
-      await api.post('/usuarios', {
-        nombre:nombre,
-        email:email,
+
+      const usuario = {
+        nombre: nombre,
+        email: email,
         telefono: telefono,
-        password:password,
-        ID_rol:Number(rol),
-        estado: 'A', 
-      });
+        password: password,
+        ID_rol: Number(rol),
+        estado: 'A'
+      }
+
+      console.log(usuario);
+
+      await api.post('/usuarios', usuario);
       onClose();
-      toast.success('La categoría ha agregada exitosamente.');
+      toast.success('El usuario se  ha agregada exitosamente.');
       navigate('/Usuarios')
       
     } catch (error) {
@@ -68,7 +73,6 @@ const AddUsuario: React.FC<AddUsuario> = ({onClose}) => {
     <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
       <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-md w-full max-w-md tw-mx-auto">
         <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Agregar Usuario</h2>
-        {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
         <div className="tw-mb-4">
             <label htmlFor="nombre" className="tw-block tw-text-gray-700 tw-font-semibold">Nombre</label>
@@ -139,6 +143,7 @@ const AddUsuario: React.FC<AddUsuario> = ({onClose}) => {
             Agregar Usuario
           </button>
         </form>
+        {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
       </div>
     </div>
   );
