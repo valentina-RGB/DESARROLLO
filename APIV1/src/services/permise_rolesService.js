@@ -13,12 +13,11 @@ const Permiso_roles = db.Permiso_roles;
     getPermise_rolesID = async (id) => {
       const permiso_roles= await Permiso_roles.findByPk(id);
         return permiso_roles;
-    } ,
+    } 
 
     CreatePermise_roles = async (datos) => {
         const permiso_roles = await Permiso_roles.create(datos);
-        return permiso_roles ;
-
+        return permiso_roles;
     };
         
     PatchPermise_roles= async (id, datos) => {

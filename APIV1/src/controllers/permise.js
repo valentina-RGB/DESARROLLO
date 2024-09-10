@@ -5,7 +5,7 @@ const permiseService = require('../services/permiseService');
 const 
     obtenerPermiso = async (req, res) => {
         try{
-
+            
         return await permiseService.getPermiso(res,req);  
        
         }catch (error) {
