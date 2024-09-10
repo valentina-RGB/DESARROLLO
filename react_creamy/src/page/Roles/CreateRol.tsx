@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -9,27 +9,40 @@ interface CreateRolProps {
 
 const AddRol: React.FC<CreateRolProps> = ({ onClose }) => {
   const [descripcionRol, setDescripcionRol] = useState('');
-  const [selectedPermiso, setSelectedPermiso] = useState('');
+  const [permisos, setPermisos] = useState([]); // Para almacenar los permisos del API
+  const [selectedPermisos, setSelectedPermisos] = useState<number[]>([]); // Permisos seleccionados
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const permisoRol = [
-    { ID_permiso: 1, descripcion_tipo: 'Leer' },
-    { ID_permiso: 2, descripcion_tipo: 'Crear' },
-    { ID_permiso: 3, descripcion_tipo: 'Editar' }
-  ];
+  // Llamada a la API para obtener los permisos
+  useEffect(() => {
+    const fetchPermisos = async () => {
+      try {
+        const response = await api.get('/permiso');
+        setPermisos(response.data); 
+      } catch (error) {
+        console.error('Error al obtener los permisos:', error);
+        setError('No se pudieron cargar los permisos');
+      }
+    };
+
+    fetchPermisos();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!descripcionRol || !selectedPermiso) {
-      setError('Por favor, completa todos los campos.');
+    if (!descripcionRol || selectedPermisos.length === 0) {
+      setError('Por favor, completa todos los campos y selecciona al menos un permiso.');
       return;
     }
     try {
-      await api.post('/roles', {
+      const rolToCreate = {
         descripcion: descripcionRol,
-        ID_permisos: Number(selectedPermiso),
-      });
+        estado_rol: 'D',
+        ID_permisos: selectedPermisos, 
+      }
+      console.log(rolToCreate);
+      await api.post('/roles', rolToCreate);
       toast.success('Rol agregado correctamente.');
       onClose(); // Cierra el modal y actualiza la lista
     } catch (error: any) {
@@ -46,7 +59,9 @@ const AddRol: React.FC<CreateRolProps> = ({ onClose }) => {
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción del Rol</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">
+              Descripción del Rol
+            </label>
             <input
               id="descripcion"
               type="text"
@@ -57,23 +72,42 @@ const AddRol: React.FC<CreateRolProps> = ({ onClose }) => {
               required
             />
           </div>
+
           <div className="tw-mb-4">
-            <label htmlFor="Permiso" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Tipo de Permiso</label>
-            <select
-              id="Permiso"
-              value={selectedPermiso}
-              onChange={(e) => setSelectedPermiso(e.target.value)}
-              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
-              required
-            >
-              <option value="" disabled>Selecciona un tipo de permiso</option>
-              {permisoRol.map(permiso => (
-                <option key={permiso.ID_permiso} value={permiso.ID_permiso}>
-                  {permiso.descripcion_tipo}
-                </option>
-              ))}
-            </select>
+            <label htmlFor="Permiso" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">
+              Tipo de Permiso
+            </label>
+            <div className="tw-mt-2">
+              {permisos.length > 0 ? (
+                permisos.map((permiso) => (
+                  <div key={permiso.ID_permiso} className="tw-flex tw-items-center tw-mb-2">
+                    <input
+                      type="checkbox"
+                      id={`permiso-${permiso.ID_permiso}`}
+                      value={permiso.ID_permiso}
+                      checked={selectedPermisos.includes(permiso.ID_permiso)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedPermisos([...selectedPermisos, permiso.ID_permiso]);
+                        } else {
+                          setSelectedPermisos(
+                            selectedPermisos.filter(id => id !== permiso.ID_permiso)
+                          );
+                        }
+                      }}
+                      className="tw-h-4 tw-w-4 tw-text-blue-500 tw-border-gray-300 focus:tw-ring-blue-400"
+                    />
+                    <label htmlFor={`permiso-${permiso.ID_permiso}`} className="tw-ml-2 tw-text-sm tw-text-gray-700">
+                      {permiso.descripcion}
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <p className="tw-text-gray-600">Cargando permisos...</p>
+              )}
+            </div>
           </div>
+
           <div className="tw-flex tw-justify-end">
             <button
               type="submit"

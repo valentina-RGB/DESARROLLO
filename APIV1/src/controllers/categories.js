@@ -119,15 +119,35 @@ const CrearCategorias = async (req = request, res = response) => {
 
 
    const eliminarCategorias= async (req = request, res= response) =>{
-        const { id } = req.params;
-            try{
-                const dato = await categorieService.DeleteCategories(id);
-                res.status(204).json({message: 'El dato fue eliminado', dato});
-            }catch(error){
-                const statusCode = error.status || 500;
-                res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
-            }      
+    const { id } = req.params;
+
+    try {
+      // Buscar la categoría para obtener la imagen
+      const categoria = await categorieService.getCategoriesID(id);  // Asegúrate de tener este método implementado
+      
+      // Si la categoría tiene una imagen
+      if (categoria && categoria.imagen) {
+        // Construir la ruta absoluta de la imagen
+        const imagePath = path.join(__dirname, '../../uploads', path.basename(categoria.imagen));  // Ajusta la ruta a donde guardas las imágenes
+        
+        // Verificar si la imagen existe
+        if (fs.existsSync(imagePath)) {
+          // Eliminar la imagen
+          fs.unlinkSync(imagePath);
+        }
+      }
+  
+      // Eliminar la categoría de la base de datos
+      const dato = await categorieService.DeleteCategories(id);
+  
+      res.status(204).json({ message: 'El dato fue eliminado', dato });
+      
+    } catch (error) {
+      const statusCode = error.status || 500;
+      res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
     }
+  }
+
 
 module.exports = {
    obtenercategorias,  

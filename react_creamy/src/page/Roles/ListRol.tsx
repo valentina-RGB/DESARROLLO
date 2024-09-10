@@ -8,7 +8,7 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';
 import AddRol from './CreateRol';
 import EditRol from './EditRol';
-import RolDetails from './RolDetails';
+/* import RolDetails from './RolDetails'; */
 import Modal from 'react-modal';
 
 
@@ -27,6 +27,7 @@ const RolList: React.FC = () => {
   const fetchRol = async () => {
     try {
       const response = await api.get('/roles');
+      console.log(response);
       setRol(response.data);
     } catch (error) {
       console.error('Error al obtener los roles:', error);
@@ -105,15 +106,15 @@ const handleDelete = async (id: number) => {
         header: 'Estado',
         Cell: ({ cell, row }) => (
           <div className="tw-flex tw-items-center">
-            <span className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${cell.getValue<string>() === 'A' ? 'tw-bg-green-100 tw-text-green-800' : 'tw-bg-red-100 tw-text-red-800'}`}>
-              {cell.getValue<string>() === 'A' ? 'Activo' : 'Inactivo'}
+            <span className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${cell.getValue<string>() === 'D' ? 'tw-bg-green-100 tw-text-green-800' : 'tw-bg-red-100 tw-text-red-800'}`}>
+              {cell.getValue<string>() === 'D' ? 'Activo' : 'Inactivo'}
             </span>
             <button
               onClick={() => handleToggleEstado(row.original.id_rol, cell.getValue<string>())}
               className="tw-ml-2 tw-text-gray-700 tw-transition-colors hover:tw-text-gray-900"
             >
               <FontAwesomeIcon
-                icon={cell.getValue<string>() === 'A' ? faToggleOn : faToggleOff}
+                icon={cell.getValue<string>() === 'D' ? faToggleOn : faToggleOff}
                 className="tw-text-2xl"
               />
             </button>
@@ -164,9 +165,7 @@ const handleDelete = async (id: number) => {
       >
         {modalType === 'add' && <AddRol onClose={handleModalCloseAndFetch} />}
         {modalType === 'edit' && selectedRolId !== null && <EditRol id={selectedRolId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'entry' && selectedRolId !== null && <AddEntry id={selectedRolId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'entry' && selectedRolId !== null && <AddEntry id={selectedRolId} onClose={handleModalCloseAndFetch} />}
-        {modalType === 'detail' && selectedRolId !== null && <RolDetails id={selectedRolId} onClose={handleModalCloseAndFetch} />}
+        {/* {modalType === 'detail' && selectedRolId !== null && <RolDetails id={selectedRolId} onClose={handleModalCloseAndFetch} />} */}
       </Modal>
     </div>
   );

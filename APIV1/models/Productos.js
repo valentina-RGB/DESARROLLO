@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Estado_producto',
         key: 'ID_Estado_producto',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     },
     ID_tipo_productos: {
       type: DataTypes.INTEGER,
@@ -33,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_tipo_producto',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
     },
     ID_categorias: {
       type: DataTypes.INTEGER,
@@ -42,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_categoria',
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'CASCADE',
     },
     imagen: {
       type: DataTypes.STRING(100),

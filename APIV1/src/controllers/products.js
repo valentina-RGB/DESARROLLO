@@ -71,9 +71,9 @@ const
     ModificarProductos = async (req = request, res= response) =>{
         try {
             const { id } = req.params;
-            const updatecategorie = await ProductosService.PatchProductos(id, req.body);
+            const updateproducto = await ProductosService.PatchProductos(id, req.body);
 
-            if(updatecategorie){
+            if(updateproducto){
                 res.status(200).json({ message: 'Product updated successfully', updatecategorie });
             }
         }catch(error){
@@ -84,6 +84,20 @@ const
     EliminarProductos= async (req = request, res= response) =>{
         const { id } = req.params;
             try{
+                  // Buscar la categoría para obtener la imagen
+      const producto = await ProductosService.getProductosID(id);  // Asegúrate de tener este método implementado
+      
+      // Si la categoría tiene una imagen
+      if (producto && producto.imagen) {
+        // Construir la ruta absoluta de la imagen
+        const imagePath = path.join(__dirname, '../../uploads', path.basename(producto.imagen));  // Ajusta la ruta a donde guardas las imágenes
+        
+        // Verificar si la imagen existe
+        if (fs.existsSync(imagePath)) {
+          // Eliminar la imagen
+          fs.unlinkSync(imagePath);
+        }
+      }
                 const dato = await ProductosService.DeleteProductos(id);
                 res.status(204).json({message: 'El dato fue eliminado', dato});
             }catch(error){

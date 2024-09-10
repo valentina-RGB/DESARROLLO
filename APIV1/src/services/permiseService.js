@@ -2,14 +2,14 @@ const express = require('express');
 const { request, response } = require('express');
 
 const db = require('../../models');
-const Permiso = db.Permiso;
+const Permisos = db.Permisos;
 
 const
 
 
   getPermiso = async (res, req) => {
-    const permiso = await Permiso.findAll();
-    res.status(200).json(permiso);
+    const permisos = await Permisos.findAll();
+    res.status(200).json(permisos);
   },
 
   getPermisoID = async (id) => {

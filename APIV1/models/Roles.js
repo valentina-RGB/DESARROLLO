@@ -8,21 +8,32 @@ module.exports = (sequelize, DataTypes) => {
     descripcion: {
       type: DataTypes.STRING(100),
     },
-    ID_permisos: {
-      type: DataTypes.INTEGER,
+    estado_rol: {
+      type: DataTypes.CHAR(1),
+      defaultValue: 'D',
       allowNull: false,
-      references: {
-        model: "Permiso",
-        key: "ID_permiso"
-      }
-    }
+    },
+    // ID_permiso: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: "Permiso",
+    //     key: "ID_permiso"
+    //   }
+    // }
   }, {
     tableName: 'Roles',
     timestamps: false,
   });
 
-  Roles.associate = function(models) {
-    Roles.hasMany(models.Permiso, { foreignKey: 'ID_permiso' });
-  }
+  Roles.asociate = function(models) {
+    Roles.hasMany(models.Permiso_roles, {foreignKey: 'ID_rol'})
+  };
+
+  // Roles.associate = function(models) {
+  //   Roles.hasMany(models.Permiso, { foreignKey: 'ID_permiso' }
+
+  //   );
+  // }
   return Roles;
 };

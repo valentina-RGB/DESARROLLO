@@ -3,13 +3,38 @@ const {request , response} = require('express');
 
 const db = require('../../models');
 //const Pedidos = db.Pedidos;
-const { Pedidos, Producto_Pedidos, Productos } = require('../../models');
+const { Pedidos, Producto_Pedidos,Producto_insumos, Adiciones,Insumos, Adiciones_insumo, Productos, Pedidos_adiciones} = require('../../models');
 
     const 
 
 
     getPedidos = async (res,req) => {
-        const pedidos = await Pedidos.findAll();
+        const pedidos = await Pedidos.findAll(
+                {
+                    include: [
+                        {
+                          model: Productos,
+                          as: 'Productos',
+                          through: {
+                            model: Producto_Pedidos,  // Tabla intermedia entre Pedidos y Productos
+                            attributes: ['cantidad', 'precio_neto', 'sub_total'],  // Atributos de la tabla intermedia
+                          },
+                          attributes: ['nombre', 'precio_neto'],  // Atributos de Productos
+                          include: [
+                            {
+                              model: Insumos,  // Relación entre Productos e Insumos
+                              as: 'Insumos',
+                              through: {
+                                model: Producto_insumos,  // Tabla intermedia entre Productos e Insumos
+                                attributes: ['cantidad'],  // Atributos de la tabla intermedia
+                              },
+                              attributes: ['descripcion_insumo', 'precio'],  // Atributos de Insumos
+                            },
+                          ],
+                        }
+                      ],
+                }
+        );
         res.status(200).json(pedidos);
     },
         

@@ -16,12 +16,14 @@ const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
   const [permiso, setPermiso] = useState<number | string>('');
   const [tiposPermiso, setTiposPermiso] = useState<Array<{ ID_tipo_Rol: number, descripcion_tipo: string }>>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPermisos, setSelectedPermisos] = useState([]);
   const navigate = useNavigate();
 
   const permisoRol = [
-    { ID_permiso: 1, descripcion_tipo: 'Leer' },
-    { ID_permiso: 2, descripcion_tipo: 'Crear' },
-    { ID_permiso: 3, descripcion_tipo: 'Editar' }
+    { ID_permiso: 1, descripcion_tipo: 'Dashboard' },
+    { ID_permiso: 2, descripcion_tipo: 'Crear usuario' },
+    { ID_permiso: 3, descripcion_tipo: 'Agregar producto' },
+    { ID_permiso: 4, descripcion_tipo: 'Registrar domicilios' },
   ];
 
   useEffect(() => {
@@ -37,7 +39,7 @@ const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
         setError('Error al cargar el rol.');
       }
     };
-  
+
     // const fetchTiposPermiso = async () => {
     //   try {
     //     const response = await api.get('/tipoPermiso');
@@ -47,7 +49,7 @@ const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
     //     setError('Error al cargar los tipos de permisos.');
     //   }
     // };
-  
+
     if (id) {
       fetchRol();
       // fetchTiposPermiso();
@@ -56,12 +58,12 @@ const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!descripcionRol || !permiso || !tiposPermiso) {
       setError('Por favor, completa todos los campos.');
       return;
     }
-  
+
     try {
       await api.put(`/roles/${id}`, {
         descripcion: descripcionRol,
@@ -101,21 +103,34 @@ const EditRol: React.FC<EditRolProps> = ({ id, onClose }) => {
             />
           </div>
           <div className="tw-mb-4">
-            <label htmlFor="tipoPermiso" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Permisos</label>
-            <select
-              id="tipoPermisos"
-              value={permiso}
-              onChange={(e) => setPermiso(e.target.value)}
-              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
-            >
-              <option value="" disabled>Selecciona un tipo de permiso</option>
-              {permisoRol.map(permiso => (
-                <option key={permiso.ID_permiso} value={permiso.ID_permiso}>
-                  {permiso.descripcion_tipo}
-                </option>
-))}
-            </select>
+            <label htmlFor="Permiso" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">
+              Tipo de Permiso
+            </label>
+            <div className="tw-mt-2">
+              {permisoRol.map((permiso) => (
+                <div key={permiso.ID_permiso} className="tw-flex tw-items-center tw-mb-2">
+                  <input
+                    type="checkbox"
+                    id={`permiso-${permiso.ID_permiso}`}
+                    value={permiso.ID_permiso}
+                    checked={selectedPermisos.includes(permiso.ID_permiso)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedPermisos([...selectedPermisos, permiso.ID_permiso]);
+                      } else {
+                        setSelectedPermisos(selectedPermisos.filter(id => id !== permiso.ID_permiso));
+                      }
+                    }}
+                    className="tw-h-4 tw-w-4 tw-text-blue-500 tw-border-gray-300 focus:tw-ring-blue-400"
+                  />
+                  <label htmlFor={`permiso-${permiso.ID_permiso}`} className="tw-ml-2 tw-text-sm tw-text-gray-700">
+                    {permiso.descripcion_tipo}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
+
           <div className="tw-flex tw-justify-end">
             <button
               type="button"

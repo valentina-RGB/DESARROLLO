@@ -1,27 +1,27 @@
 module.exports = (sequelize, DataTypes) => {
 
-    const Producto_Pedidos = sequelize.define('Producto_Pedidos', {
-    ID_producto_pedido: {
+    const Pedidos_adiciones = sequelize.define('Pedidos_adiciones', {
+    ID_pedido_adicion: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    ID_pedidos: {
+    ID_Productos_a: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-        model: 'Pedidos',
-        key: 'ID_pedido',
+        model: 'Producto_Pedidos',
+        key: 'ID_producto_pedido',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    ID_productos: {
+    ID_Insumos_a: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-        model: 'Productos',
-        key: 'ID_producto',
+        model: 'Insumos',
+        key: 'ID_insumo',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -30,23 +30,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    precio_neto: {
-        type: DataTypes.FLOAT,
-        allowNull: false
-    },
-    sub_total: {
+    total: {
         type: DataTypes.FLOAT,
         allowNull: false
     },
     }, {
-    tableName: 'Producto_Pedidos',
+    tableName: 'Pedidos_adiciones',
     timestamps: false,
     });
 
-    Producto_Pedidos.associate =(models) =>{
-    Producto_Pedidos.belongsToMany(models.Insumos,{ through:'Pedidos_adiciones', foreignKey: 'ID_Productos_a', otherKey: 'ID_Insumos_a', as:'insumos' });
-    }
+    
+   
 
 
-    return Producto_Pedidos;
+    return Pedidos_adiciones;
 };

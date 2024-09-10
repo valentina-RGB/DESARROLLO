@@ -2,10 +2,8 @@ import React, { useState, ChangeEvent, DragEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-hot-toast";
-import { List, UploadIcon } from "lucide-react";
+import {UploadIcon } from "lucide-react";
 import Modal from "react-modal";
-import AddInsumoProductos from "./insumo-add";
-import { Input } from "@mui/material";
 
 
 Modal.setAppElement("#root");
@@ -60,8 +58,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
-    descripcion: "",
-    imagen: "",
+    nombre:"",
+    insumos:""
   });
 
   const [formData, setFormData] = useState<{
@@ -118,7 +116,17 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     // setModalConfig({type:null, id:null});
     fetchTipo();
     fetchCategorias();
+
   };
+
+
+  useEffect(() => {
+    fetchTipo();
+    fetchCategorias();
+   
+
+  
+  }, []);
 
   // 2. Manejo de cambio en los inputs
 
@@ -134,8 +142,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
   const handleImageChange = (file: File | null) => {
     if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
-      setErrors((prev) => ({ ...prev, image: "" }));
+      setFormData((prev) => ({ ...prev, imagen: file }));
+      setErrors((prev) => ({ ...prev, imagen: "" }));
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -172,15 +180,17 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     };
     console.log(data)
 
-    const newErrors = { descripcion: "", imagen: "" };
-    if (!formData.descripcion.trim()) {
-      newErrors.descripcion = "El nombre de la categoría es obligatorio";
+    const newErrors = { nombre: "", insumos:""};
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre de la categoría es obligatorio";
     }
-    //   if (!formData.imagen) {
-    //     newErrors.imagen = 'La imagen es obligatoria';
-    //   }
+      if (inputs.length <=0){
+        newErrors.insumos= 'Debes agregar almenos 1 insumo';
+      
+      }
     setErrors(newErrors);
-    if (!newErrors.descripcion) {
+
+    if (!newErrors.insumos && !newErrors.nombre) {
       try {
         await api.post("/productos", data, {
           headers: {
@@ -189,7 +199,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
         });
         onClose();
         toast.success("La categoría ha agregada exitosamente.");
-        navigate("/Categorias");
+        navigate("/productos");
         resetForm();
       } catch (error) {
         toast.error(
@@ -207,110 +217,166 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
   }
 
-  // DESDE AQUI SE HACE LA CREACIÓN DE INSUMOS
 
-  const [searchTerm, setSearchTerm] = useState("") //LO USARE PARA BUSCAR INSUMOS
+  
+    // DESDE AQUI SE HACE LA CREACIÓN DE INSUMOS
 
-  const [inputs, setInputs] = useState<Insumo[]>([]);
-  const [searchResults, setSearchResults] = useState<Insumo[]>([]);
-  const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Insumo seleccionado
+        // Manejo de la búsqueda de insumos
 
-
-  const loadInputs = async () => {
-    try {
-      const response = await api.get("/Insumos");
-      const data: Insumo[] = await response.data; // Filtra los resultados según el término de búsqueda
-      const filteredInputs = data.filter((input) =>
-        input.descripcion_insumo.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(filteredInputs);
-    } catch (error) {
-      console.error("Error al cargar los insumos:", error);
-    }
-  };
+    const [searchTerm, setSearchTerm] = useState("") //LO USARE PARA BUSCAR INSUMOS
+    const [inputs, setInputs] = useState<Insumo[]>([]);
+    const [searchResults, setSearchResults] =  useState<Insumo[]>([]);
 
 
+        
+    const loadInputs = async () => {
+      try {
+        const response = await api.get("/Insumos");
+        const data: Insumo[] = await response.data;
+        setSearchResults(data);
+    
+      } catch (error) {
+        console.error("Error al cargar los insumos:", error);
+      }
+    };
 
-  // Llama a la función de búsqueda cada vez que cambia el término de búsqueda
-  // useEffect(() => {
+useEffect(() => {
+  if (!searchTerm) {
+    loadInputs(); // Si no hay un término de búsqueda, mostrar todos los insumos
+  } else {
+    const filteredInputs = searchResults.filter((input) =>
+      input.descripcion_insumo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredInputs); // Actualizar los resultados de la búsqueda
+  }
+}, [searchTerm]);
+ 
 
-  // }, [searchTerm]);
+// console.log("searchResults:", searchResults);
+// console.log("categorias:", categorias);
+// console.log("inputs:", inputs);
+// //console.log("selectedInsumo:", selectedInsumo);
+// console.log("Renderizando componente");
+ 
+
+   
+    //const [selectedInsumo, setSelectedInsumo] = useState<Insumo | null>(null); // Insumo seleccionado
+    
+
+
+
+
+
 
   // Función para agregar un insumo a la lista
   const addInput = (insumo: Insumo) => {
     const productExists = inputs.some((input) => input.ID_insumo === insumo.ID_insumo);
-
-    if (!productExists) {
-      setInputs([
-        ...inputs,
-        {
-          ID_insumo: insumo.ID_insumo,
-          descripcion_insumo: insumo.descripcion_insumo,
-          estado_insumo: insumo.estado_insumo,
+   
+    if (productExists) {
+    updateQuantity(insumo.ID_insumo, 1);
+    // Mostramos un mensaje toast
+    toast.success(`La cantidad de ${insumo.descripcion_insumo} ha sido actualizada.`);
+  } else {
+   
+   
+    setInputs([
+      
+      ...inputs,
+      { 
+        ID_insumo: insumo.ID_insumo, 
+        descripcion_insumo: insumo.descripcion_insumo,
+        estado_insumo: insumo.estado_insumo,
+        precio: insumo.precio,
+        ID_tipo_insumo: insumo.ID_tipo_insumo,
+        Producto_insumos: {
+          cantidad: + 1 ,
+          configuracion: "",
           precio: insumo.precio,
-          ID_tipo_insumo: insumo.ID_tipo_insumo,
-          Producto_insumos: {
-            cantidad: 1,
-            configuracion: "",
-            precio: insumo.precio
-          }
-        },
-      ]);
-    }
+        }
+      }
+    ]);
+    
+    // Mostramos un mensaje toast
+    toast.success(`${insumo.descripcion_insumo} ha sido actualizado.`);
+    return inputs;
+  }
   };
 
 
-  // const addInput = () => {
-  //   // setInputs([...se, { ID_insumo: inputs.length + 1, descripcion_insumo: ""}]);
+
+    const updateQuantity = (id: number, amount: number) => {
+      const newInputs = inputs.map((input) => {
+        if (input.ID_insumo === id) {
+          const newQuantity = isNaN(input.Producto_insumos.cantidad + amount)? 1: input.Producto_insumos.cantidad + amount;
+          const precio = isNaN(input.precio * newQuantity)? 1: input.precio * newQuantity;
+          return {
+            ...input,
+            Producto_insumos: {
+              ...input.Producto_insumos,
+              cantidad: newQuantity,
+              precio: precio
+            },
+          };
+        }
+        return input;
+      });
+      setInputs(newInputs);
+     
+    };
+
+    const calcularSumaTotalPrecios = () => {
+      // Suma todos los precios de los insumos
+      const totalPrecio = inputs.reduce((acumulador, input) => {
+        return acumulador + input.Producto_insumos.precio;
+      }, 0); // El '0' es el valor inicial del acumulador.
+    
+      return totalPrecio;
+    };
+
+    const totalPrecio = calcularSumaTotalPrecios();
+
+    const removeInput = (id: number) => {
+      const newInputs = inputs.filter((input) => input.ID_insumo !== id);
+      setInputs(newInputs);
+    };
+     setSearchTerm
+
+ 
+
+
+    
+
+
+
+    // Para verificar en la consola
+// useEffect(() => {
+//   console.log("Resultados de búsqueda actualizados:", searchResults);
+// }, [searchResults]);
+  
+
+     // Función para manejar la selección de un insumo
+  // const handleSelectInsumo = (insumo: Insumo) => {
+  //   setSelectedInsumo(insumo);
   // };
 
-  const updateQuantity = (id: number, amount: number) => {
-    const newInputs = inputs.map((input) => {
-      if (input.ID_insumo === id) {
-        const newQuantity = isNaN(input.Producto_insumos.cantidad + amount) ? 1 : input.Producto_insumos.cantidad + amount;
-        const precio = isNaN(input.precio * newQuantity) ? 1 : input.precio * newQuantity;
-        return {
-          ...input,
-          Producto_insumos: {
-            ...input.Producto_insumos,
-            cantidad: newQuantity,
-            precio: precio,
-          },
-        };
-      }
-      return input;
-    });
-    setInputs(newInputs);
 
-  };
-
-  const removeInput = (id: number) => {
-    const newInputs = inputs.filter((input) => input.ID_insumo !== id);
-    setInputs(newInputs);
-  };
-
-  useEffect(() => {
-    fetchTipo();
-    fetchCategorias();
-    if (searchTerm) {
-      loadInputs();
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchTerm]);
+  const resetFormInsumos = () => {
+    // inputs.map(e =>{
+    //   e.ID_insumo = 0,
+    //   e.ID_tipo_insumo = 0,
+    //   e.Producto_insumos.cantidad = 0,
+    //   e.Producto_insumos.configuracion =""
+    //   e.Producto_insumos.precio=0,
+    //   e.descripcion_insumo =""
+    //   e.estado_insumo= ""
+    //   e.precio = 0
+    // })
+    inputs.pop()
+    handleCloseModal()
+  }
 
 
-
-  // Función para manejar la selección de un insumo
-  const handleSelectInsumo = (insumo: Insumo) => {
-    setSelectedInsumo(insumo);
-  };
-
-  console.log("searchResults:", searchResults);
-  console.log("inputs:", inputs);
-  console.log("selectedInsumo:", selectedInsumo);
-  console.log("Renderizando componente");
-
+  
   return (
     <>
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
@@ -344,15 +410,18 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                   value={formData.nombre}
                   onChange={handleInputChange}
                   placeholder="Nombre del producto"
-                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
+                  className={`tw-mt-1 tw-block tw-w-full tw-rounded-md tw-shadow-sm ${
+                    errors.nombre ? 'tw-border-red-500' : 'tw-border-gray-300'
+                  } tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]`}
                 />
+                 {errors.nombre && <p className="tw-mt-2 tw-text-sm tw-text-red-600">{errors.nombre}</p>}
               </div>
               <div className="tw-grid tw-gap-2">
                 <label
                   htmlFor="price"
                   className="tw-text-gray-800 dark:tw-text-gray-800"
                 >
-                  Precio Neto
+                  Precio recomendado: {totalPrecio}
                 </label>
                 <input
                   id="price"
@@ -366,13 +435,13 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
               </div>
               <div className="tw-grid tw-gap-2">
                 <label
-                  htmlFor="categoria"
+                  htmlFor="ID_categorias"
                   className="tw-text-gray-800 dark:tw-text-gray-800"
                 >
                   Categoría
                 </label>
                 <select
-                  id="categorias"
+                  id="ID_categorias"
                   name="ID_categorias"
                   value={formData.ID_categorias}
                   onChange={handleInputChange}
@@ -423,11 +492,10 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                 <textarea
                   id="descripcion"
                   name="descripcion"
-                  type="text"
                   value={formData.descripcion}
                   onChange={handleInputChange}
                   placeholder="Describe el producto"
-                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-300 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
+                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
                 />
               </div>
             </div>
@@ -449,7 +517,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
               >
                 <input
                   id="image"
-                  name="image"
+                  name="imagen"
                   type="file"
                   accept="image/*"
                   onChange={(e) =>
@@ -468,7 +536,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                       type="button"
                       className="tw-absolute tw-top-2 tw-right-2 tw-px-2 tw-py-1 tw-bg-white tw-text-gray-700 tw-text-sm tw-rounded tw-shadow"
                       onClick={() => {
-                        setFormData((prev) => ({ ...prev, image: null }));
+                        setFormData((prev) => ({ ...prev, imagen: null }));
                         setPreview(null);
                       }}
                     >
@@ -488,13 +556,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
                   </label>
                 )}
               </div>
-              <div className="">
-                <button
-                  onClick={() => handleModal()}
-                  className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2"
-                >Añadir insumos +
-                </button>
-              </div>
+              
             </div>
 
           </div>
@@ -503,149 +565,128 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
           {/* 
       AGREGAR INSUMOS */}
-          <Modal
-            isOpen={isModalOpen}
-            onRequestClose={handleCloseModal}
-            className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
-            overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
-          >
+      <Modal
+  isOpen={isModalOpen}
+  onRequestClose={handleCloseModal}
+  className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-h-[92vh]"
+  overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+>
+  <div className="tw-w-full tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md tw-mx-auto tw-h-[92vh]">
+    <div className="tw-flex tw-items-center tw-justify-between tw-mb-6">
+    <h4 className="page-heading">Insumos</h4>
+    </div>
 
-            <div className="tw-w-full tw-max-w-md tw-mx-auto tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-md">
-              <div className="tw-flex tw-items-center tw-justify-between tw-mb-6">
-                <h2 className="tw-text-2xl tw-font-bold">Agregar Insumos</h2>
+    <div className="tw-space-y-4  ">
+      <div className="tw-flex tw-items-center tw-gap-4 tw-mb-4">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar insumo..."
+          className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
+        />
+      </div>
 
-
+      {/* Este div tendrá el scroll si hay más de 2 insumos */}
+      <div className="tw-space-y-4 tw-max-h-40 tw-overflow-y-auto ">
+        {searchResults.map((input) => (
+          <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
+            <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
+              <span className="tw-font-medium">{input.descripcion_insumo}</span>
+              <div className="tw-flex tw-items-center tw-gap-2">
+                {/* Botones de actualización o cantidad */}
               </div>
+            </div>
+            <button
+              onClick={() => removeInput(input.ID_insumo)}
+              className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+            >
+              <XIcon className="tw-w-4 tw-h-4" />
+            </button>
+            <button
+              onClick={() => addInput(input)}
+              className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+            >
+              <PlusIcon className="tw-w-4 tw-h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
 
-              <div className="tw-space-y-4">
-                <div className="tw-flex tw-items-center tw-gap-4 tw-mb-4">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Buscar insumo..."
-                    className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
-                  />
-                </div>
+    <div className="tw-flex tw-items-center tw-justify-end tw-mt-1 ">
+      <p>{totalPrecio}</p>
+    </div>
 
-                {searchResults.map((input) => (
-                  <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
-                    <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
-                      <span className="tw-font-medium">{input.descripcion_insumo}</span>
-                      <div className="tw-flex tw-items-center tw-gap-2">
-                        {/* <button
+    <div className="tw-mt-2">
+      <h3 className="tw-text-xl tw-font-semibold">Insumos Agregados</h3>
+      <div className="tw-space-y-4 tw-max-h-40 tw-overflow-y-auto">
+        {inputs.map((input) => (
+          <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
+            <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
+              <span className="tw-font-medium">{input.descripcion_insumo}</span>
+              <div className="tw-flex tw-items-center tw-gap-2">
+                <button
                   onClick={() => updateQuantity(input.ID_insumo, -1)}
-                  disabled={input.cantidad <= 1}
+                  disabled={input.Producto_insumos.cantidad <= 1}
                   className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white disabled:tw-opacity-50"
                 >
                   <MinusIcon className="tw-w-4 tw-h-4" />
                 </button>
-                <span className="tw-font-medium">{input.cantidad}</span>
+                <span className="tw-font-medium">{input.Producto_insumos.cantidad}</span>
                 <button
                   onClick={() => updateQuantity(input.ID_insumo, 1)}
                   className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
                 >
                   <PlusIcon className="tw-w-4 tw-h-4" />
-                </button> */}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeInput(input.ID_insumo)}
-                      className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-                    >
-                      <XIcon className="tw-w-4 tw-h-4" />
-                    </button>
-                    <button
-                      onClick={() => addInput(input)}
-                      className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-                    >
-                      <PlusIcon className="tw-w-4 tw-h-4" />
-                    </button>
-
-
-                  </div>
-
-                ))}
-
-              </div>
-              <div className="tw-flex tw-items-center tw-justify-end">
-                <button
-                  onClick={() => {
-                    if (selectedInsumo) {
-                      addInput(selectedInsumo);
-                      setSearchTerm(""); // Limpiar el término de búsqueda
-                    }
-                  }}
-                  disabled={!selectedInsumo}
-                  className="tw-flex tw-items-center tw-gap-2 tw-bg-[#ff6b00] tw-text-white tw-py-2 tw-px-4 tw-rounded-lg"
-                >
-                  <PlusIcon className="tw-w-4 tw-h-4" />
-                  Agregar Insumo
                 </button>
               </div>
-
-              <div className="tw-mt-6">
-                <h3 className="tw-text-xl tw-font-semibold">Insumos Agregados</h3>
-                <div className="tw-space-y-4">
-                  {inputs.map((input) => (
-                    <div key={input.ID_insumo} className="tw-flex tw-items-center tw-justify-between tw-bg-[#f2f2f2] tw-rounded-md tw-p-4">
-                      <div className="tw-flex tw-items-center tw-gap-4 tw-flex-1">
-                        <span className="tw-font-medium">{input.descripcion_insumo} </span>
-                        <div className="tw-flex tw-items-center tw-gap-2">
-                          <button
-                            onClick={() => updateQuantity(input.ID_insumo, -1)}
-                            disabled={input.Producto_insumos.cantidad <= 1}
-                            className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white disabled:tw-opacity-50"
-                          >
-                            <MinusIcon className="tw-w-4 tw-h-4" />
-                          </button>
-                          <span className="tw-font-medium">{input.Producto_insumos.cantidad}</span>
-                          <button
-                            onClick={() => updateQuantity(input.ID_insumo, 1)}
-                            className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-                          >
-                            <PlusIcon className="tw-w-4 tw-h-4" />
-                          </button>
-                        </div>
-                      </div>
-                      <span>
-                        <span className="tw-font-medium">{input.Producto_insumos.precio} </span>
-                      </span>
-                      <button
-                        onClick={() => removeInput(input.ID_insumo)}
-                        className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
-                      >
-                        <XIcon className="tw-w-4 tw-h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-
-
-
             </div>
-
-
-
-          </Modal>
-
-
-
-
-
-
-
-
-
-          <div className="tw-mt-4">
+            <span>
+              <span className="tw-font-medium">{input.Producto_insumos.precio}</span>
+            </span>
             <button
-              type="submit"
-              className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2">
-              Guardar Producto
+              onClick={() => removeInput(input.ID_insumo)}
+              className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+            >
+              <XIcon className="tw-w-4 tw-h-4" />
             </button>
           </div>
+        ))}
+      </div>
+    </div>
+    <div>
+   
+    </div>
+    <button
+      onClick={handleCloseModal}
+      className="tw-text-[#ff6b00]tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+      >Listo
+      <XIcon className="tw-w-4 tw-h-4" />
+      </button>
+       <button
+      onClick={resetFormInsumos}
+      className="tw-text-[#ff6b00] tw-p-2 tw-rounded-full hover:tw-bg-[#ff6b00] hover:tw-text-white"
+      >Cancelar
+      <XIcon className="tw-w-4 tw-h-4" />
+      </button>
+  </div>
+</Modal>
+      <div className="tw-mt-4 tw-flex  tw-items-start tw-gap-2">
+          <button
+            type="submit"
+          className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2">
+            Guardar Producto
+          </button>
+          <div className="">
+                <button             
+                  onClick={() => handleModal()}
+                  className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2"
+                >Añadir insumos +
+                </button>
+              </div>
+              {errors.insumos && <p className="tw-mt-2 tw-text-sm tw-text-red-600">{errors.insumos}</p>}
+        </div>
 
         </form>
       </div>

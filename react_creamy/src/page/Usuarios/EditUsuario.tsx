@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api/api";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ const EditUsuario: React.FC = () => {
   const [password, setPassword] = useState("");
   const [telefono, setTelefono] = useState("");
   const [ID_rol, setIDRol] = useState("");
+  
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -85,7 +86,7 @@ const EditUsuario: React.FC = () => {
               htmlFor="password"
               className="tw-block tw-text-gray-700 tw-font-semibold"
             >
-              Contraseña
+              Constraseña
             </label>
             <input
               type="password"
