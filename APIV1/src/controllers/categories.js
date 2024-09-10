@@ -120,6 +120,13 @@ const CrearCategorias = async (req = request, res = response) => {
 
    const eliminarCategorias= async (req = request, res= response) =>{
         const { id } = req.params;
+       
+
+        if (req.file) {
+         
+          fs.existsSync();
+            fs.unlinkSync(); 
+    
             try{
                 const dato = await categorieService.DeleteCategories(id);
                 res.status(204).json({message: 'El dato fue eliminado', dato});
@@ -128,6 +135,7 @@ const CrearCategorias = async (req = request, res = response) => {
                 res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
             }      
     }
+}
 
 module.exports = {
    obtenercategorias,  

@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
 
 
 
-  Tipo_productos.sync({ force: false }) // Usa 'force: false' para no sobreescribir la tabla si ya existe
+  Tipo_productos.sync({ alter: false }) // Usa 'force: false' para no sobreescribir la tabla si ya existe
   .then(async () => {
     // Datos por defecto
     const data = [

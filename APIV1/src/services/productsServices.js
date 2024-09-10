@@ -102,7 +102,7 @@ const
               ID_insumos_tipo: insumo.ID_insumo,
               cantidad: insumo.Producto_insumos.cantidad,
               configuracion: insumo.Producto_insumos.configuracion,
-              precio: insumo.precio * cantidad
+              precio: insumo.precio * insumo.Producto_insumos.cantidad
             });
      
           } else {

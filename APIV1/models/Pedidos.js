@@ -35,6 +35,15 @@ module.exports = (sequelize, DataTypes) => {
         key: 'ID_estado_pedido'
         },
     },
+    // ID_adicion: {
+    //     type: DataTypes.INTEGER,
+    //     references: {
+    //     model: 'Adiciones',
+    //     key: 'ID_adicion'
+    //     },
+    //     onUpdate: 'CASCADE',
+    //     onDelete: 'CASCADE',
+    // },
     },{
     tableName: 'Pedidos',
     timestamps: false,
@@ -44,6 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       
          //RELACION  MUCHO A MUCHOS
          Pedidos.belongsToMany(models.Productos, { through:models.Producto_Pedidos, foreignKey: 'ID_pedidos', otherKey: 'ID_productos' });
+    
     }
     return Pedidos;
 }; 
