@@ -40,6 +40,48 @@ const obtenerInsumoPorId = async (req, res) => {
   }
 };
 
+// const crearInsumo = async (req, res) => {
+//   const transaction = await db.sequelize.transaction();
+//   try {
+//     const {
+//       ID_tipo_insumo,
+//       descripcion_insumo,
+//       estado_insumo, // Opcional: Puedes incluir este campo si es necesario
+//       precio,
+//       stock_min,
+//       stock_max,
+//       stock_actual,
+//       medida,
+//       unidad
+//     } = req.body;
+
+//     if (!ID_tipo_insumo || !descripcion_insumo) {
+//       await transaction.rollback();
+//       return res.status(400).json({ message: 'ID_tipo_insumo y descripcion_insumo son campos obligatorios.' });
+//     }
+//     const insumo = await Insumos.create({
+//       ID_tipo_insumo,
+//       descripcion_insumo,
+//       estado_insumo, 
+//       precio
+//     }, { transaction });
+  
+//     await StockInsumos.create({
+//       stock_min: stock_min || 0,
+//       stock_max: stock_max || 100,
+//       stock_actual: stock_actual || 0,
+//       ID_insumo: insumo.ID_insumo,
+//       medida: medida || 'unidad',
+//       unidad: unidad || 0
+//     }, { transaction });
+
+//     await transaction.commit(); 
+//     res.status(201).json(insumo);
+//   } catch (error) {
+//     await transaction.rollback(); 
+//     res.status(400).json({ message: error.message });
+//   }
+// };
 const crearInsumo = async (req, res) => {
   const transaction = await db.sequelize.transaction();
   try {
@@ -55,10 +97,16 @@ const crearInsumo = async (req, res) => {
       unidad
     } = req.body;
 
-    if (!ID_tipo_insumo || !descripcion_insumo) {
-      await transaction.rollback();
-      return res.status(400).json({ message: 'ID_tipo_insumo y descripcion_insumo son campos obligatorios.' });
+    // Verificar si el insumo ya existe
+    const insumoExistente = await Insumos.findOne({ 
+      where: { descripcion_insumo } 
+    });
+
+    if (insumoExistente) {
+      await transaction.rollback(); // Revertir la transacción si hay un duplicado
+      return res.status(400).json({ message: 'El insumo ya existe con la misma descripción.' });
     }
+
     const insumo = await Insumos.create({
       ID_tipo_insumo,
       descripcion_insumo,
@@ -82,25 +130,57 @@ const crearInsumo = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+// const actualizarInsumo = async (req, res) => {
+//   console.log('Datos recibidos:', req.body);
+//   const { id } = req.params;
 
+//   try {
+//       const [updated] = await Insumos.update(req.body, {
+//           where: { ID_insumo: id },
+//       });
+
+//       if (updated) {
+//           const updatedInsumo = await Insumos.findByPk(id);
+//           res.status(200).json(updatedInsumo);
+//       } else {
+//           res.status(404).json({ message: 'Insumo no encontrado' });
+//       }
+//   } catch (error) {
+//       console.error('Error al actualizar el insumo:', error);
+//       res.status(400).json({ message: error.message });
+//   }
+// };
 const actualizarInsumo = async (req, res) => {
-  console.log('Datos recibidos:', req.body);
   const { id } = req.params;
+  const { descripcion_insumo } = req.body; // Desestructuramos los datos
 
   try {
-      const [updated] = await Insumos.update(req.body, {
-          where: { ID_insumo: id },
-      });
-
-      if (updated) {
-          const updatedInsumo = await Insumos.findByPk(id);
-          res.status(200).json(updatedInsumo);
-      } else {
-          res.status(404).json({ message: 'Insumo no encontrado' });
+    // Verificar si otro insumo ya tiene la misma descripción
+    const insumoExistente = await Insumos.findOne({
+      where: {
+        descripcion_insumo,
+        ID_insumo: { [db.Sequelize.Op.ne]: id } // Excluir el insumo actual
       }
+    });
+
+    if (insumoExistente) {
+      return res.status(400).json({ message: 'Ya existe otro insumo con la misma descripción.' });
+    }
+
+    // Actualizar el insumo
+    const [updated] = await Insumos.update(req.body, {
+      where: { ID_insumo: id },
+    });
+
+    if (updated) {
+      const updatedInsumo = await Insumos.findByPk(id);
+      res.status(200).json(updatedInsumo);
+    } else {
+      res.status(404).json({ message: 'Insumo no encontrado' });
+    }
   } catch (error) {
-      console.error('Error al actualizar el insumo:', error);
-      res.status(400).json({ message: error.message });
+    console.error('Error al actualizar el insumo:', error);
+    res.status(400).json({ message: error.message });
   }
 };
 const eliminarInsumo = async (req, res) => {
