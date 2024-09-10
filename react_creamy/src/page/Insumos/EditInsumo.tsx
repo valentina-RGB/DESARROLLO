@@ -31,7 +31,7 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
         setError('Error al cargar el insumo.');
       }
     };
-  
+
     const fetchTiposInsumo = async () => {
       try {
         const response = await api.get('/tipoInsumos');
@@ -41,7 +41,7 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
         setError('Error al cargar los tipos de insumos.');
       }
     };
-  
+
     if (id) {
       fetchInsumo();
       fetchTiposInsumo();
@@ -50,22 +50,65 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!descripcionInsumo || !precio || !tipoInsumo) {
       setError('Por favor, completa todos los campos.');
       return;
     }
-  
+
+    const confirmEdit = await toast.promise(
+      new Promise((resolve, reject) => {
+        toast((t) => (
+          <span>
+            ¿Estás seguro de que quieres actualizar este insumo?
+            <div className="tw-mt-4 tw-flex tw-justify-center">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  resolve(true);
+                }}
+                className="tw-mr-2 tw-bg-green-500 tw-text-white tw-px-3 tw-py-1 tw-rounded-lg"
+              >
+                Sí
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  reject(false);
+                }}
+                className="tw-bg-red-500 tw-text-white tw-px-3 tw-py-1 tw-rounded-lg"
+              >
+                No
+              </button>
+            </div>
+          </span>
+        ), {
+          duration: Infinity,
+        });
+      }),
+      {
+        loading: 'Esperando confirmación...',
+        success: 'Insumo actualizado correctamente!',
+        error: 'Actualización cancelada',
+      }
+    );
+
+    if (!confirmEdit) return;
+
     try {
-      await api.put(`/insumos/${id}`, {
-        descripcion_insumo: descripcionInsumo,
-        precio: Number(precio),
-        ID_tipo_insumo: Number(tipoInsumo),
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
+      await api.put(
+        `/insumos/${id}`,
+        {
+          descripcion_insumo: descripcionInsumo,
+          precio: Number(precio),
+          ID_tipo_insumo: Number(tipoInsumo),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
       toast.success('El insumo se ha actualizado correctamente.');
       onClose();
       navigate('/Insumos');
@@ -78,13 +121,15 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
   if (!insumo) return <p>Cargando...</p>;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center  z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg max-w-lg w-full">
         <h2 className="tw-text-2xl tw-font-semibold tw-mb-6 tw-text-gray-800">Editar Insumo</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
-            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">Descripción del Insumo</label>
+            <label htmlFor="descripcion" className="tw-block tw-text-sm tw-font-medium tw-text-gray-600">
+              Descripción del Insumo
+            </label>
             <input
               id="descripcion"
               type="text"
@@ -118,7 +163,9 @@ const EditInsumo: React.FC<EditInsumoProps> = ({ id, onClose }) => {
               <option value="" disabled>Selecciona un tipo de insumo</option>
               {tiposInsumo.length > 0 ? (
                 tiposInsumo.map(tipo => (
-                  <option key={tipo.ID_tipo_insumo} value={tipo.ID_tipo_insumo}>{tipo.descripcion_tipo}</option>
+                  <option key={tipo.ID_tipo_insumo} value={tipo.ID_tipo_insumo}>
+                    {tipo.descripcion_tipo}
+                  </option>
                 ))
               ) : (
                 <option value="" disabled>No hay tipos de insumo disponibles</option>

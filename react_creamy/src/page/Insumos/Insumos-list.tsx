@@ -3,7 +3,7 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { Insumo } from '../../types/insumos';
 import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff, faEye } from '@fortawesome/free-solid-svg-icons';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 import AddInsumo from './CreateInsumo';
@@ -43,17 +43,39 @@ const InsumosList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    toast.promise(
-      api.delete(`/insumos/${id}`),
-      {
-        loading: 'Eliminando insumo...',
-        success: '¡El insumo ha sido eliminado!',
-        error: 'Hubo un problema al eliminar el insumo.',
-      }
-    ).then(() => {
-      fetchInsumos(); // Actualiza la lista después de eliminar
-    });
+    toast((t) => (
+      <span>
+        ¿Seguro que quieres eliminar este insumo?
+        <div className="tw-mt-2">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              toast.promise(
+                api.delete(`/insumos/${id}`), // Promesa para eliminar el insumo
+                {
+                  loading: 'Eliminando insumo...', 
+                  success: '¡El insumo ha sido eliminado!', 
+                  error: 'Hubo un problema al eliminar el insumo.', 
+                }
+              ).then(() => {
+                fetchInsumos(); // Actualiza la lista después de eliminar
+              });
+            }}
+            className="tw-bg-red-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mr-2"
+          >
+            Confirmar
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2"
+          >
+            Cancelar
+          </button>
+        </div>
+      </span>
+    ));
   };
+  
 
   const handleToggleEstado = async (id: number, estadoActual: string) => {
     const nuevoEstado = estadoActual === 'A' ? 'D' : 'A';
@@ -143,24 +165,41 @@ const InsumosList: React.FC = () => {
         header: 'Acciones',
         Cell: ({ row }) => (
           <div className="tw-flex tw-justify-center tw-gap-2">
-            <button onClick={() => handleEdit(row.original.ID_insumo)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faEdit} />
+            {/* Botón para editar */}
+            <button
+              onClick={() => handleEdit(row.original.ID_insumo)}
+              className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
+            >
+              <FontAwesomeIcon icon={faEdit} title="Editar" />
             </button>
-            <button onClick={() => handleDelete(row.original.ID_insumo)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faTrash} />
+      
+            {/* Botón para eliminar */}
+            <button
+              onClick={() => handleDelete(row.original.ID_insumo)}
+              className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300"
+            >
+              <FontAwesomeIcon icon={faTrash} title="Eliminar" />
             </button>
-            <button onClick={() => handleAddEntry(row.original.ID_insumo)} className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faBoxOpen} />
+      
+            {/* Botón para agregar entrada */}
+            <button
+              onClick={() => handleAddEntry(row.original.ID_insumo)}
+              className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300"
+            >
+              <FontAwesomeIcon icon={faBoxOpen} title="Agregar entrada" />
             </button>
+      
+            {/* Botón para ver detalles */}
             <button
               onClick={() => handleViewDetails(row.original.ID_insumo)}
               className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
             >
-              <FontAwesomeIcon icon={faSignInAlt} />
+              <FontAwesomeIcon icon={faEye} title="Ver detalles" />
             </button>
           </div>
         ),
-      },
+      }
+      
     ],
     [insumos],
   );

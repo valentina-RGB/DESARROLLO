@@ -51,7 +51,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   const [descripcion, setDescripcion] = useState<string>("");
   const [estado, setEstado] = useState<string>("A");
   const [imagen, setImagen] = useState("");
-  const [categorias, setCategorias] = useState<Array<{ ID_categoria: number; descripcion: string }> >([]);
+  const [categorias, setCategorias] = useState<Array<{ ID_categoria: number; descripcion: string }>>([]);
   // const [Insumos, setInsumos] = useState<Insumo[]>([]);
   const [tipo, setTipo] = useState<Array<{ ID_tipo_producto: number; descripcion: string }>>([]);
   const [error, setError] = useState<string | unknown>(null);
@@ -66,8 +66,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     nombre: string;
     descripcion: string;
     precio_neto: number;
-    ID_estado_productos: number|string;
-    ID_tipo_productos: number|string;
+    ID_estado_productos: number | string;
+    ID_tipo_productos: number | string;
     ID_categorias: number | string;
     imagen: File | null;
     Insumos: Insumo[]
@@ -176,7 +176,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
       ID_tipo_productos: formData.ID_tipo_productos,
       ID_categorias: formData.ID_categorias, // Por ejemplo, inicializar como 0
       imagen: formData.imagen || '',
-      Insumos:inputs
+      Insumos: inputs
     };
     console.log(data)
 
@@ -266,8 +266,8 @@ useEffect(() => {
 
 
 
-   // Función para agregar un insumo a la lista
-   const addInput = (insumo:Insumo) => {
+  // Función para agregar un insumo a la lista
+  const addInput = (insumo: Insumo) => {
     const productExists = inputs.some((input) => input.ID_insumo === insumo.ID_insumo);
 
     if (productExists) {
@@ -373,20 +373,20 @@ useEffect(() => {
   return (
     <>
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
-        <form  onSubmit={handleSubmit}>
-        <div className="tw-mb-4">
-          <div className="tw-flex tw-flex-col tw-items-start tw-gap-2">
-            <h2 className="tw-text-2xl tw-font-bold tw-text-[#6b46c1]">
-              Nuevo Producto
-            </h2>
-            <p className="tw-text-gray-500 dark:tw-text-gray-400">
-              Completa los siguientes campos para agregar un nuevo producto a tu
-              catálogo.
-            </p>
+        <form onSubmit={handleSubmit}>
+          <div className="tw-mb-4">
+            <div className="tw-flex tw-flex-col tw-items-start tw-gap-2">
+              <h2 className="tw-text-2xl tw-font-bold tw-text-[#6b46c1]">
+                Nuevo Producto
+              </h2>
+              <p className="tw-text-gray-500 dark:tw-text-gray-400">
+                Completa los siguientes campos para agregar un nuevo producto a tu
+                catálogo.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="tw-mb-6 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
-        
+          <div className="tw-mb-6 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+
             {/* Columna de información del producto */}
             <div className="tw-col-span-2 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
               <div className="tw-grid tw-gap-2">
@@ -498,9 +498,8 @@ useEffect(() => {
                 Imagen
               </label>
               <div
-                className={`tw-border-2 tw-border-dashed tw-rounded-lg tw-p-4 tw-text-center ${
-                  dragActive ? "tw-border-indigo-400" : "tw-border-gray-300"
-                } `}
+                className={`tw-border-2 tw-border-dashed tw-rounded-lg tw-p-4 tw-text-center ${dragActive ? "tw-border-indigo-400" : "tw-border-gray-300"
+                  } `}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -549,12 +548,12 @@ useEffect(() => {
               </div>
               
             </div>
-       
-        </div>
-       
+
+          </div>
 
 
-{/* 
+
+          {/* 
       AGREGAR INSUMOS */}
       <Modal
   isOpen={isModalOpen}
@@ -743,5 +742,6 @@ function XIcon(props) {
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
     </svg>
-  );}
+  );
+}
 export default AddProductos;
