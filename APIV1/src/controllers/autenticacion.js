@@ -3,7 +3,7 @@ const {request , response} = require('express');
 const accessService = require('../services/accessService');
 
 const 
-    obtenerAcceso = async (req, res) => {
+    /* obtenerAcceso = async (req, res) => {
         try{
 
         return await accessService.getaccess(res,req);  
@@ -28,9 +28,9 @@ const
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    }
+    } */
 
-    CrearAcceso = async  (req = request, res= response) => {
+    /* CrearAcceso = async  (req = request, res= response) => {
         try {        
             const acceso = await accessService.CreateAccess(req.body);
             res.status(201).json({ message: 'access created successfully', acceso });
@@ -39,22 +39,11 @@ const
             res.status(500).json({ message: error.message });
         }
     
-    } ,
+    } , */
 
-    ModificarAcceso = async (req = request, res= response) =>{
-        try {
-            const { id } = req.params;
-            const updateaccess = await accessService.Patchaccess(id, req.body);
+    
 
-            if(updateaccess){
-                res.status(200).json({ message: 'Access updated successfully', updateaccess });
-            }
-        }catch(error){
-            res.status(400).json({ message: error.message });
-            }     
-    } ,
-
-    eliminarAcceso= async (req = request, res= response) =>{
+    /* eliminarAcceso= async (req = request, res= response) =>{
         const { id } = req.params;
             try{
                 const dato = await accessService.Deleteaccess(id);
@@ -63,12 +52,26 @@ const
                 const statusCode = error.status || 500;
                 res.status(statusCode).json({ error: error.message || 'Internal Server Error' });
             }      
+    } */
+function agregar (data){
+    const authData ={
+        id: data.id,
     }
+    if (data.usuario) {
+        authData.usuario = data.usuario
+    }
+    if (data.password) {
+        authData.password = data.password
+    }
+    return db.agregar(autenticacion, authData)
+}
+
 
 module.exports = {
-   obtenerAcceso,  
+   agregar,
+    /* obtenerAcceso,  
    obtenerAccesoPorId,
    CrearAcceso,
    ModificarAcceso,
-   eliminarAcceso
+   eliminarAcceso */
 }
