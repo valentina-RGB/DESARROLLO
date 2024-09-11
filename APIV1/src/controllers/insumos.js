@@ -152,35 +152,78 @@ const crearInsumo = async (req, res) => {
 // };
 const actualizarInsumo = async (req, res) => {
   const { id } = req.params;
-  const { descripcion_insumo } = req.body; // Desestructuramos los datos
+  const {
+    descripcion_insumo,
+    estado_insumo,
+    ID_tipo_insumo,
+    precio,
+    stock_min,
+    stock_max,
+    medida,
+    unidad,
+    stock_actual
+  } = req.body;
 
   try {
-    // Verificar si otro insumo ya tiene la misma descripción
-    const insumoExistente = await Insumos.findOne({
-      where: {
-        descripcion_insumo,
-        ID_insumo: { [db.Sequelize.Op.ne]: id } // Excluir el insumo actual
-      }
-    });
+    // Verificar si el insumo existe
+    const insumoExistente = await Insumos.findByPk(id);
+    if (!insumoExistente) {
+      return res.status(404).json({ message: 'Insumo no encontrado' });
+    }
 
-    if (insumoExistente) {
-      return res.status(400).json({ message: 'Ya existe otro insumo con la misma descripción.' });
+    // Verificar si se está intentando actualizar la descripción del insumo a una ya existente
+    if (descripcion_insumo) {
+      const insumoDuplicado = await Insumos.findOne({
+        where: {
+          descripcion_insumo,
+          ID_insumo: { [db.Sequelize.Op.ne]: id } // Excluir el insumo actual
+        }
+      });
+
+      if (insumoDuplicado) {
+        return res.status(400).json({ message: 'Ya existe otro insumo con la misma descripción.' });
+      }
     }
 
     // Actualizar el insumo
-    const [updated] = await Insumos.update(req.body, {
-      where: { ID_insumo: id },
-    });
+    const [updated] = await Insumos.update(
+      {
+        descripcion_insumo,
+        estado_insumo,
+        ID_tipo_insumo,
+        precio
+      },
+      { where: { ID_insumo: id } }
+    );
 
     if (updated) {
-      const updatedInsumo = await Insumos.findByPk(id);
+      // Actualizar los datos del stock si se han recibido en el cuerpo de la solicitud
+      if (stock_min !== undefined || stock_max !== undefined || medida !== undefined || unidad !== undefined || stock_actual !== undefined) {
+        await StockInsumos.update(
+          {
+            stock_min: stock_min !== undefined ? stock_min : insumoExistente.stock_min,
+            stock_max: stock_max !== undefined ? stock_max : insumoExistente.stock_max,
+            medida: medida !== undefined ? medida : insumoExistente.medida,
+            unidad: unidad !== undefined ? unidad : insumoExistente.unidad,
+            stock_actual: stock_actual !== undefined ? stock_actual : insumoExistente.stock_actual
+          },
+          { where: { ID_insumo: id } }
+        );
+      }
+
+      // Obtener el insumo actualizado con los datos del stock
+      const updatedInsumo = await Insumos.findOne({
+        where: { ID_insumo: id },
+        include: [{ model: StockInsumos, as: 'stock' }]
+      });
+
       res.status(200).json(updatedInsumo);
     } else {
-      res.status(404).json({ message: 'Insumo no encontrado' });
+      res.status(404).json({ message: 'No se pudo actualizar el insumo.' });
     }
   } catch (error) {
     console.error('Error al actualizar el insumo:', error);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: 'Ocurrió un error al actualizar el insumo.' });
   }
 };
 const eliminarInsumo = async (req, res) => {
