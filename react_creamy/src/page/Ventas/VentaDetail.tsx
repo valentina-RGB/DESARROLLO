@@ -3,6 +3,11 @@ import api from '../../api/api';
 import { DetalleVenta } from '../../types/DetalleVenta';
 import { toast } from 'react-hot-toast';
 
+interface VentaDetailsProps {
+  isOpen: boolean;
+  onClose: () => void;
+  ventaId: number;
+}
 const VentaDetails: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
   const [venta, setVenta] = useState<DetalleVenta | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

@@ -13,9 +13,6 @@ export interface EstadoVenta {
   ID_estado_venta: number;
   descripcion: 'Pagado' | 'Cancelado'; // Ajusta según los estados que manejas
 }
-
-Modal.setAppElement('#root');
-
 const VentasList: React.FC = () => {
   const [ventas, setVentas] = useState<Venta[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,6 +39,7 @@ const VentasList: React.FC = () => {
   };
 
   const handleModal = (type: 'add' | 'detail', id: number | null = null) => {
+    if (isModalOpen) return; // Evita abrir un modal si ya está abierto
     setModalType(type);
     setSelectedVentaId(id);
     setIsModalOpen(true);
@@ -51,8 +49,10 @@ const VentasList: React.FC = () => {
     setIsModalOpen(false);
     setModalType(null);
     setSelectedVentaId(null);
-    fetchVentas();
+    fetchVentas(); // Vuelve a cargar las ventas después de cerrar el modal
   };
+  const [isAddVentaModalOpen, setIsAddVentaModalOpen] = useState(false);
+const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
 
   const handleToggleEstado = useCallback(async (id: number, estadoActual: number) => {
     const indexActual = estadosVenta.findIndex((estado) => estado.ID_estado_venta === estadoActual);
@@ -211,18 +211,20 @@ const VentasList: React.FC = () => {
       </button>
       <MaterialReactTable columns={columns} data={ventas} />
       <Modal
-  isOpen={isModalOpen}
-  onRequestClose={handleCloseModal}
-  className="tw-bg-white tw-p-0 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-mt-12" // Ajusta el margen superior si es necesario
-  overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
->
-  {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} />}
-  {modalType === 'detail' && selectedVentaId !== null && (
-    <VentaDetails isOpen={isModalOpen} onClose={handleCloseModal} ventaId={selectedVentaId} />
-  )}
-</Modal>
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        className="tw-bg-white tw-p-0 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-mt-12" // Ajusta el margen superior si es necesario
+        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
+      >
+        {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} onVentaCreated={handleCloseModal} />}
+        {modalType === 'detail' && selectedVentaId !== null && (
+          <VentaDetails isOpen={isModalOpen} onClose={handleCloseModal} ventaId={selectedVentaId} />
+        )}
+      </Modal>
     </div>
   );
+  
 };
+
 
 export default VentasList;

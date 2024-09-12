@@ -65,6 +65,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       setClientes(response.data);
     } catch (error) {
       toast.error('Error al obtener los clientes');
+      console.error('Error al obtener clientes:', error);
     }
   };
 
@@ -74,20 +75,23 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       setProductos(response.data);
     } catch (error) {
       toast.error('Error al obtener los productos');
+      console.error('Error al obtener productos:', error);
     }
   };
 
+  
   const fetchInsumos = async () => {
     try {
       const response = await api.get('/insumos');
-      const sabores = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'helado');
-      const salsas = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'salsa');
-      const adiciones = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'adicion');
+      const sabores = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'helado') || [];
+      const salsas = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'salsa') || [];
+      const adiciones = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'adicion') || [];
       setSabores(sabores);
       setSalsas(salsas);
       setAdiciones(adiciones);
     } catch (error) {
       toast.error('Error al obtener insumos');
+      console.error('Error al obtener insumos:', error);
     }
   };
 
@@ -97,12 +101,13 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       setEstadoVentas(response.data);
     } catch (error) {
       toast.error('Error al obtener los estados de venta');
+      console.error('Error al obtener estados de venta:', error);
     }
   };
 
   const handleAddProducto = () => {
-    setSelectedProductos([
-      ...selectedProductos,
+    setSelectedProductos((prev) => [
+      ...prev,
       { ID_producto: null, cantidad: 1, precio: 0, descripcion: '', selectedSabores: [], selectedSalsas: [], selectedAdiciones: [] },
     ]);
   };
@@ -114,6 +119,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
         ...updatedProductos[index],
         [field]: value,
       };
+      calculatePrecioTotal(); // Asegúrate de recalcular el precio total aquí
       return updatedProductos;
     });
   };
@@ -153,27 +159,24 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       toast.error('Debe seleccionar un estado de venta');
       return;
     }
+    if (selectedProductos.some(p => p.cantidad < 1)) {
+      toast.error('La cantidad de cada producto debe ser al menos 1');
+      return;
+    }
 
     try {
       await api.post('/ventas', {
-        ID_cliente: selectedCliente || null,
-        productos: selectedProductos.map((prod) => ({
-          ID_producto: prod.ID_producto,
-          cantidad: prod.cantidad,
-          precio: prod.precio,
-          selectedSabores: prod.selectedSabores,
-          selectedSalsas: prod.selectedSalsas,
-          selectedAdiciones: prod.selectedAdiciones,
-        })),
+        ID_cliente: selectedCliente,
+        productos: selectedProductos,
         precio_total: precioTotal,
         ID_estado_venta: selectedEstadoVenta,
       });
-      toast.success('Venta creada con éxito');
-      onClose();
+      toast.success('Venta creada exitosamente');
       onVentaCreated();
+      onClose();
     } catch (error) {
       toast.error('Error al crear la venta');
-      console.error('Error al crear la venta:', error);
+      console.error('Error al crear venta:', error);
     }
   };
 
@@ -184,7 +187,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
     className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-w-full tw-max-w-screen-lg tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2"
     overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50"
     contentLabel="Crear Venta"
-    ariaHideApp={false} // Cambiado a false si estás manejando la accesibilidad por otros medios
+
   >
     <div className="tw-p-6 tw-w-full">
       <h2 className="tw-text-3xl tw-font-bold tw-text-center tw-mb-6">Nueva Venta</h2>
