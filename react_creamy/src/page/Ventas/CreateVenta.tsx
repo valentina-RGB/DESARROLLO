@@ -7,7 +7,7 @@ import api from '../../api/api';
 // Interfaces
 interface Producto {
   ID_producto: number;
-  descripcion: string;
+  nombre: string;
   precio_neto: number;
 }
 
@@ -252,7 +252,7 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
                       onChange={(option) => handleProductoChange(index, 'ID_producto', option?.ID_producto || null)}
                       options={productos.map((producto) => ({
                         value: producto.ID_producto,
-                        label: producto.descripcion,
+                        label: producto.nombre,
                       }))}
                       placeholder="Selecciona un producto"
                       isClearable
