@@ -8,8 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     nombre:{
       type: DataTypes.STRING(100),
       allowNull:true,
-      unique: true,
-      
     },
     descripcion: {
       type: DataTypes.STRING(100),
@@ -19,14 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    ID_estado_productos: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Estado_producto',
-        key: 'ID_Estado_producto',
-      },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
+    estado_productos: {
+      type: DataTypes.CHAR(1),
+      defaultValue: 'D',
+      allowNull: false,
     },
     ID_tipo_productos: {
       type: DataTypes.INTEGER,
@@ -92,10 +86,13 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'ID_insumos_tipo',
       as: 'Insumos'
     });
+    // Asociación con adiciones
+
+    Productos.belongsToMany(models.Adiciones,{ through:'Productos_adiciones', foreignKey: 'ID_Producto_adicion', otherKey: 'ID_adiciones', as:'adicion' });
     
 
     // Asociación con Pedidos
-    Productos.belongsToMany(models.Pedidos, { through: 'Producto_Pedidos', foreignKey: 'ID_productos', otherKey: 'ID_pedidos'
+    Productos.belongsToMany(models.Pedidos, { through: 'Producto_Pedidos', foreignKey: 'ID_productos', otherKey: 'ID_pedidos', as:'PedidosLista'
     });
   };
 

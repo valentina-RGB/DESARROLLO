@@ -1,49 +1,44 @@
 module.exports = (sequelize, DataTypes) => {
 
-    const Producto_Pedidos = sequelize.define('Producto_Pedidos', {
-    ID_producto_pedido: {
+    const Adiciones_Insumos = sequelize.define('Adiciones_Insumos', {
+    ID_Adiciones_Insumos: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    ID_pedidos: {
+    ID_adicion_p: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-        model: 'Pedidos',
-        key: 'ID_pedido',
+        model: 'Adiciones',
+        key: 'ID_adicion',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    ID_productos: {
+    ID_insumo_p: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-        model: 'Productos',
-        key: 'ID_producto',
+        model: 'Insumos',
+        key: 'ID_insumo',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
+   
     cantidad: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    precio_neto: {
-        type: DataTypes.FLOAT,
-        allowNull: false
-    },
-    sub_total: {
+    total: {
         type: DataTypes.FLOAT,
         allowNull: false
     },
     }, {
-    tableName: 'Producto_Pedidos',
+    tableName: 'Adiciones_Insumos',
     timestamps: false,
     });
 
-
-
-    return Producto_Pedidos;
+    return Adiciones_Insumos;
 };

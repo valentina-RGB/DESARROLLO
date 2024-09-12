@@ -43,11 +43,12 @@ type Insumo = {
 //   configuracion: number | string;
 // }
 
-interface AddCategories {
+interface AddProductos {
+  id:number;
   onClose: () => void;
 }
 
-const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
+const EditProductos: React.FC<AddProductos> = ({ onClose, id }) => {
   const [descripcion, setDescripcion] = useState<string>("");
   const [estado, setEstado] = useState<string>("A");
   const [imagen, setImagen] = useState("");
@@ -104,6 +105,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
 
 
+
+
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -121,12 +124,33 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
 
 
   useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await api.get(`/productos/${id}`);
+       const Insumos = response.data.Insumos
+        setFormData(response.data);
+        setInputs(Insumos)
+        console.log(response.data);
+       
+        // setInputs(response.data);
+        // return FormData
+      } catch (err: unknown) {
+        console.error("Error al cargar las categorías :", err);
+        setError(err);
+      }
+    };
+
+
+  
+
+
+    fetchProductos()
     fetchTipo();
     fetchCategorias();
    
 
   
-  }, []);
+  }, [id]);
 
   // 2. Manejo de cambio en los inputs
 
@@ -184,15 +208,25 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre de la categoría es obligatorio";
     }
-      if (inputs.length <=0){
+      if (inputs.length <= 0 ){
         newErrors.insumos= 'Debes agregar almenos 1 insumo';
       
       }
+
+    
+
+
     setErrors(newErrors);
 
-    if (!newErrors.insumos && !newErrors.nombre) {
+
+
+  // Verifica si hay errores antes de continuar
+  if (newErrors.nombre || newErrors.insumos) {
+    return;  // No continuar si hay errores
+  }
+
       try {
-        await api.post("/productos", data, {
+        await api.put(`/productos/${id}`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -207,7 +241,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
         );
         setError(error);
       }
-    }
+     
+    
   };
 
   const resetForm = () => {
@@ -361,16 +396,6 @@ useEffect(() => {
 
 
   const resetFormInsumos = () => {
-    // inputs.map(e =>{
-    //   e.ID_insumo = 0,
-    //   e.ID_tipo_insumo = 0,
-    //   e.Producto_insumos.cantidad = 0,
-    //   e.Producto_insumos.configuracion =""
-    //   e.Producto_insumos.precio=0,
-    //   e.descripcion_insumo =""
-    //   e.estado_insumo= ""
-    //   e.precio = 0
-    // })
     inputs.pop()
     handleCloseModal()
   }
@@ -428,10 +453,10 @@ useEffect(() => {
                   type="number"
                   min="1000"
                   max="50000"
-                  name = "precio_neto"
+                  step="100"
+                   name = "precio_neto"
                   value = {formData.precio_neto}
                   onChange={handleInputChange}
-                  step="100"
                   placeholder="Ingresa el precio"
                   className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
                 />
@@ -673,7 +698,6 @@ useEffect(() => {
       >Cancelar
       </button>
     </div>
-   
   </div>
 </Modal>
       <div className="tw-mt-4 tw-flex  tw-items-start tw-gap-2">
@@ -683,7 +707,8 @@ useEffect(() => {
             Guardar Producto
           </button>
           <div className="">
-                <button             
+                <button    
+                 type="button"         
                   onClick={() => handleModal()}
                   className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-rounded-md tw-px-4 tw-py-2 focus:tw-ring-[#6b46c1] focus:tw-ring-offset-2"
                 >Añadir insumos +
@@ -759,4 +784,4 @@ function XIcon(props) {
     </svg>
   );
 }
-export default AddProductos;
+export default EditProductos;

@@ -1,51 +1,183 @@
 const express = require('express');
 const {request , response} = require('express');
 
-const db = require('../../models');
+// const db = require('../../models');
 //const Pedidos = db.Pedidos;
-const { Pedidos, Producto_Pedidos,Producto_insumos, Adiciones,Insumos, Adiciones_insumo, Productos, Pedidos_adiciones} = require('../../models');
+const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adiciones,Insumos, Adiciones_insumo, Productos, Clientes} = require('../../models');
+
+
 
     const 
 
 
     getPedidos = async (res,req) => {
-        const pedidos = await Pedidos.findAll(
-                {
-                    include: [
-                        {
-                          model: Productos,
-                          as: 'Productos',
-                          through: {
-                            model: Producto_Pedidos,  // Tabla intermedia entre Pedidos y Productos
-                            attributes: ['cantidad', 'precio_neto', 'sub_total'],  // Atributos de la tabla intermedia
-                          },
-                          attributes: ['nombre', 'precio_neto'],  // Atributos de Productos
-                          include: [
-                            {
-                              model: Insumos,  // Relación entre Productos e Insumos
-                              as: 'Insumos',
-                              through: {
-                                model: Producto_insumos,  // Tabla intermedia entre Productos e Insumos
-                                attributes: ['cantidad'],  // Atributos de la tabla intermedia
-                              },
-                              attributes: ['descripcion_insumo', 'precio'],  // Atributos de Insumos
-                            },
-                          ],
-                        }
-                      ],
-                }
-        );
+        const pedidos = await Pedidos.findAll({
+            include: [
+              {
+                model: Productos,
+                as: 'ProductosLista',
+                through: {
+                  model: Producto_Pedidos,  // Tabla intermedia entre Pedidos y Productos
+                  attributes: ['cantidad', 'precio_neto', 'sub_total'],
+                },
+                include: [
+                  {
+                    model: Insumos,  // Relación entre Productos e Insumos
+                    as: 'Insumos',   
+                    attributes: ['descripcion_insumo', 'precio'], // Atributos del modelo Insumos
+                    through: {
+                      model:Producto_insumos,  // Tabla intermedia entre Productos e Insumos
+                      attributes: ['cantidad'],  // Atributos de la tabla intermedia
+                    },
+                  },
+                  {
+                    model: Adiciones,  // Relación entre Productos y adiciones
+                    as: 'adicion', 
+                    through: {
+                      model:Productos_adiciones,
+                      attributes: ['cantidad']
+                    },
+                    include:[
+                      {
+                        model: Insumos,  // Relación entre Adiciones e Insumos
+                        as: 'insumos', 
+                        through: {
+                          model:Adiciones_insumo, 
+                          attributes: ['cantidad'],
+                        },
+                        attributes: ['descripcion_insumo', 'precio'],
+                      }
+                    ] 
+                  },
+                ],
+              },
+            ],
+          });
+          
         res.status(200).json(pedidos);
     },
         
     getPedidosID = async (id) => {
-        const pedidos = await Pedidos.findByPk(id);
+        const pedidos = await Pedidos.findByPk(id,{
+          include: [
+            {
+              model: Productos,
+              as:'ProductosLista',
+              through: {
+                model: Producto_Pedidos,  // Tabla intermedia entre Pedidos y Productos
+                attributes: ['cantidad', 'precio_neto', 'sub_total'],
+              },
+              include: [
+                {
+                  model: Insumos,  // Relación entre Productos e Insumos
+                  as: 'Insumos',   
+                  attributes: ['descripcion_insumo', 'precio'], // Atributos del modelo Insumos
+                  through: {
+                    model:Producto_insumos,  // Tabla intermedia entre Productos e Insumos
+                    attributes: ['cantidad'],  // Atributos de la tabla intermedia
+                  },
+                },
+                {
+                  model: Adiciones,  // Relación entre Productos y adiciones
+                  as: 'adicion', 
+                  through: {
+                    model:Productos_adiciones,
+                    attributes: ['cantidad']
+                  },
+                  include:[
+                    {
+                      model: Insumos,  // Relación entre Adiciones e Insumos
+                      as: 'insumos', 
+                      through: {
+                        model:Adiciones_insumo, 
+                        attributes: ['cantidad'],
+                      },
+                      attributes: ['descripcion_insumo', 'precio'],
+                    }
+                  ] 
+                },
+              ],
+            },
+          ],
+        });
         return pedidos;
     } ,
 
-    CrearPedidos = async (datos) => {
-        const pedidos = await Pedidos.create(datos);
-        return pedidos;
+    CrearPedidos = async (req= request, res= response) => {
+      const {ID_clientes, ProductosLista, cantidad, adicion} = req.body;
+
+      let bandera = false; 
+      let respuesta = "";
+
+      if(ID_clientes){
+        const clientes = await Clientes.findByPk(ID_clientes);
+        if(!clientes){
+          bandera = true;
+          respuesta = "El cliente no esta registrado";
+        }
+      }
+
+      
+
+      if(!bandera){
+
+        const Nuevopedido = await Pedidos.create({
+          fecha: Date.now(),
+          ID_clientes:ID_clientes,
+          precio_total:0,
+          ID_estado_pedido: null
+        });
+
+      
+        if(Array.isArray(ProductosLista)){
+          for (const productos of ProductosLista){
+            if(productos && productos.Producto_Pedidos){
+              await Producto_Pedidos.create({
+                ID_pedidos: Nuevopedido.ID_pedido,
+                ID_productos:productos.ID_producto,
+                cantidad: productos.Producto_Pedidos.cantidad,
+                precio_neto: productos.precio_neto,
+                sub_total:  productos.precio_neto * cantidad 
+              })
+
+              const NuevaAdicion= await Adiciones.create({
+                cantidad: 0,
+                total: 0
+              });
+
+              if(Array.isArray(adicion)){
+                for(const Adicion of adicion ){
+                  if(Adicion && Adicion.Productos_adiciones){
+                    await Productos_adiciones.create({
+                      ID_Producto_adicion:productos.ID_producto,
+                      ID_adiciones: NuevaAdicion.ID_adicion,
+                      cantidad:0,
+                      total:0
+                    })
+                  }
+                }
+              }
+            }else{
+            
+              return {status: 400, message: 'No se creo la tabla de normalización' || 'Error no especificado' }
+            }  
+          }
+
+     
+
+
+          
+  
+
+        }
+        return  { status: 201, message:'Se a creado el pedido', Nuevopedido};
+      } else{
+        return {status: 404, message: respuesta || 'Error no especificado' }; // Garantiza que siempre haya un mensaje       
+    }
+    
+
+      
+       
 
     },
 

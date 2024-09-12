@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     Insumos.hasOne(models.StockInsumos, { foreignKey: 'ID_insumo', as: 'stock' });
         // Asociación con productos
     Insumos.belongsToMany(models.Productos, { through: 'Producto_insumos', foreignKey: 'ID_insumos_tipo', otherKey: 'ID_productos_tipo',as: 'productos'});
-    Insumos.belongsToMany(models.Producto_Pedidos, { through:'Pedidos_adiciones', foreignKey: 'ID_Insumos_a', otherKey:'ID_Productos_a', as: 'producto'});
+    Insumos.belongsToMany(models.Adiciones, { through:'Adiciones_Insumos', foreignKey: 'ID_insumo_p', otherKey:'ID_adicion_p', as: 'adicion'});
   };
     
   

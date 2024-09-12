@@ -31,11 +31,14 @@ const
 
     CrearPedidos = async  (req = request, res= response) => {
         try {        
-            const pedidos = await pedidosService.CrearPedidos(req.body);
-            res.status(201).json({ message: 'Order created successfully', pedidos });
+            const pedidos = await pedidosService.CrearPedidos(req,res);
+
+            if(pedidos){
+                res.json(pedidos);
+            }
             
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(error.status || 500).json({ message: error.message });
         }
     
     } ,

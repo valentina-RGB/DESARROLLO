@@ -4,14 +4,15 @@ import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 // import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff,faEye  } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 import Modal from 'react-modal';
 
 import { Producto } from '../../types/Producto';
 import AddProductos from './products-add';
-// import AddCategories from './categories-add';
-// import EditCategoria from './categories-edit';
+import EditProductos from './products-edit';
+import ProductosDetail from './products-details';
+
 
 
 Modal.setAppElement('#root');
@@ -50,12 +51,21 @@ const Productos: React.FC = () => {
     });
   },[]);
 
-  const handleToggleEstado = useCallback (async(id: number, estadoActual: string) =>{
-    const nuevoEstado = estadoActual === 'Disponible' ? 'Agotado' : 'Disponible';
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // setModalConfig({type:null, id:null});
+    fetchProducto(); 
+  };
+
+
+
+  const handleToggleEstado = useCallback(async(id: number, estadoActual: string) =>{
+    const nuevoEstado = estadoActual === 'D' ? 'A' : 'D'
 
     try {
-      await api.put(`/productos/${id}`, { estado_producto: nuevoEstado });
-      setProductos(productos.map(pro => pro.ID_producto === id ? { ...pro, estado_producto: nuevoEstado } : pro
+      await api.put(`/productos/${id}`, { estado_productos: nuevoEstado });
+      setProductos(productos.map(pro => pro.ID_producto === id ? { ...pro, estado_productos: nuevoEstado } : pro
 
       ));
       toast.success('El estado del producto ha sido actualizado.');
@@ -65,15 +75,14 @@ const Productos: React.FC = () => {
     }
   },[productos]);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // setModalConfig({type:null, id:null});
-    fetchProducto(); 
-  };
-
   useEffect(() => {
     fetchProducto(); 
   }, []);
+
+
+
+ 
+
 
   const columns  = useMemo<MRT_ColumnDef<Producto>[]> (
     
@@ -91,19 +100,19 @@ const Productos: React.FC = () => {
         header: 'Descripcion',
       },
       {
-        accessorKey: 'ID_estado_producto',
+        accessorKey: 'estado_productos',
         header: 'Estado',
         Cell: ({ cell, row }) => (
           <div className="tw-flex tw-items-center">
-            <span className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${cell.getValue<string>() === 'Disponible' ? 'tw-bg-green-100 tw-text-green-800' : 'tw-bg-red-100 tw-text-red-800'}`}>
-              {cell.getValue<string>() === 'Disponible' ? 'Disponible' : 'Agotado'}
+            <span className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${cell.getValue<string>() === 'D' ? 'tw-bg-green-100 tw-text-green-800' : 'tw-bg-red-100 tw-text-red-800'}`}>
+              {cell.getValue<string>() === 'A' ? 'Agotado': 'Disponible'}
             </span>
             <button
               onClick={() => handleToggleEstado(row.original.ID_producto, cell.getValue<string>())}
               className="tw-ml-2 tw-text-gray-700 tw-transition-colors hover:tw-text-gray-900"
             >
               <FontAwesomeIcon
-                icon={cell.getValue<string>() === 'Disponible' ? faToggleOn : faToggleOff}
+                icon={cell.getValue<string>() === 'D' ? faToggleOn : faToggleOff}
                 className="tw-text-2xl"
               />
             </button>
@@ -111,23 +120,18 @@ const Productos: React.FC = () => {
         ),
       },
       {
-        accessorKey: 'imagen',
-        header: 'Imagen',
-        Cell: ({ cell }) => cell.getValue<string>() ?? 'N/A',
-      },
-      {
         id: 'acciones',
         header: 'Acciones',
         Cell: ({ row }) => (
           <div className="tw-flex tw-justify-center tw-gap-2">
-            {/* <button onClick={() => handleModal('edit',row.original.ID_categoria)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+            <button onClick={() => handleModal('edit',row.original.ID_producto)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faEdit} />
-            </button> */}
+            </button>
             <button onClick={() => handleDelete(row.original.ID_producto)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-            <button className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
-              <FontAwesomeIcon icon={faBoxOpen} />
+            <button onClick={() => handleModal('detail',row.original.ID_producto)} className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
+              <FontAwesomeIcon icon={faEye} />
             </button>
            
             </div>
@@ -152,10 +156,8 @@ const Productos: React.FC = () => {
             
          >
             {modalConfig.type === 'add' && <AddProductos onClose={handleCloseModal} />}
-           {/* {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
-           {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />} */}
-           {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
-           {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
+            {modalConfig.type === 'edit' && modalConfig.id !== null && <EditProductos id={modalConfig.id} onClose={handleCloseModal} />} 
+            {modalConfig.type === 'detail' && modalConfig.id !== null && <ProductosDetail id={modalConfig.id} onClose={handleCloseModal} />} 
          </Modal>
        </div>
     </>
