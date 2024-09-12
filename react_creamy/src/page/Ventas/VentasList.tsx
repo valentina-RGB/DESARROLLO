@@ -13,13 +13,16 @@ export interface EstadoVenta {
   ID_estado_venta: number;
   descripcion: 'Pagado' | 'Cancelado'; // Ajusta según los estados que manejas
 }
+
 const VentasList: React.FC = () => {
   const [ventas, setVentas] = useState<Venta[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddVentaModalOpen, setIsAddVentaModalOpen] = useState(false);
+  const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'add' | 'detail' | null>(null);
   const [selectedVentaId, setSelectedVentaId] = useState<number | null>(null);
   const [estadosVenta, setEstadosVenta] = useState<EstadoVenta[]>([]);
 
+  // Función para obtener las ventas
   const fetchVentas = async () => {
     try {
       const response = await api.get('/ventas');
@@ -29,6 +32,7 @@ const VentasList: React.FC = () => {
     }
   };
 
+  // Función para obtener los estados de venta
   const fetchEstadosVenta = async () => {
     try {
       const response = await api.get('/estadoventas');
@@ -38,22 +42,31 @@ const VentasList: React.FC = () => {
     }
   };
 
-  const handleModal = (type: 'add' | 'detail', id: number | null = null) => {
-    if (isModalOpen) return; // Evita abrir un modal si ya está abierto
-    setModalType(type);
-    setSelectedVentaId(id);
-    setIsModalOpen(true);
+  // Manejo del modal: solo se abrirá si no está ya abierto
+  const handleOpenAddVentaModal = () => {
+    if (isVentaDetailsModalOpen) return; // Verifica que el otro modal no esté abierto
+    setIsAddVentaModalOpen(true);
+    setModalType('add');
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setModalType(null);
-    setSelectedVentaId(null);
+  const handleOpenVentaDetailsModal = (id: number) => {
+    if (isAddVentaModalOpen) return; // Verifica que el otro modal no esté abierto
+    setSelectedVentaId(id);
+    setIsVentaDetailsModalOpen(true);
+    setModalType('detail');
+  };
+
+  const handleCloseAddVentaModal = () => {
+    setIsAddVentaModalOpen(false);
     fetchVentas(); // Vuelve a cargar las ventas después de cerrar el modal
   };
-  const [isAddVentaModalOpen, setIsAddVentaModalOpen] = useState(false);
-const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
 
+  const handleCloseVentaDetailsModal = () => {
+    setIsVentaDetailsModalOpen(false);
+    setSelectedVentaId(null);
+  };
+
+  // Función para cambiar el estado de una venta
   const handleToggleEstado = useCallback(async (id: number, estadoActual: number) => {
     const indexActual = estadosVenta.findIndex((estado) => estado.ID_estado_venta === estadoActual);
     if (indexActual === -1) return;
@@ -130,6 +143,7 @@ const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
     fetchEstadosVenta();
   }, []);
 
+  // Definición de columnas
   const columns = useMemo<MRT_ColumnDef<Venta>[]>(() => [
     {
       accessorKey: 'ID_venta',
@@ -190,7 +204,7 @@ const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
       Cell: ({ row }) => (
         <div className="tw-flex tw-justify-center tw-gap-2">
           <button
-            onClick={() => handleModal('detail', row.original.ID_venta)}
+            onClick={() => handleOpenVentaDetailsModal(row.original.ID_venta)}
             className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
           >
             <FontAwesomeIcon icon={faInfoCircle} />
@@ -204,27 +218,30 @@ const [isVentaDetailsModalOpen, setIsVentaDetailsModalOpen] = useState(false);
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Ventas</h1>
       <button
-        onClick={() => handleModal('add')}
+        onClick={handleOpenAddVentaModal}
         className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
       >
         <FontAwesomeIcon icon={faPlus} /> Agregar una venta
       </button>
       <MaterialReactTable columns={columns} data={ventas} />
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        className="tw-bg-white tw-p-0 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-mt-12" // Ajusta el margen superior si es necesario
+        isOpen={isAddVentaModalOpen || isVentaDetailsModalOpen}
+        onRequestClose={() => {
+          if (isAddVentaModalOpen) handleCloseAddVentaModal();
+          if (isVentaDetailsModalOpen) handleCloseVentaDetailsModal();
+        }}
+        className="tw-bg-white tw-p-0 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-mt-12"
         overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
       >
-        {modalType === 'add' && <AddVenta isOpen={isModalOpen} onClose={handleCloseModal} onVentaCreated={handleCloseModal} />}
-        {modalType === 'detail' && selectedVentaId !== null && (
-          <VentaDetails isOpen={isModalOpen} onClose={handleCloseModal} ventaId={selectedVentaId} />
+        {isAddVentaModalOpen && (
+          <AddVenta isOpen={isAddVentaModalOpen} onClose={handleCloseAddVentaModal} onVentaCreated={handleCloseAddVentaModal} />
+        )}
+        {isVentaDetailsModalOpen && selectedVentaId !== null && (
+          <VentaDetails isOpen={isVentaDetailsModalOpen} onClose={handleCloseVentaDetailsModal} ventaId={selectedVentaId} />
         )}
       </Modal>
     </div>
   );
-  
 };
-
 
 export default VentasList;

@@ -79,7 +79,6 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
     }
   };
 
-  
   const fetchInsumos = async () => {
     try {
       const response = await api.get('/insumos');
@@ -106,6 +105,10 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
   };
 
   const handleAddProducto = () => {
+    if (selectedProductos.length >= 3) {
+      toast.error('No puedes agregar más de 3 productos');
+      return;
+    }
     setSelectedProductos((prev) => [
       ...prev,
       { ID_producto: null, cantidad: 1, precio: 0, descripcion: '', selectedSabores: [], selectedSalsas: [], selectedAdiciones: [] },
@@ -125,6 +128,10 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
   };
 
   const handleInsumoChange = (index: number, insumoType: string, value: any[]) => {
+    if (value.length > 3) {
+      toast.error(`No puedes seleccionar más de 3 ${insumoType}`);
+      return;
+    }
     setSelectedProductos((prev) => {
       const updatedProductos = [...prev];
       updatedProductos[index] = {
@@ -140,11 +147,11 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       (sum, prod) =>
         sum +
         (prod.cantidad || 0) * (prod.precio || 0) +
-        prod.selectedAdiciones.reduce((adicionSum, adicionId) => {
+        prod.selectedAdiciones.reduce((adicionSum: number, adicionId: number) => {
           const adicion = adiciones.find((a) => a.ID_insumo === adicionId);
           return adicionSum + (adicion ? adicion.precio_neto : 0);
         }, 0) +
-        prod.selectedSalsas.reduce((salsaSum, salsaId) => {
+        prod.selectedSalsas.reduce((salsaSum: number, salsaId: number) => {
           const salsa = salsas.find((s) => s.ID_insumo === salsaId);
           return salsaSum + (salsa ? salsa.precio_neto : 0);
         }, 0),
@@ -159,8 +166,20 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
       toast.error('Debe seleccionar un estado de venta');
       return;
     }
+    if (selectedProductos.length === 0) {
+      toast.error('Debes agregar al menos un producto');
+      return;
+    }
     if (selectedProductos.some(p => p.cantidad < 1)) {
       toast.error('La cantidad de cada producto debe ser al menos 1');
+      return;
+    }
+    if (selectedProductos.some(p => p.selectedAdiciones.length > 3)) {
+      toast.error('No puedes seleccionar más de 3 adiciones por producto');
+      return;
+    }
+    if (selectedProductos.some(p => p.selectedSalsas.length > 3)) {
+      toast.error('No puedes seleccionar más de 3 salsas por producto');
       return;
     }
 
@@ -182,16 +201,15 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
 
   return (
     <Modal
-    isOpen={isOpen}
-    onRequestClose={onClose}
-    className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-w-full tw-max-w-screen-lg tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2"
-    overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-50"
-    contentLabel="Crear Venta"
-
-  >
-    <div className="tw-p-6 tw-w-full">
-      <h2 className="tw-text-3xl tw-font-bold tw-text-center tw-mb-6">Nueva Venta</h2>
-      <form onSubmit={handleSubmit}>
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-w-full tw-max-w-screen-lg tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2"
+      overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
+      contentLabel="Crear Venta"
+    >
+      <div className="tw-p-6 tw-w-full">
+        <h2 className="tw-text-3xl tw-font-bold tw-text-center tw-mb-6">Nueva Venta</h2>
+        <form onSubmit={handleSubmit}>
           <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
             <div className="tw-flex tw-flex-col">
               <label className="tw-font-semibold">Cliente</label>
@@ -216,25 +234,25 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
                   value: estado.ID_estado_venta,
                   label: estado.descripcion,
                 }))}
-                placeholder="Selecciona un estado de venta"
+                placeholder="Selecciona un estado"
                 isClearable
               />
             </div>
           </div>
 
-          <div className="tw-mt-6 tw-border-t tw-border-gray-300 tw-pt-6">
-            <h3 className="tw-text-xl tw-font-semibold">Productos</h3>
+          <div className="tw-mt-6">
+            <label className="tw-font-semibold">Productos</label>
             {selectedProductos.map((producto, index) => (
-              <div key={index} className="tw-mb-6 tw-p-4 tw-bg-gray-100 tw-rounded-lg">
+              <div key={index} className="tw-mt-4 tw-p-4 tw-border tw-rounded-lg tw-shadow-sm">
                 <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
                   <div className="tw-flex tw-flex-col">
                     <label className="tw-font-semibold">Producto</label>
                     <Select
                       value={productos.find((p) => p.ID_producto === producto.ID_producto) || null}
-                      onChange={(option) => handleProductoChange(index, 'ID_producto', option?.value || null)}
-                      options={productos.map((prod) => ({
-                        value: prod.ID_producto,
-                        label: prod.descripcion,
+                      onChange={(option) => handleProductoChange(index, 'ID_producto', option?.ID_producto || null)}
+                      options={productos.map((producto) => ({
+                        value: producto.ID_producto,
+                        label: producto.descripcion,
                       }))}
                       placeholder="Selecciona un producto"
                       isClearable
@@ -246,100 +264,82 @@ const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreat
                     <input
                       type="number"
                       min="1"
-                      value={producto.cantidad}
-                      onChange={(e) => handleProductoChange(index, 'cantidad', Number(e.target.value))}
-                      className="tw-bg-white tw-border tw-rounded tw-px-2 tw-py-1"
+                      value={producto.cantidad || ''}
+                      onChange={(e) => handleProductoChange(index, 'cantidad', parseInt(e.target.value, 10))}
+                      className="tw-border tw-border-gray-300 tw-rounded tw-p-2"
                     />
                   </div>
                 </div>
 
-                <div className="tw-mt-4 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4">
-                  <div className="tw-flex tw-flex-col">
-                    <label className="tw-font-semibold">Sabores</label>
-                    <Select
-                      isMulti
-                      value={sabores.filter((s) => producto.selectedSabores.includes(s.ID_insumo)).map((s) => ({
-                        value: s.ID_insumo,
-                        label: s.descripcion,
-                      }))}
-                      onChange={(options) => handleInsumoChange(index, 'sabores', options.map((o) => o.value))}
-                      options={sabores.map((s) => ({
-                        value: s.ID_insumo,
-                        label: s.descripcion,
-                      }))}
-                      placeholder="Selecciona sabores"
-                      maxMenuHeight={150}
-                    />
-                  </div>
-
-                  <div className="tw-flex tw-flex-col">
-                    <label className="tw-font-semibold">Salsas</label>
-                    <Select
-                      isMulti
-                      value={salsas.filter((s) => producto.selectedSalsas.includes(s.ID_insumo)).map((s) => ({
-                        value: s.ID_insumo,
-                        label: s.descripcion,
-                      }))}
-                      onChange={(options) => handleInsumoChange(index, 'salsas', options.map((o) => o.value))}
-                      options={salsas.map((s) => ({
-                        value: s.ID_insumo,
-                        label: s.descripcion,
-                      }))}
-                      placeholder="Selecciona salsas"
-                      maxMenuHeight={150}
-                    />
-                  </div>
-
-                  <div className="tw-flex tw-flex-col">
-                    <label className="tw-font-semibold">Adiciones</label>
-                    <Select
-                      isMulti
-                      value={adiciones.filter((a) => producto.selectedAdiciones.includes(a.ID_insumo)).map((a) => ({
-                        value: a.ID_insumo,
-                        label: a.descripcion,
-                      }))}
-                      onChange={(options) => handleInsumoChange(index, 'adiciones', options.map((o) => o.value))}
-                      options={adiciones.map((a) => ({
-                        value: a.ID_insumo,
-                        label: a.descripcion,
-                      }))}
-                      placeholder="Selecciona adiciones"
-                      maxMenuHeight={150}
-                    />
-                  </div>
+                <div className="tw-mt-4">
+                  <label className="tw-font-semibold">Sabores</label>
+                  <Select
+                    isMulti
+                    value={producto.selectedSabores.map((id) => sabores.find((s) => s.ID_insumo === id))}
+                    onChange={(values) => handleInsumoChange(index, 'Sabores', values.map((v) => v.value))}
+                    options={sabores.map((sabor) => ({
+                      value: sabor.ID_insumo,
+                      label: sabor.descripcion,
+                    }))}
+                    placeholder="Selecciona sabores"
+                  />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedProductos((prev) => prev.filter((_, prodIndex) => prodIndex !== index))
-                  }
-                  className="tw-mt-4 tw-bg-red-500 tw-text-white tw-px-4 tw-py-2 tw-rounded"
-                >
-                  Eliminar producto
-                </button>
+                <div className="tw-mt-4">
+                  <label className="tw-font-semibold">Salsas</label>
+                  <Select
+                    isMulti
+                    value={producto.selectedSalsas.map((id) => salsas.find((s) => s.ID_insumo === id))}
+                    onChange={(values) => handleInsumoChange(index, 'Salsas', values.map((v) => v.value))}
+                    options={salsas.map((salsa) => ({
+                      value: salsa.ID_insumo,
+                      label: salsa.descripcion,
+                    }))}
+                    placeholder="Selecciona salsas"
+                  />
+                </div>
+
+                <div className="tw-mt-4">
+                  <label className="tw-font-semibold">Adiciones</label>
+                  <Select
+                    isMulti
+                    value={producto.selectedAdiciones.map((id) => adiciones.find((a) => a.ID_insumo === id))}
+                    onChange={(values) => handleInsumoChange(index, 'Adiciones', values.map((v) => v.value))}
+                    options={adiciones.map((adicion) => ({
+                      value: adicion.ID_insumo,
+                      label: adicion.descripcion,
+                    }))}
+                    placeholder="Selecciona adiciones"
+                  />
+                </div>
               </div>
             ))}
-
             <button
               type="button"
               onClick={handleAddProducto}
-              className="tw-bg-indigo-600 tw-text-white tw-px-4 tw-py-2 tw-rounded"
+              className="tw-mt-4 tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded tw-w-full"
             >
               Agregar Producto
             </button>
           </div>
 
-          <div className="tw-text-lg tw-font-semibold tw-text-right tw-mt-4">
-            Precio Total: ${precioTotal.toFixed(2)}
+          <div className="tw-mt-6">
+            <p className="tw-text-lg tw-font-bold">Precio Total: ${precioTotal.toFixed(2)}</p>
           </div>
 
-          <div className="tw-flex tw-justify-end tw-gap-4 tw-mt-8">
-            <button type="button" onClick={onClose} className="tw-bg-gray-300 tw-px-4 tw-py-2 tw-rounded">
-              Cancelar
-            </button>
-            <button type="submit" className="tw-bg-indigo-600 tw-text-white tw-px-4 tw-py-2 tw-rounded">
+          <div className="tw-mt-6">
+            <button
+              type="submit"
+              className="tw-bg-green-500 tw-text-white tw-p-2 tw-rounded tw-w-full"
+            >
               Crear Venta
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="tw-bg-gray-500 tw-text-white tw-p-2 tw-rounded tw-w-full tw-mt-2"
+            >
+              Cancelar
             </button>
           </div>
         </form>
