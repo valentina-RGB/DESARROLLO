@@ -1,4 +1,4 @@
-const { HistorialEntradas, Insumos } = require('../../models');
+const { HistorialEntradas, Insumos, StockInsumos  } = require('../../models');
 
 // Obtener todas las entradas del historial
 const getAllEntradas = async (req, res) => {
@@ -8,6 +8,7 @@ const getAllEntradas = async (req, res) => {
     });
     res.status(200).json(entradas);
   } catch (error) {
+    console.error('Error al obtener el historial de entradas:', error);
     res.status(500).json({ error: 'Error al obtener el historial de entradas' });
   }
 };
@@ -24,28 +25,89 @@ const getEntradaById = async (req, res) => {
     }
     res.status(200).json(entrada);
   } catch (error) {
+    console.error('Error al obtener la entrada:', error);
     res.status(500).json({ error: 'Error al obtener la entrada' });
   }
 };
 
-// Eliminar una entrada por ID
-const deleteEntrada = async (req, res) => {
+// Crear o registrar una nueva entrada en el historial
+const createEntrada = async (req, res) => {
+  const { ID_insumo, cantidad, fecha } = req.body;
+  try {
+    const nuevaEntrada = await HistorialEntradas.create({ ID_insumo, cantidad, fecha });
+    res.status(201).json(nuevaEntrada);
+  } catch (error) {
+    console.error('Error al crear la entrada:', error);
+    res.status(500).json({ error: 'Error al crear la entrada' });
+  }
+};
+
+// Editar una entrada por ID
+const updateEntrada = async (req, res) => {
   const { id } = req.params;
+  const { cantidad, fecha } = req.body;
   try {
     const entrada = await HistorialEntradas.findByPk(id);
     if (!entrada) {
       return res.status(404).json({ error: 'Entrada no encontrada' });
     }
 
+    // Actualizar la entrada con los nuevos datos
+    entrada.cantidad = cantidad !== undefined ? cantidad : entrada.cantidad;
+    entrada.fecha = fecha !== undefined ? fecha : entrada.fecha;
+
+    await entrada.save(); // Guardar los cambios
+    res.status(200).json(entrada);
+  } catch (error) {
+    console.error('Error al actualizar la entrada:', error);
+    res.status(500).json({ error: 'Error al actualizar la entrada' });
+  }
+};
+
+// Eliminar una entrada por ID
+const deleteEntrada = async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Encuentra la entrada a eliminar
+    const entrada = await HistorialEntradas.findByPk(id);
+    
+    if (!entrada) {
+      return res.status(404).json({ error: 'Entrada no encontrada' });
+    }
+
+    // Encuentra el stock del insumo relacionado
+    const stockInsumo = await StockInsumos.findOne({ where: { ID_insumo: entrada.ID_insumo } });
+
+    if (!stockInsumo) {
+      return res.status(404).json({ error: 'Stock del insumo no encontrado' });
+    }
+
+    // Actualiza el stock actual
+    stockInsumo.stock_actual = stockInsumo.stock_actual - entrada.cantidad;
+
+    // Verifica que el stock no sea negativo
+    if (stockInsumo.stock_actual < 0) {
+      return res.status(400).json({ error: 'El stock del insumo no puede ser negativo' });
+    }
+
+    await stockInsumo.save(); // Guarda los cambios en el stock
+
+    // Elimina la entrada
     await entrada.destroy();
+
     res.status(204).json();
   } catch (error) {
+    console.error('Error al eliminar la entrada:', error);
     res.status(500).json({ error: 'Error al eliminar la entrada' });
   }
 };
 
+
 module.exports = {
   getAllEntradas,
   getEntradaById,
+  createEntrada,
+  updateEntrada,
   deleteEntrada,
 };
