@@ -6,6 +6,7 @@ const { Insumos, Producto_insumos, Productos, Tipo_productos, Estado_producto,Ca
   
 const
 
+
     getProductos = async (res,req) => {
       const productos = await Productos.findAll(
       {
@@ -15,7 +16,6 @@ const
           as: 'Insumos',
           through:{attributes:['cantidad','configuracion', 'precio']}
          }
-
         ]
       }
       );
@@ -23,24 +23,34 @@ const
     },
         
     getProductosID = async (id) => {
-      const productos = await Productos.findByPk(id);
+      const productos = await Productos.findByPk(id, 
+        {
+          include:[
+           {
+            model: Insumos,
+            as: 'Insumos',
+            through:{attributes:['cantidad','configuracion', 'precio']}
+           }
+          ]
+        }
+        );
         return productos;
     } ,
 
    
 
-    CreateProdutos = async (ID_tipo_productos, Insumos, precio, cantidad, nombre, descripcion, precio_neto, ID_estado_productos, ID_categorias, imagen, configuracion) => {
+    CreateProdutos = async (ID_tipo_productos, Insumos, precio, cantidad, nombre, descripcion, precio_neto, ID_categorias, imagen) => {
       let bandera = false;
       let respuesta = "";
     
-      if (ID_estado_productos) {
-        const estado = await Estado_producto.findByPk(ID_estado_productos); // Asegúrate de usar await aquí
-        if (estado==0) {
-          bandera = true;
-          respuesta =  "Estado no encontrado"
+      // if (ID_estado_productos) {
+      //   const estado = await Estado_producto.findByPk(ID_estado_productos); // Asegúrate de usar await aquí
+      //   if (estado==0) {
+      //     bandera = true;
+      //     respuesta =  "Estado no encontrado"
          
-        }
-      }
+      //   }
+      // }
     
       if (ID_tipo_productos) {
         const tipo = await Tipo_productos.findByPk(ID_tipo_productos); // Asegúrate de usar await aquí
@@ -86,7 +96,7 @@ const
           nombre: nombre,
           descripcion: descripcion,
           precio_neto: precio_neto,
-          estado_producto: ID_estado_productos,
+          estado_productos: "D",
           ID_tipo_productos: ID_tipo_productos,
           ID_categorias: ID_categorias,
           imagen: imagen || 'N/A'
@@ -119,29 +129,22 @@ const
           return { status: 404, message: respuesta  || 'Error no especificado' }; // Garantiza que siempre haya un mensaje       
       }
       
-
-
-   
-      
-     
-
-
-
     },
     
         
-    PatchProductos = async (id, datos) => {
-      const [updated] = await Productos.update(datos, {
-        where: { ID_producto:id },
+    PatchProductos = async (id, data) => {
+      
+      const [updated] = await Productos.update(data, {
+        where: {ID_producto:id},
       });
 
       if (updated) {
-        const updatedProductos = await Productos.findByPk(id);
-        return updatedProductos;
-
+        const updatedProducto = await Productos.findByPk(id);
+        return updatedProducto;
       }else{
-        return { status: 404, message: 'Product not found' };
+        return { status: 404, message: 'Producto not found' };
       }
+      
     },
 
     DeleteProductos = async (id) => {
