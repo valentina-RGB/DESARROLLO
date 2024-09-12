@@ -68,11 +68,9 @@ const EntriesList: React.FC = () => {
   // Función para manejar la eliminación de una entrada
   const handleDeleteEntry = async (id: number) => {
     try {
-      await api.delete(`/historial_entradas/${id}`);
-      toast.success('Entrada eliminada con éxito');
+      await api.delete(`/historial_entradas/${id}`); 
       await fetchEntries(); // Actualiza la lista después de eliminar
     } catch (error) {
-      toast.error('Error al eliminar la entrada');
       console.error('Error al eliminar la entrada:', error);
     }
   };

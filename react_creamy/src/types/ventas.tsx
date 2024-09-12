@@ -1,6 +1,6 @@
 
 
-export interface Ventas {
+export interface Venta {
   Cliente: any;
   ID_venta: number;
   fecha: string;
