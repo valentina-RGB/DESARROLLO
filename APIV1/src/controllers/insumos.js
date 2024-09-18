@@ -2,15 +2,24 @@
 const { sequelize } = require('../../models'); 
 const db = require('../../models');
 const { validateInsumos, validateUpdateInsumo } = require('../validation/validations_ISE');
-
+const { request, response } = require("express");
 
 const Insumos = db.Insumos;
 const StockInsumos = db.StockInsumos;
 const HistorialEntradas = db.HistorialEntradas
 
-const obtenerInsumos = async (req, res) => {
+const obtenerInsumos = async (req=request, res) => {
+  const {ID_tipo_insumo,} = req.query
   try {
-    const insumos = await Insumos.findAll({
+    let whereClause = {}
+
+    if(ID_tipo_insumo){
+      whereClause.ID_tipo_insumo = ID_tipo_insumo
+    }
+    const insumos = await Insumos.findAll(
+      {
+        where:whereClause
+      },{
       include: [
         {
           model: StockInsumos,
@@ -163,6 +172,9 @@ const actualizarInsumo = async (req, res) => {
     unidad,
     stock_actual
   } = req.body;
+
+
+
 
   try {
     // Verificar si el insumo existe

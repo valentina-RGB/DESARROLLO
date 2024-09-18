@@ -18,8 +18,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const obtenerProductos = async (req, res) => {
+   const {nombre,ID_tipo_productos} = req.query;
+   
     try {
-      return await ProductosService.getProductos(res, req);
+      return await ProductosService.getProductos(res,req, nombre, ID_tipo_productos);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -136,49 +138,81 @@ const obtenerProductos = async (req, res) => {
 
       // Actualizar el producto
       const updatecategories = await ProductosService.PatchProductos(id, data);
+// Obtener los insumos actuales asociados al producto
+const insumosActuales = await Producto_insumos.findAll({
+  where: {
+    ID_productos_tipo: id,
+  },
+});
 
-      // Actualizar los insumos si existen
-      if (Array.isArray(Insumos)) {
-        for (const insumo of Insumos) {
-          if (insumo && insumo.Producto_insumos) {
-            // Verificar si el insumo ya existe en la relación Producto_insumos
-            const productoInsumo = await Producto_insumos.findOne({
-              where: {
-                ID_insumos_tipo: insumo.ID_insumo,
-                ID_productos_tipo: id,
-              },
-            });
+// Convertir los insumos actuales en un arreglo de IDs para comparación
+const idsInsumosActuales = insumosActuales.map(
+  (productoInsumo) => productoInsumo.ID_insumos_tipo
+);
 
-            if (productoInsumo) {
-              // Actualizar el insumo existente
-              await productoInsumo.update({
-                cantidad:
-                  insumo.Producto_insumos.cantidad || productoInsumo.cantidad,
-                configuracion:
-                  insumo.Producto_insumos.configuracion ||
-                  productoInsumo.configuracion,
-                precio:
-                  (insumo.precio || productoInsumo.precio) *
-                  (insumo.Producto_insumos.cantidad || productoInsumo.cantidad),
-              });
-            } else {
-              // Si el insumo no existe, lo creamos
-              await Producto_insumos.create({
-                ID_productos_tipo: id,
-                ID_insumos_tipo: insumo.ID_insumo,
-                cantidad: insumo.Producto_insumos.cantidad,
-                configuracion: insumo.Producto_insumos.configuracion,
-                precio: insumo.precio * insumo.Producto_insumos.cantidad,
-              });
-            }
-          } else {
-            console.error(
-              "Insumo o propiedades de insumo no están definidos:",
-              insumo
-            );
-          }
-        }
+// Obtener los IDs de los insumos enviados desde el frontend
+const idsInsumosNuevos = Array.isArray(Insumos)
+  ? Insumos.map((insumo) => insumo.ID_insumo)
+  : [];
+
+// Identificar los insumos que fueron eliminados (están en la BD pero no en el request)
+const insumosEliminados = idsInsumosActuales.filter(
+  (idInsumo) => !idsInsumosNuevos.includes(idInsumo)
+);
+
+// Eliminar los insumos que no están en la nueva lista
+if (insumosEliminados.length > 0) {
+  await Producto_insumos.destroy({
+    where: {
+      ID_productos_tipo: id,
+      ID_insumos_tipo: insumosEliminados,
+    },
+  });
+}
+
+// Actualizar los insumos si existen o agregar los nuevos
+if (Array.isArray(Insumos)) {
+  for (const insumo of Insumos) {
+    if (insumo && insumo.Producto_insumos) {
+      // Verificar si el insumo ya existe en la relación Producto_insumos
+      const productoInsumo = await Producto_insumos.findOne({
+        where: {
+          ID_insumos_tipo: insumo.ID_insumo,
+          ID_productos_tipo: id,
+        },
+      });
+
+      if (productoInsumo) {
+        // Actualizar el insumo existente
+        await productoInsumo.update({
+          cantidad:
+            insumo.Producto_insumos.cantidad || productoInsumo.cantidad,
+          configuracion:
+            insumo.Producto_insumos.configuracion ||
+            productoInsumo.configuracion,
+          precio:
+            (insumo.precio || productoInsumo.precio) *
+            (insumo.Producto_insumos.cantidad || productoInsumo.cantidad),
+        });
+      } else {
+        // Si el insumo no existe, lo creamos
+        await Producto_insumos.create({
+          ID_productos_tipo: id,
+          ID_insumos_tipo: insumo.ID_insumo,
+          cantidad: insumo.Producto_insumos.cantidad,
+          configuracion: insumo.Producto_insumos.configuracion,
+          precio: insumo.precio * insumo.Producto_insumos.cantidad,
+        });
       }
+    } else {
+      console.error(
+        "Insumo o propiedades de insumo no están definidos:",
+        insumo
+      );
+    }
+  }
+}
+
 
       res.status(200).json({
         message: "Producto actualizado exitosamente",

@@ -129,7 +129,8 @@ const EditProductos: React.FC<AddProductos> = ({ onClose, id }) => {
         const response = await api.get(`/productos/${id}`);
        const Insumos = response.data.Insumos
         setFormData(response.data);
-        setInputs(Insumos)
+        setInputs(Insumos);
+        setPreview(`http://localhost:3300${response.data.imagen}`);
         console.log(response.data);
        
         // setInputs(response.data);
@@ -234,6 +235,7 @@ const EditProductos: React.FC<AddProductos> = ({ onClose, id }) => {
         onClose();
         toast.success("La categoría ha agregada exitosamente.");
         navigate("/productos");
+        
         resetForm();
       } catch (error) {
         toast.error(
