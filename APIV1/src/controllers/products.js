@@ -18,10 +18,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const obtenerProductos = async (req, res) => {
-   const {nombre,ID_tipo_productos} = req.query;
+  //  const {nombre,ID_tipo_productos} = req.query;
    
     try {
-      return await ProductosService.getProductos(res,req, nombre, ID_tipo_productos);
+      return await ProductosService.getProductos(res,req);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -52,6 +52,7 @@ const obtenerProductos = async (req, res) => {
       precio_neto,
       estado_productos,
       ID_categorias,
+      
     } = req.body;
 
     let imagen = null;

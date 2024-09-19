@@ -194,7 +194,7 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
         newErrors.insumos= 'Debes agregar almenos 1 insumo';
       
       }
-    setErrors(newErrors);
+    // setErrors(newErrors);
 
     if (!newErrors.insumos && !newErrors.nombre) {
       try {
@@ -385,7 +385,7 @@ useEffect(() => {
   
   return (
     <>
-    <p>{error}</p>
+    {/* <p>{error}</p> */}
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
@@ -430,6 +430,8 @@ useEffect(() => {
                 >
                   Precio recomendado: {totalPrecio}
                 </label>
+                <div className="input-group">
+                <span className="input-group-text dark:tw-bg-[#a78bfa]">$</span>
                 <input
                   id="price"
                   type="number"
@@ -442,6 +444,9 @@ useEffect(() => {
                   placeholder="Ingresa el precio"
                   className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
                 />
+
+                </div>
+               
               </div>
               <div className="tw-grid tw-gap-2">
                 <label
