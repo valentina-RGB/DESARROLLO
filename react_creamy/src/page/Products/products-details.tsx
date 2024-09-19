@@ -36,7 +36,13 @@ const ProductosDetail: React.FC<Props> = ({ id, onClose }) => {
     };
   };
 
+  type Categoria = {
+    ID_Categoria: number;
+    descripcion: string;
+  };
+
   const [Productos, setProductos] = useState<Producto | null>(null);
+  
 
   useEffect(() => {
     const fetchInsumoDetails = async () => {
@@ -48,6 +54,8 @@ const ProductosDetail: React.FC<Props> = ({ id, onClose }) => {
       }
     };
 
+
+  
     fetchInsumoDetails();
   }, [id]);
 
@@ -90,7 +98,10 @@ const ProductosDetail: React.FC<Props> = ({ id, onClose }) => {
       
       <div className="tw-p-2 md:tw-p-3 tw-flex tw-flex-col tw-justify-center tw-h-90">   
         <div className="tw-flex tw-items-center tw-mb-6">
-        <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-1 m-auto ">
+        <div className= "">
+        <h1 className=" tw-font-bold tw-mb-2 tw-text-[#7c3aed]">
+          {Productos.nombre}
+        </h1>
         <span
             className={` tw-font-medium tw-px-2 tw-py-1 tw-rounded-full ${
               Productos.estado_productos === "A"
@@ -101,12 +112,10 @@ const ProductosDetail: React.FC<Props> = ({ id, onClose }) => {
             {EstadoProductos}
           </span>
         </div>
-        <h1 className=" tw-font-bold tw-mb-2 tw-text-[#7c3aed]">
-          {Productos.nombre}
-        </h1>
+      
         </div>
         <p className="tw-text-base tw-text-[#4b5563] tw-mb-6">
-            {Productos.descripcion}
+           Descripción del producto: {Productos.descripcion}
         </p>
         <div className="accordion accordion-flush tw-max-h-60 tw-overflow-y-auto " id="accordionFlushExample">
           {Productos.Insumos.map((insumos) => (

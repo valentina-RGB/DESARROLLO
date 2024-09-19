@@ -64,11 +64,48 @@ const Productos: React.FC = () => {
     const nuevoEstado = estadoActual === 'D' ? 'A' : 'D'
 
     try {
-      await api.put(`/productos/${id}`, { estado_productos: nuevoEstado });
-      setProductos(productos.map(pro => pro.ID_producto === id ? { ...pro, estado_productos: nuevoEstado } : pro
-
-      ));
-      toast.success('El estado del producto ha sido actualizado.');
+      if (nuevoEstado === 'A') {
+        const toastId = toast(
+          <div>
+            <p>¿Estás seguro de que quieres cancelar el producto?</p>
+            <div>
+              <button
+                className="tw-bg-red-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mr-2"
+                onClick={async () => {
+                  // Confirmar el cambio
+                  toast.dismiss(toastId); // Cerrar el toast con el ID
+                  try {
+                    await api.put(`/productos/${id}`, { estado_productos: nuevoEstado });
+                     setProductos(productos.map(pro => pro.ID_producto === id ? { ...pro, estado_productos: nuevoEstado } : pro     
+                       ));
+                       toast.success('El estado del producto ha sido cambiado a "Cancelado".');
+                  } catch (error) {
+                    console.error('Error al cambiar el estado del producto:', error);
+                    toast.error('Hubo un problema al cambiar el estado del producto.');
+                  }
+                }}
+              >
+                Confirmar
+              </button>
+              <button
+                className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2"
+                onClick={() => toast.dismiss(toastId)} // Cierra el toast sin hacer nada
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>,
+          {
+            duration: 8000, // Duración del toast para dar tiempo a responder
+          }
+        );
+        return; // Salimos aquí para no proceder con el cambio automático
+      }else{
+        await api.put(`/productos/${id}`, { estado_productos: nuevoEstado });
+        setProductos(productos.map(pro => pro.ID_producto === id ? { ...pro, estado_productos: nuevoEstado } : pro 
+        ));
+        toast.success('¡El estado del producdo ha sido actualizado!');
+      }
     } catch (error) {
       console.error('Error al cambiar el estado del producto:', error);
       toast.error('Hubo un problema al cambiar el estado del producto.');
@@ -79,6 +116,12 @@ const Productos: React.FC = () => {
     fetchProducto(); 
   }, []);
 
+
+  type Categoria = {
+    ID_Categoria: number;
+    descripcion: string;
+  };
+  const [Categoria, setCategoria] = useState<Categoria[]>([]);
 
 
  
@@ -95,6 +138,17 @@ const Productos: React.FC = () => {
         accessorKey: 'nombre',
         header: 'Nombre',
       },
+      // {
+      //   accessorKey: 'ID_categorias',
+      //   header: 'Categoría',
+      //   Cell: ({ cell, row }) => {
+      //       // Encontrar el estado correspondiente al ID_estado_pedido
+      //       const categorias = Categoria.find(e => e.ID_Categoria=== row.original.categorias);
+      //             // Si no se encuentra el estado, mostrar un valor por defecto
+      //       const categoria = categorias ? categorias.descripcion : 'Desconocido';
+      //       <p>{categoria}</p>
+            
+      // }},
       {
         accessorKey: 'descripcion',
         header: 'Descripcion',

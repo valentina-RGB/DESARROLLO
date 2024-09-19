@@ -59,7 +59,8 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({
     nombre:"",
-    insumos:""
+    insumos:"",
+    ID_categorias:[]
   });
 
   const [formData, setFormData] = useState<{
@@ -101,7 +102,6 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
       setError(err);
     }
   };
-
 
 
   const [dragActive, setDragActive] = useState(false);
@@ -180,15 +180,21 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     };
     console.log(data)
 
-    const newErrors = { nombre: "", insumos:""};
+    const newErrors = { nombre: "", insumos:"", categorias:""};
     if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre de la categoría es obligatorio";
+      newErrors.nombre = "El nombre del producto es obligatorio";
+     
+    }
+
+    if (!formData.ID_categorias) {
+      newErrors.categorias = "La categoria es obligatoria";
+     
     }
       if (inputs.length <=0){
         newErrors.insumos= 'Debes agregar almenos 1 insumo';
       
       }
-    setErrors(newErrors);
+    // setErrors(newErrors);
 
     if (!newErrors.insumos && !newErrors.nombre) {
       try {
@@ -379,6 +385,7 @@ useEffect(() => {
   
   return (
     <>
+    {/* <p>{error}</p> */}
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
@@ -423,6 +430,8 @@ useEffect(() => {
                 >
                   Precio recomendado: {totalPrecio}
                 </label>
+                <div className="input-group">
+                <span className="input-group-text dark:tw-bg-[#a78bfa]">$</span>
                 <input
                   id="price"
                   type="number"
@@ -435,6 +444,9 @@ useEffect(() => {
                   placeholder="Ingresa el precio"
                   className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
                 />
+
+                </div>
+               
               </div>
               <div className="tw-grid tw-gap-2">
                 <label
@@ -448,15 +460,19 @@ useEffect(() => {
                   name="ID_categorias"
                   value={formData.ID_categorias}
                   onChange={handleInputChange}
-                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"
+                  className="tw-bg-white dark:tw-bg-[#ddd6fe] tw-text-gray-700 dark:tw-text-gray-800 tw-border-gray-300 dark:tw-border-gray-600 tw-rounded-md tw-p-2 focus:tw-ring-[#6b46c1] focus:tw-border-[#6b46c1]"  
                 >
                   <option value={0} disabled>
                     Selecciona un producto
                   </option>
                   {categorias.map((c) => (
+                    <>
                     <option key={c.ID_categoria} value={c.ID_categoria}>
                       {c.descripcion}
                     </option>
+                    <p>{errors.ID_categorias}</p>
+                    </>
+                    
                   ))}
                 </select>
               </div>
