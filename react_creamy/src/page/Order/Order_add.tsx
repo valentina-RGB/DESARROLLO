@@ -270,8 +270,12 @@ export default function OrderAdd() {
     );
 
     if (AdicionExists) {
+
+      if(insumo.ID_insumo <= 2){
       updateQuantityInsumos(insumo.ID_insumo, 1);
       // Mostramos un mensaje toast
+
+      }
       toast.success(
         `La cantidad de ${insumo.descripcion_insumo} ha sido actualizada.`
       );
@@ -410,7 +414,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
         : input.Adiciones_Insumos.cantidad + amount;
       // const precio = isNaN(input.precio * newQuantity)? 1: input.precio * newQuantity;
 
-      if (newQuantity < 1) {
+      if (newQuantity < 1 ) {
         newQuantity = 1;
       }
 
