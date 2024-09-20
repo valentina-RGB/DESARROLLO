@@ -119,7 +119,7 @@ export default function OrderAdd() {
   }, [salsasAgregadas,insumosAgregados,adiciones]);
   
   useEffect(() => {
-    // Configura un temporizador que actualiza el término de búsqueda
+    // Configura un temporizador que actualiza el término de búsquedaaa
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm); // Solo se actualiza después de 500ms
     }, 600);
