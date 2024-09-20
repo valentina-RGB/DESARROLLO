@@ -158,7 +158,10 @@ const InsumosList: React.FC = () => {
       {
         accessorKey: 'stock.stock_actual',
         header: 'Cantidad',
-        Cell: ({ cell }) => cell.getValue<number>() ?? 'N/A',
+        Cell: ({ cell }) => {
+          const stockActual = cell.getValue<number>(); // Accede al valor de stock_actual
+          return stockActual !== undefined ? stockActual : 'N/A'; // Verifica si el valor es válido
+        },
       },
       {
         id: 'acciones',

@@ -8,27 +8,28 @@ const Insumos = db.Insumos;
 const StockInsumos = db.StockInsumos;
 const HistorialEntradas = db.HistorialEntradas
 
-const obtenerInsumos = async (req=request, res) => {
-  const {ID_tipo_insumo,} = req.query
+const obtenerInsumos = async (req = request, res) => {
+  const { ID_tipo_insumo } = req.query;
   try {
-    let whereClause = {}
+    let whereClause = {};
 
-    if(ID_tipo_insumo){
-      whereClause.ID_tipo_insumo = ID_tipo_insumo
+    if (ID_tipo_insumo) {
+      whereClause.ID_tipo_insumo = ID_tipo_insumo;
     }
-    const insumos = await Insumos.findAll(
-      {
-        where:whereClause
-      },{
+
+    const insumos = await Insumos.findAll({
+      where: whereClause,
       include: [
         {
           model: StockInsumos,
           as: 'stock',
-          attributes: ['stock_actual']
+          attributes: ['stock_actual', 'stock_min', 'stock_max'], // Incluye otros atributos si es necesario
+          required: false // Permite que se incluyan insumos sin stock
         }
       ]
     });
-    console.log(JSON.stringify(insumos, null, 2)); 
+
+    console.log(JSON.stringify(insumos, null, 2));
     res.json(insumos);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -49,48 +50,7 @@ const obtenerInsumoPorId = async (req, res) => {
   }
 };
 
-// const crearInsumo = async (req, res) => {
-//   const transaction = await db.sequelize.transaction();
-//   try {
-//     const {
-//       ID_tipo_insumo,
-//       descripcion_insumo,
-//       estado_insumo, // Opcional: Puedes incluir este campo si es necesario
-//       precio,
-//       stock_min,
-//       stock_max,
-//       stock_actual,
-//       medida,
-//       unidad
-//     } = req.body;
 
-//     if (!ID_tipo_insumo || !descripcion_insumo) {
-//       await transaction.rollback();
-//       return res.status(400).json({ message: 'ID_tipo_insumo y descripcion_insumo son campos obligatorios.' });
-//     }
-//     const insumo = await Insumos.create({
-//       ID_tipo_insumo,
-//       descripcion_insumo,
-//       estado_insumo, 
-//       precio
-//     }, { transaction });
-  
-//     await StockInsumos.create({
-//       stock_min: stock_min || 0,
-//       stock_max: stock_max || 100,
-//       stock_actual: stock_actual || 0,
-//       ID_insumo: insumo.ID_insumo,
-//       medida: medida || 'unidad',
-//       unidad: unidad || 0
-//     }, { transaction });
-
-//     await transaction.commit(); 
-//     res.status(201).json(insumo);
-//   } catch (error) {
-//     await transaction.rollback(); 
-//     res.status(400).json({ message: error.message });
-//   }
-// };
 const crearInsumo = async (req, res) => {
   const transaction = await db.sequelize.transaction();
   try {
@@ -139,26 +99,7 @@ const crearInsumo = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-// const actualizarInsumo = async (req, res) => {
-//   console.log('Datos recibidos:', req.body);
-//   const { id } = req.params;
 
-//   try {
-//       const [updated] = await Insumos.update(req.body, {
-//           where: { ID_insumo: id },
-//       });
-
-//       if (updated) {
-//           const updatedInsumo = await Insumos.findByPk(id);
-//           res.status(200).json(updatedInsumo);
-//       } else {
-//           res.status(404).json({ message: 'Insumo no encontrado' });
-//       }
-//   } catch (error) {
-//       console.error('Error al actualizar el insumo:', error);
-//       res.status(400).json({ message: error.message });
-//   }
-// };
 const actualizarInsumo = async (req, res) => {
   const { id } = req.params;
   const {
