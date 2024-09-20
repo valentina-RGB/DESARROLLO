@@ -1,351 +1,854 @@
-import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
-import { toast } from 'react-hot-toast';
-import Select from 'react-select';
-import api from '../../api/api';
+import React, { useState, useEffect } from "react";
+import {
+  Minus,
+  Plus,
+  Search,
+  ShoppingCart,
+  Trash2,
+  Package,
+} from "lucide-react";
+import api from "../../api/api";
+import { toast } from "react-hot-toast";
 
-// Interfaces
-interface Producto {
+// const saboresDisponibles = [
+//   "Vainilla", "Chocolate", "Fresa", "Menta", "Dulce de Leche",
+//   "Pistacho", "Cookies & Cream", "Mango", "Limón", "Café"
+// ]
+
+type Insumo_adicion = {
+  ID_insumo: number;
+  descripcion_insumo: string;
+  ID_tipo_Insumo: number;
+  precio: number;
+  Adiciones_Insumos: {
+    cantidad: number;
+    total: number;
+  };
+};
+
+// type Tipo_Insumo = {
+//   ID_tipo_Insumo : number,
+//   descripcion_tipo : string
+// }
+
+type Adiciones = {
+  ID_adicion: number;
+  cantidad: number;
+  total: number;
+  Productos_adiciones: {
+    cantidad: number;
+  };
+  insumos: Insumo_adicion[];
+};
+
+type Insumos = {
+  ID_insumo: number;
+  descripcion_insumo: string;
+  precio: number;
+  Producto_insumos: {
+    cantidad: number;
+  };
+};
+
+type Producto = {
   ID_producto: number;
   nombre: string;
-  precio_neto: number;
-}
-
-interface Cliente {
-  ID_cliente: number;
-  nombre: string;
-}
-
-interface EstadoVenta {
-  ID_estado_venta: number;
   descripcion: string;
-}
-
-interface Insumo {
-  ID_insumo: number;
-  descripcion: string;
-  tipo_insumo: string;
   precio_neto: number;
-}
+  estado_productos: string;
+  ID_tipo_productos: number | string;
+  ID_categorias: null | string;
+  imagen: string;
+  ID_estado_productos: number | string;
+  Producto_Pedidos: {
+    cantidad: number;
+    precio_neto: number;
+    sub_total: number;
+  };
+  Insumos: Insumos[];
+  adicion: Adiciones[];
+};
 
-interface CreateVentaProps {
-  onClose: () => void;
-  isOpen: boolean;
-  onVentaCreated: () => void;
-}
+type Pedido = {
+  fecha: string;
+  ID_clientes: number | string;
+  precio_total: number;
+  ID_estado_pedido: number | string;
+  ProductosLista: Producto[];
+};
 
-// Componente CreateVenta
-const CreateVenta: React.FC<CreateVentaProps> = ({ onClose, isOpen, onVentaCreated }) => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [estadoVentas, setEstadoVentas] = useState<EstadoVenta[]>([]);
-  const [sabores, setSabores] = useState<Insumo[]>([]);
-  const [salsas, setSalsas] = useState<Insumo[]>([]);
-  const [adiciones, setAdiciones] = useState<Insumo[]>([]);
 
-  const [selectedCliente, setSelectedCliente] = useState<number | null>(null);
-  const [selectedEstadoVenta, setSelectedEstadoVenta] = useState<number | null>(null);
-  const [selectedProductos, setSelectedProductos] = useState<any[]>([]);
-  const [precioTotal, setPrecioTotal] = useState<number>(0);
+export default function OrderAdd() {
+  // const [Pedidos, setPedidos] = useState<Pedido[]>([]);
+
+  const [productoActual, setProductoActual] = useState<string | null>(null);
+  const [IDActual, SetIDActual] = useState<number | null>(null);
+
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+  //PRODUCTOS
+  const [searchTerm, setSearchTerm] = useState("");
+  const [busqueda, setBusqueda] = useState<Producto[]>([]);
+  const [productosAgregados, setProductosAgregados] = useState<Producto[]>([]);
+
+  const [TerminosHelado, setTerminosHelado] = useState("");
+  const [buscarHelado, setBuscarHelado] = useState<Insumo_adicion[]>([]);
+  const [insumosAgregados, setInsumoAgregados] = useState<Insumo_adicion[]>([]);
+
+  const [salsasAgregadas, setsalsasAgregadas] = useState<Insumo_adicion[]>([]);
+  const [salsasDisponibles, setSalsaDisponibles] = useState<Insumo_adicion[]>([]);
+
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [debouncedSearchTerm2, setDebouncedSearchTerm2] =
+    useState(TerminosHelado);
+
+  const [TerminosInsumos, setTerminosInsumos] = useState("");
+  const [buscarInsumos, setBuscarInsumos] = useState<Insumo_adicion[]>([]);
+  const [adiciones, setadiciones] = useState<Insumo_adicion[]>([]);
+  const [debouncedSearchTerm3, setDebouncedSearchTerm3] =useState(TerminosHelado);
+  const [menuVisible, setMenuVisible] = useState(false);
+
 
   useEffect(() => {
-    fetchClientes();
-    fetchProductos();
-    fetchInsumos();
-    fetchEstadoVentas();
+  const combinedArray = [...salsasAgregadas, ...insumosAgregados, ...adiciones];
+    
+    const arrayGeneralizado = generalizarItems(combinedArray);
+
+    console.log(arrayGeneralizado);
+   
+  }, [salsasAgregadas,insumosAgregados,adiciones]);
+  
+  useEffect(() => {
+    // Configura un temporizador que actualiza el término de búsqueda
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm); // Solo se actualiza después de 500ms
+    }, 600);
+
+    // Limpia el temporizador si el usuario sigue escribiendo antes de que se complete
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]); // Se ejecuta cada vez que cambia el término de búsqueda
+
+  useEffect(() => {
+    // Configura un temporizador que actualiza el término de búsqueda
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm2(TerminosHelado); // Solo se actualiza después de 500ms
+    }, 600);
+
+    // Limpia el temporizador si el usuario sigue escribiendo antes de que se complete
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [TerminosHelado]); // Se ejecuta cada vez que cambia el término de búsqueda
+
+  useEffect(() => {
+    // Configura un temporizador que actualiza el término de búsqueda
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm3(TerminosInsumos); // Solo se actualiza después de 500ms
+    }, 500);
+
+    // Limpia el temporizador si el usuario sigue escribiendo antes de que se complete
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [TerminosInsumos]); // Se ejecuta cada vez que cambia el término de búsqueda
+
+  useEffect(() => {
+    if (!debouncedSearchTerm) {
+      fetchPedidos();
+    } else {
+      const productosFiltrados = busqueda.filter(
+        (producto) =>
+          producto.nombre
+            .toLowerCase()
+            .includes(debouncedSearchTerm.toLowerCase()) ||
+          producto.ID_producto.toString().includes(
+            debouncedSearchTerm.toLowerCase()
+          )
+      );
+      setBusqueda(productosFiltrados);
+    }
+  }, [debouncedSearchTerm]); // Solo filtra cuando el término de búsqueda "debounced" se actualiza
+
+  useEffect(() => {
+    if (!debouncedSearchTerm2) {
+      fetchPedidos();
+    } else {
+      const heladosFiltrados = buscarHelado.filter((helado) =>
+        helado.descripcion_insumo
+          .toLowerCase()
+          .includes(debouncedSearchTerm2.toLowerCase())
+      );
+      setBuscarHelado(heladosFiltrados);
+    }
+  }, [debouncedSearchTerm2]);
+
+  useEffect(() => {
+    if (!debouncedSearchTerm3) {
+      fetchPedidos();
+    } else {
+      const InsumosFiltrados = buscarInsumos.filter((insumos) =>
+        insumos.descripcion_insumo
+          .toLowerCase()
+          .includes(debouncedSearchTerm3.toLowerCase())
+      );
+      setBuscarInsumos(InsumosFiltrados);
+    }
+  }, [debouncedSearchTerm3]);
+
+
+  const fetchPedidos = async () => {
+    const url_productos = `/productos`;
+    const url_insumos = `/insumos?ID_tipo_insumo=2`;
+    const url_salsa = `/insumos?ID_tipo_insumo=3`;
+    const url_total_insumos = `/insumos`;
+
+    const response_productos = await api.get(url_productos);
+    const response_insumos = await api.get(url_insumos);
+    const response_salsas = await api.get(url_salsa);
+    const response_total_insumos = await api.get(url_total_insumos);
+
+    if (response_productos.status === 200 && response_insumos.status === 200) {
+      const data_producto: Producto[] = await response_productos.data;
+      const data_insumos: Insumo_adicion[] = await response_insumos.data;
+      const data_salsas: Insumo_adicion[] = await response_salsas.data;
+      const data_total_insumos: Insumo_adicion[] = await response_total_insumos.data;
+
+      setBuscarHelado(data_insumos);
+      setSalsaDisponibles(data_salsas);
+      setBusqueda(data_producto);
+      setBuscarInsumos(data_total_insumos);
+
+
+      // console.log("Productos", data_producto);
+    } else {
+      console.error("Error al cargar los insumos");
+    }
+  };
+
+
+
+
+
+  const añadirInsumo = (insumo: Insumo_adicion) => {
+    const AdicionExists = insumosAgregados.some(
+      (input) => input.descripcion_insumo === insumo.descripcion_insumo
+    );
+
+    if (AdicionExists) {
+      updateQuantity(insumo.descripcion_insumo, 1);
+      // Mostramos un mensaje toast
+      toast.success(
+        `La cantidad de ${insumo.descripcion_insumo} ha sido actualizada.`
+      );
+    } else {
+      const nuevo = [
+        ...insumosAgregados,
+        {
+          ID_insumo: insumo.ID_insumo,
+          descripcion_insumo: insumo.descripcion_insumo,
+          precio: insumo.precio,
+          ID_tipo_Insumo: insumo.ID_tipo_Insumo,
+          Adiciones_Insumos: {
+            cantidad: 1,
+            total: 0
+          },
+        },
+      ];
+
+      setInsumoAgregados(nuevo);
+
+      return insumosAgregados;
+    }
+  };
+
+
+  const añadirAdicion = (insumo: Insumo_adicion) => {
+    const AdicionExists = adiciones.some(
+      (input) => input.ID_insumo=== insumo.ID_insumo
+    );
+
+    if (AdicionExists) {
+      updateQuantityInsumos(insumo.ID_insumo, 1);
+      // Mostramos un mensaje toast
+      toast.success(
+        `La cantidad de ${insumo.descripcion_insumo} ha sido actualizada.`
+      );
+    } else {
+      const nuevo = [
+        ...adiciones,
+        {
+          ID_insumo:insumo.ID_insumo,
+          descripcion_insumo: insumo.descripcion_insumo,
+          precio: insumo.precio,
+          ID_tipo_Insumo: insumo.ID_tipo_Insumo,
+          Adiciones_Insumos: {
+            cantidad: 1,
+            total: insumo.precio 
+          },
+        },
+      ];
+
+      setadiciones(nuevo);
+
+      // console.log(adiciones)
+      return adiciones;
+    }
+  };
+
+  const handleSalsaChange = (salsa: Insumo_adicion) => {
+    const siExiste = salsasAgregadas.some(
+      (s) => s.ID_insumo=== salsa.ID_insumo
+    );
+    if (siExiste) {
+      // Si la salsa ya está agregada, la eliminamos
+      setsalsasAgregadas(
+        salsasAgregadas.filter(
+          (s) => s.ID_insumo !== salsa.ID_insumo
+        )
+      );
+    } else {
+      // Si no está agregada, la agregamos
+
+      const nuevaSalsa = [
+        ...salsasAgregadas,
+        {
+          ID_insumo:salsa.ID_insumo,
+          descripcion_insumo: salsa.descripcion_insumo,
+          precio: salsa.precio,
+          ID_tipo_Insumo: salsa.ID_tipo_Insumo,
+          Adiciones_Insumos: {
+            cantidad: 1,
+            total:salsa.precio
+          },
+        },
+      ];
+
+      setsalsasAgregadas(nuevaSalsa);
+    }
+  };
+
+const generalizarItems = (array: Insumo_adicion[]) => {
+  return array.reduce((acc: Insumo_adicion[], item) => {
+    // Verifica si el objeto Adiciones_Insumos existe
+    if (!item.Adiciones_Insumos || typeof item.Adiciones_Insumos.cantidad !== 'number') {
+      console.error(`El item ${item.descripcion_insumo} no tiene Adiciones_Insumos o cantidad definida.`);
+      return acc;
+    }
+
+    const existingItem = acc.find(it => it.ID_insumo === item.ID_insumo);
+
+    if (existingItem) {
+      // Sumar la cantidad y el total de los items duplicados
+      if (existingItem.Adiciones_Insumos && typeof existingItem.Adiciones_Insumos.cantidad === 'number') {
+        existingItem.Adiciones_Insumos.cantidad += item.Adiciones_Insumos.cantidad;
+        existingItem.Adiciones_Insumos.total += item.Adiciones_Insumos.cantidad * item.precio;
+      }
+    } else {
+      // Agregar el item con su total, incluso si el total es 0
+      acc.push({
+        ...item,
+        Adiciones_Insumos: {
+          cantidad: item.Adiciones_Insumos.cantidad,
+          total: item.Adiciones_Insumos.total, // Esto puede ser 0 y aún así se agrega
+        },
+      });
+    }
+
+    return acc;
   }, []);
 
-  useEffect(() => {
-    calculatePrecioTotal();
-  }, [selectedProductos]);
+};
 
-  const fetchClientes = async () => {
-    try {
-      const response = await api.get('/clientes');
-      setClientes(response.data);
-    } catch (error) {
-      toast.error('Error al obtener los clientes');
-      console.error('Error al obtener clientes:', error);
-    }
-  };
 
-  const fetchProductos = async () => {
-    try {
-      const response = await api.get('/productos');
-      setProductos(response.data);
-    } catch (error) {
-      toast.error('Error al obtener los productos');
-      console.error('Error al obtener productos:', error);
-    }
-  };
 
-  const fetchInsumos = async () => {
-    try {
-      const response = await api.get('/insumos');
-      const sabores = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'helado') || [];
-      const salsas = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'salsa') || [];
-      const adiciones = response.data.filter((insumo: Insumo) => insumo.tipo_insumo === 'adicion') || [];
-      setSabores(sabores);
-      setSalsas(salsas);
-      setAdiciones(adiciones);
-    } catch (error) {
-      toast.error('Error al obtener insumos');
-      console.error('Error al obtener insumos:', error);
-    }
-  };
 
-  const fetchEstadoVentas = async () => {
-    try {
-      const response = await api.get('/estadoVentas');
-      setEstadoVentas(response.data);
-    } catch (error) {
-      toast.error('Error al obtener los estados de venta');
-      console.error('Error al obtener estados de venta:', error);
-    }
-  };
 
-  const handleAddProducto = () => {
-    if (selectedProductos.length >= 3) {
-      toast.error('No puedes agregar más de 3 productos');
-      return;
-    }
-    setSelectedProductos((prev) => [
-      ...prev,
-      { ID_producto: null, cantidad: 1, precio: 0, descripcion: '', selectedSabores: [], selectedSalsas: [], selectedAdiciones: [] },
-    ]);
-  };
 
-  const handleProductoChange = (index: number, field: string, value: any) => {
-    setSelectedProductos((prev) => {
-      const updatedProductos = [...prev];
-      updatedProductos[index] = {
-        ...updatedProductos[index],
-        [field]: value,
+
+
+ 
+
+  // const calcularPrecioTotal = () => {
+  //   const precioBase = precios[tamaño]
+  //   const precioExtra = Math.max(0, saboresSeleccionados.length - 2) * 0.5
+  //   return precioBase + precioExtra
+  // }
+
+  const agregarProducto = () => {
+    if (productoActual) {
+      const nuevoProducto: Producto = {
+        ID_producto: IDActual,
+        nombre: productoActual,
+        sabores: saboresSeleccionados,
+        ID_tipo_productos: 1,
+        precio: calcularPrecioTotal(),
+        cantidad: 1,
       };
-      calculatePrecioTotal(); // Asegúrate de recalcular el precio total aquí
-      return updatedProductos;
-    });
-  };
-
-  const handleInsumoChange = (index: number, insumoType: string, value: any[]) => {
-    if (value.length > 3) {
-      toast.error(`No puedes seleccionar más de 3 ${insumoType}`);
-      return;
+      setProductosAgregados((prev) => [...prev, nuevoProducto]);
+      setModalAbierto(false);
+      setProductoActual(null);
+      setSaboresSeleccionados([]);
+      //   setTamaño('mediano')
     }
-    setSelectedProductos((prev) => {
-      const updatedProductos = [...prev];
-      updatedProductos[index] = {
-        ...updatedProductos[index],
-        [`selected${insumoType.charAt(0).toUpperCase() + insumoType.slice(1)}`]: value,
-      };
-      return updatedProductos;
-    });
   };
 
-  const calculatePrecioTotal = () => {
-    const total = selectedProductos.reduce(
-      (sum, prod) =>
-        sum +
-        (prod.cantidad || 0) * (prod.precio || 0) +
-        prod.selectedAdiciones.reduce((adicionSum: number, adicionId: number) => {
-          const adicion = adiciones.find((a) => a.ID_insumo === adicionId);
-          return adicionSum + (adicion ? adicion.precio_neto : 0);
-        }, 0) +
-        prod.selectedSalsas.reduce((salsaSum: number, salsaId: number) => {
-          const salsa = salsas.find((s) => s.ID_insumo === salsaId);
-          return salsaSum + (salsa ? salsa.precio_neto : 0);
-        }, 0),
-      0,
+  const eliminarHelado = (index: number) => {
+    setInsumoAgregados((prev) => prev.filter((_, i) => i !== index));
+  };
+
+
+  const eliminarAdicion= (index: number) => {
+    setadiciones((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateQuantity = (id: string, amount: number) => {
+    const newInputs = insumosAgregados.map((input) => {
+      let newQuantity = isNaN(input.Adiciones_Insumos.cantidad + amount)
+        ? 1
+        : input.Adiciones_Insumos.cantidad + amount;
+      // const precio = isNaN(input.precio * newQuantity)? 1: input.precio * newQuantity;
+
+      if (newQuantity < 1) {
+        newQuantity = 1;
+      }
+
+      if (input.descripcion_insumo === id) {
+        return {
+          ...input,
+          Adiciones_Insumos: {
+            ...input.Adiciones_Insumos,
+            cantidad: newQuantity,
+            // precio: precio
+          },
+        };
+      }
+      return input;
+    });
+    
+    setInsumoAgregados(newInputs);
+  };
+
+
+  const updateQuantityInsumos = (id: number, amount: number) => {
+    const newInputs = adiciones.map((input) => {
+      let newQuantity = isNaN(input.Adiciones_Insumos.cantidad + amount)
+        ? 1
+        : input.Adiciones_Insumos.cantidad + amount;
+      // const precio = isNaN(input.precio * newQuantity)? 1: input.precio * newQuantity;
+
+      if (newQuantity < 1) {
+        newQuantity = 1;
+      }
+
+      if (input.ID_insumo === id) {
+        return {
+          ...input,
+          Adiciones_Insumos: {
+            ...input.Adiciones_Insumos,
+            cantidad: newQuantity,
+            total: newQuantity * input.precio  
+          },
+        };
+      }
+      return input;
+    });
+   
+
+    setadiciones(newInputs);
+  };
+
+
+
+  const actualizarCantidad = (index: number, incremento: number) => {
+    setProductosAgregados((prev) =>
+      prev.map((producto, i) =>
+        i === index
+          ? {
+              ...producto,
+              cantidad: Math.max(
+                1,
+                producto.Producto_Pedidos.cantidad + incremento
+              ),
+            }
+          : producto
+      )
     );
-    setPrecioTotal(total);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedEstadoVenta) {
-      toast.error('Debe seleccionar un estado de venta');
-      return;
-    }
-    if (selectedProductos.length === 0) {
-      toast.error('Debes agregar al menos un producto');
-      return;
-    }
-    if (selectedProductos.some(p => p.cantidad < 1)) {
-      toast.error('La cantidad de cada producto debe ser al menos 1');
-      return;
-    }
-    if (selectedProductos.some(p => p.selectedAdiciones.length > 3)) {
-      toast.error('No puedes seleccionar más de 3 adiciones por producto');
-      return;
-    }
-    if (selectedProductos.some(p => p.selectedSalsas.length > 3)) {
-      toast.error('No puedes seleccionar más de 3 salsas por producto');
-      return;
-    }
-
-    try {
-      await api.post('/ventas', {
-        ID_cliente: selectedCliente,
-        productos: selectedProductos,
-        precio_total: precioTotal,
-        ID_estado_venta: selectedEstadoVenta,
-      });
-      toast.success('Venta creada exitosamente');
-      onVentaCreated();
-      onClose();
-    } catch (error) {
-      toast.error('Error al crear la venta');
-      console.error('Error al crear venta:', error);
-    }
+  const eliminarProducto = (index: number) => {
+    setProductosAgregados((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const totalPedido = productosAgregados.reduce(
+    (sum, producto) => sum + producto.precio * producto.cantidad,
+    0
+  );
+
+  
+  
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      className="tw-bg-white tw-p-8 tw-rounded-lg tw-shadow-lg tw-w-full tw-max-w-screen-lg tw-fixed tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2"
-      overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
-      contentLabel="Crear Venta"
-    >
-      <div className="tw-p-6 tw-w-full">
-        <h2 className="tw-text-3xl tw-font-bold tw-text-center tw-mb-6">Nueva Venta</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
-            <div className="tw-flex tw-flex-col">
-              <label className="tw-font-semibold">Cliente</label>
-              <Select
-                value={clientes.find((c) => c.ID_cliente === selectedCliente) || null}
-                onChange={(option) => setSelectedCliente(option?.ID_cliente || null)}
-                options={clientes.map((cliente) => ({
-                  value: cliente.ID_cliente,
-                  label: cliente.nombre,
-                }))}
-                placeholder="Selecciona un cliente"
-                isClearable
-              />
-            </div>
+    <div className="tw-container tw-mx-auto tw-p-4 ">
+      {/* <h1 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-center">Heladería Delicia Fría</h1> */}
 
-            <div className="tw-flex tw-flex-col">
-              <label className="tw-font-semibold">Estado de Venta</label>
-              <Select
-                value={estadoVentas.find((e) => e.ID_estado_venta === selectedEstadoVenta) || null}
-                onChange={(option) => setSelectedEstadoVenta(option?.ID_estado_venta || null)}
-                options={estadoVentas.map((estado) => ({
-                  value: estado.ID_estado_venta,
-                  label: estado.descripcion,
-                }))}
-                placeholder="Selecciona un estado"
-                isClearable
-              />
-            </div>
+      {/* Grid de dos columnas */}
+      <div className="tw-grid tw-md:grid-cols-2 tw-gap-6">
+        {/* Columna 1: Buscar productos */}
+        <div className="tw-bg-white tw-p-3 tw-shadow-md tw-rounded-md">
+          <div className="tw-flex tw-mb-3">
+            <h2 className="tw-text-xl ">Productos</h2>
+            <Package className="tw-mr-2 tw-h-4 tw-w-4" />
           </div>
-
-          <div className="tw-mt-6">
-            <label className="tw-font-semibold">Productos</label>
-            {selectedProductos.map((producto, index) => (
-              <div key={index} className="tw-mt-4 tw-p-4 tw-border tw-rounded-lg tw-shadow-sm">
-                <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
-                  <div className="tw-flex tw-flex-col">
-                    <label className="tw-font-semibold">Producto</label>
-                    <Select
-                      value={productos.find((p) => p.ID_producto === producto.ID_producto) || null}
-                      onChange={(option) => handleProductoChange(index, 'ID_producto', option?.ID_producto || null)}
-                      options={productos.map((producto) => ({
-                        value: producto.ID_producto,
-                        label: producto.nombre,
-                      }))}
-                      placeholder="Selecciona un producto"
-                      isClearable
-                    />
-                  </div>
-
-                  <div className="tw-flex tw-flex-col">
-                    <label className="tw-font-semibold">Cantidad</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={producto.cantidad || ''}
-                      onChange={(e) => handleProductoChange(index, 'cantidad', parseInt(e.target.value, 10))}
-                      className="tw-border tw-border-gray-300 tw-rounded tw-p-2"
-                    />
-                  </div>
+          <div className="tw-relative tw-mb-4">
+            <Search className="tw-absolute tw-left-2 tw-top-2.5 tw-h-4 tw-w-4 tw-text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Buscar producto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="tw-pl-8 tw-py-2 tw-border tw-rounded-md tw-w-full"
+            />
+          </div>
+          <div className="tw-h-60 tw-overflow-y-auto">
+            {busqueda.map((producto) => (
+              <div
+                key={producto.ID_producto}
+                className="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b tw-px-4"
+              >
+                <div className="tw-flex tw-gap-6">
+                  <span>{producto.ID_producto}</span>
+                  <span>{producto.nombre}</span>
                 </div>
+                <button
+                  className=" tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-border tw-px-4 tw-py-2 tw-rounded-md tw-text-sm  "
+                  onClick={() => {
+                    setProductoActual(producto.nombre);
+                    SetIDActual(producto.ID_producto);
+                    setModalAbierto(true);
+                  }}
+                >
+                  Agregar
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
 
-                <div className="tw-mt-4">
-                  <label className="tw-font-semibold">Sabores</label>
-                  <Select
-                    isMulti
-                    value={producto.selectedSabores.map((id) => sabores.find((s) => s.ID_insumo === id))}
-                    onChange={(values) => handleInsumoChange(index, 'Sabores', values.map((v) => v.value))}
-                    options={sabores.map((sabor) => ({
-                      value: sabor.ID_insumo,
-                      label: sabor.descripcion,
-                    }))}
-                    placeholder="Selecciona sabores"
-                  />
+        {/* Columna 2: Tu pedido */}
+        <div className="tw-bg-white tw-p-2 tw-shadow-md tw-rounded-md">
+          <div className="tw-mb-4">
+            <h2 className="tw-text-xl tw-font-semibold">Tu Pedido</h2>
+          </div>
+          <div className="tw-h-64 tw-overflow-y-auto">
+            {productosAgregados.map((producto, index) => (
+              <div
+                key={index}
+                className="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b"
+              >
+                <div className="tw-flex-1">
+                  <p className="tw-font-semibold">{producto.nombre}</p>
+                  {/* <p className="tw-text-sm tw-text-muted-foreground">Sabores: {producto..join(', ')}</p> */}
+                  <p className="tw-text-sm">
+                    Precio: ${producto.precio_neto.toFixed(2)}
+                  </p>
                 </div>
-
-                <div className="tw-mt-4">
-                  <label className="tw-font-semibold">Salsas</label>
-                  <Select
-                    isMulti
-                    value={producto.selectedSalsas.map((id) => salsas.find((s) => s.ID_insumo === id))}
-                    onChange={(values) => handleInsumoChange(index, 'Salsas', values.map((v) => v.value))}
-                    options={salsas.map((salsa) => ({
-                      value: salsa.ID_insumo,
-                      label: salsa.descripcion,
-                    }))}
-                    placeholder="Selecciona salsas"
-                  />
-                </div>
-
-                <div className="tw-mt-4">
-                  <label className="tw-font-semibold">Adiciones</label>
-                  <Select
-                    isMulti
-                    value={producto.selectedAdiciones.map((id) => adiciones.find((a) => a.ID_insumo === id))}
-                    onChange={(values) => handleInsumoChange(index, 'Adiciones', values.map((v) => v.value))}
-                    options={adiciones.map((adicion) => ({
-                      value: adicion.ID_insumo,
-                      label: adicion.descripcion,
-                    }))}
-                    placeholder="Selecciona adiciones"
-                  />
+                <div className="tw-flex tw-items-center tw-space-x-2">
+                  <button
+                    className="tw-border tw-p-2"
+                    onClick={() => actualizarCantidad(index, -1)}
+                  >
+                    <Minus className="tw-h-4 tw-w-4" />
+                  </button>
+                  <span className="tw-w-8 tw-text-center">
+                    {producto.Producto_Pedidos.cantidad}
+                  </span>
+                  <button
+                    className="tw-border tw-p-2"
+                    onClick={() => actualizarCantidad(index, 1)}
+                  >
+                    <Plus className="tw-h-4 tw-w-4" />
+                  </button>
+                  <button
+                    className="tw-text-red-600 tw-p-2"
+                    onClick={() => eliminarProducto(index)}
+                  >
+                    <Trash2 className="tw-h-4 tw-w-4" />
+                  </button>
                 </div>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={handleAddProducto}
-              className="tw-mt-4 tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded tw-w-full"
-            >
-              Agregar Producto
-            </button>
           </div>
-
-          <div className="tw-mt-6">
-            <p className="tw-text-lg tw-font-bold">Precio Total: ${precioTotal.toFixed(2)}</p>
+          <div className="tw-flex tw-justify-between tw-mt-4">
+            <span className="tw-text-lg tw-font-semibold">
+              Total del Pedido:
+            </span>
+            <span className="tw-text-lg tw-font-bold">
+              ${totalPedido.toFixed(2)}
+            </span>
           </div>
-
-          <div className="tw-mt-6">
-            <button
-              type="submit"
-              className="tw-bg-green-500 tw-text-white tw-p-2 tw-rounded tw-w-full"
-            >
-              Crear Venta
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="tw-bg-gray-500 tw-text-white tw-p-2 tw-rounded tw-w-full tw-mt-2"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+          <button className="tw-w-full tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-mt-4 tw-rounded-md tw-flex tw-items-center tw-justify-center">
+            <ShoppingCart className="tw-mr-2 tw-h-4 tw-w-4 " /> Realizar Pedido
+          </button>
+        </div>
       </div>
-    </Modal>
-  );
-};
 
-export default CreateVenta;
+      {/* Modal para personalizar producto */}
+      {modalAbierto && (
+        <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-50">
+          <div className="tw-p-4 tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-w-full tw-max-w-[95%] lg:tw-max-w-[80%] tw-mx-auto tw-h-[90vh] tw-overflow-y-auto">
+            <h3 className="tw-text-lg page-heading tw-mb-6">
+              Configuración de {productoActual}
+            </h3>
+            <div className="tw-mb-4">
+              {/* Ajustar a 3 columnas */}
+              <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-10">
+                {/* Columna 1: Listar y buscar */}
+                <div className="tw-mb-4">
+                  {/* <p className="tw-font-semibold">Buscar sabores:</p> */}
+                  <div className="tw-space-y-4  ">
+                    <div className="tw-flex tw-items-center tw-gap-4 tw-mb-4">
+                      <input
+                        type="text"
+                        value={TerminosHelado}
+                        onChange={(e) => setTerminosHelado(e.target.value)}
+                        placeholder="Buscar el sabor de helado..."
+                        className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
+                      />
+                    </div>
+                  </div>
+                  <div className="tw-h-60 tw-overflow-y-auto tw-border tw-rounded-md tw-p-2">
+                    {buscarHelado.map((sabor) => (
+                      <div
+                        key={sabor.descripcion_insumo}
+                        className="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b"
+                      >
+                        <div className="tw-flex-1">
+                          <p className="tw-font-semibold">
+                            {sabor.descripcion_insumo}
+                          </p>
+                          <p className="tw-text-sm">
+                            {/* Precio: ${sabor.precio.toFixed(2)} */}
+                          </p>
+                        </div>
+                        <div className="tw-flex tw-items-center tw-space-x-2">
+                          <button
+                            className="tw-border tw-p-2"
+                            onClick={() => añadirInsumo(sabor)}
+                          >
+                            <Plus className="tw-h-4 tw-w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Columna 2: Sabores agregados */}
+                <div className="tw-mb-4">
+                  <h4 className="tw-text-lg page-heading tw-mb-7 tw-text-center">
+                    Sabores agregados
+                  </h4>
+                  <div className="tw-h-60 tw-overflow-y-auto tw-border tw-rounded-md tw-p-3">
+                    {insumosAgregados.map((sabor, index) => (
+                      <div
+                        key={sabor.descripcion_insumo}
+                        className="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b"
+                      >
+                        <div className="tw-flex-1">
+                          <p className="tw-font-semibold">
+                            {sabor.descripcion_insumo}
+                          </p>
+                          <p className="tw-text-sm">
+                            Precio: ${0}
+                          </p>
+                        </div>
+                        <div className="tw-flex tw-items-center tw-space-x-2">
+                          <button
+                            className="tw-border tw-p-2"
+                            onClick={() =>
+                              updateQuantity(sabor.descripcion_insumo, -1)
+                            }
+                          >
+                            <Minus className="tw-h-4 tw-w-4" />
+                          </button>
+                          <span className="tw-w-8 tw-text-center">
+                            {sabor.Adiciones_Insumos.cantidad || 0}
+                          </span>
+                          <button
+                            className="tw-border tw-p-2"
+                            onClick={() => añadirInsumo(sabor)}
+                          >
+                            <Plus className="tw-h-4 tw-w-4" />
+                          </button>
+                          <button
+                            className="tw-text-red-600 tw-p-2"
+                            onClick={() => eliminarHelado(index)}
+                          >
+                            <Trash2 className="tw-h-4 tw-w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Fila 3 vacía */}
+                <div className="tw-mb-4">
+                  <h4 className="tw-text-lg page-heading tw-mb-7 tw-text-center">
+                    Adiciones
+                  </h4>
+                  <div className="tw-h-60 tw-overflow-y-auto tw-border tw-rounded-md tw-p-3">
+                    {adiciones.map((sabor, index) => (
+                      <div
+                        key={sabor.descripcion_insumo}
+                        className="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b"
+                      >
+                        <div className="tw-flex-1">
+                          <p className="tw-font-semibold">
+                            {sabor.descripcion_insumo}
+                          </p>
+                          <p className="tw-text-sm">
+                            Precio: ${sabor.precio.toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="tw-flex tw-items-center tw-space-x-2">
+                          <button
+                            className="tw-border tw-p-2"
+                            onClick={() =>
+                              updateQuantityInsumos(sabor.ID_insumo, -1)
+                            }
+                          >
+                            <Minus className="tw-h-4 tw-w-4" />
+                          </button>
+                          <span className="tw-w-8 tw-text-center">
+                            {sabor.Adiciones_Insumos.cantidad || 0}
+                          </span>
+                          <button
+                            className="tw-border tw-p-2"
+                            onClick={() => añadirAdicion(sabor)}
+                          >
+                            <Plus className="tw-h-4 tw-w-4" />
+                          </button>
+                          <button
+                            className="tw-text-red-600 tw-p-2"
+                            onClick={() => eliminarAdicion(index)}
+                          >
+                            <Trash2 className="tw-h-4 tw-w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Salsas */}
+            <div className="tw-mb-5">
+              <div className="tw-flex tw-justify-between tw-items-center tw-px-12">
+                <p className="tw-font-semibold page-heading">Salsas:</p>
+                <p className="tw-font-semibold page-heading">
+                  Añadir adiciones:
+                </p>
+              </div>
+              <div className="tw-grid tw-grid-cols-2 tw-gap-4">
+                {/* Columna 1: Salsas */}
+                <div>
+                  <div className="tw-flex tw-flex-wrap tw-space-x-4">
+                    {salsasDisponibles.map((salsa) => (
+                      <label
+                        key={salsa.ID_insumo}
+                        className="tw-flex tw-items-center"
+                      >
+                        <input
+                          type="checkbox"
+                          name="salsas"
+                          value={salsa.descripcion_insumo}
+                          checked={salsasAgregadas.some(
+                            (s) =>
+                              s.ID_insumo === salsa.ID_insumo
+                          )}
+                          onChange={() => handleSalsaChange(salsa)}
+                          className="tw-h-4 tw-w-4"
+                        />
+                        <span className="tw-text-xs tw-ml-2 capitalize">
+                          {salsa.descripcion_insumo}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="tw-relative tw-flex tw-items-center tw-gap-2">
+                  {/* Input de búsqueda */}
+                  <div className="tw-ml-auto tw-relative">
+                    <input
+                      className="form-control tw-w-48 tw-p-1"
+                      value={TerminosInsumos}
+                      onChange={(e) => setTerminosInsumos(e.target.value)} // Actualiza el término de búsqueda
+                      onFocus={() => setMenuVisible(true)} // Muestra el menú cuando el input recibe el foco
+                      onBlur={() =>
+                        setTimeout(() => setMenuVisible(false), 200)
+                      } // Oculta el menú cuando el input pierde el foco (con pequeño retraso para permitir clics en opciones)
+                      placeholder="Buscar producto..."
+                    />
+
+                    {/* Menú desplegable hacia arriba, visible solo cuando `menuVisible` es true */}
+                    {menuVisible && buscarInsumos.length > 0 && (
+                      <div className="tw-absolute tw-bottom-full tw-w-full tw-bg-white tw-border tw-border-gray-300 tw-shadow-lg tw-max-h-40 tw-overflow-y-auto tw-rounded-md">
+                        {buscarInsumos
+                          .filter((insumo) =>
+                            insumo.descripcion_insumo
+                              .toLowerCase()
+                              .includes(TerminosInsumos.toLowerCase())
+                          )
+                          .map((insumo) => (
+                            <div
+                              key={insumo.ID_insumo}
+                              onClick={() => {
+                                setTerminosInsumos(insumo.descripcion_insumo); // Selecciona el producto
+                                setMenuVisible(false); // Oculta el menú
+                              }}
+                              className="tw-p-2 tw-text-sm tw-cursor-pointer hover:tw-bg-gray-100 tw-flex tw-justify-between tw-items-center"
+                            >
+                              {/* Descripción del insumo */}
+                              <span>{insumo.descripcion_insumo}</span>
+
+                              {/* Botón para añadir el insumo */}
+                              <button
+                                className="tw-border tw-p-2 tw-rounded-md tw-bg-gray-200 hover:tw-bg-gray-300"
+                                onClick={() => añadirAdicion(insumo)} // Función para añadir producto
+                              >
+                                <Plus className="tw-h-4 tw-w-4" />
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="tw-flex tw-justify-between">
+              <button
+                onClick={() => setModalAbierto(false)}
+                className="tw-bg-gray-500 tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={agregarProducto}
+                className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
+              >
+                Agregar al pedido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

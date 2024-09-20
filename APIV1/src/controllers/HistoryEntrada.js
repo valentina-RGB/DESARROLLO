@@ -45,19 +45,42 @@ const createEntrada = async (req, res) => {
 // Editar una entrada por ID
 const updateEntrada = async (req, res) => {
   const { id } = req.params;
-  const { cantidad, fecha } = req.body;
+  const { cantidad } = req.body;
+
   try {
+    // Encuentra la entrada a actualizar
     const entrada = await HistorialEntradas.findByPk(id);
+
     if (!entrada) {
       return res.status(404).json({ error: 'Entrada no encontrada' });
     }
 
-    // Actualizar la entrada con los nuevos datos
-    entrada.cantidad = cantidad !== undefined ? cantidad : entrada.cantidad;
-    entrada.fecha = fecha !== undefined ? fecha : entrada.fecha;
+    // Encuentra el stock del insumo relacionado
+    const stockInsumo = await StockInsumos.findOne({ where: { ID_insumo: entrada.ID_insumo } });
 
-    await entrada.save(); // Guardar los cambios
-    res.status(200).json(entrada);
+    if (!stockInsumo) {
+      return res.status(404).json({ error: 'Stock del insumo no encontrado' });
+    }
+
+    // Calcula la diferencia entre la nueva cantidad y la cantidad anterior
+    const diferenciaCantidad = cantidad - entrada.cantidad;
+
+    // Actualiza el stock actual basado en la diferencia
+    stockInsumo.stock_actual = stockInsumo.stock_actual + diferenciaCantidad;
+
+    // Verifica que el stock no sea negativo
+    if (stockInsumo.stock_actual < 0) {
+      return res.status(400).json({ error: 'El stock del insumo no puede ser negativo' });
+    }
+
+    // Guarda los cambios en el stock
+    await stockInsumo.save();
+
+    // Actualiza la cantidad en el historial de entradas
+    entrada.cantidad = cantidad;
+    await entrada.save();
+
+    res.json({ message: 'Entrada actualizada exitosamente', entrada });
   } catch (error) {
     console.error('Error al actualizar la entrada:', error);
     res.status(500).json({ error: 'Error al actualizar la entrada' });

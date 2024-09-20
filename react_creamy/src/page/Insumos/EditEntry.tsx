@@ -33,7 +33,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ id, onClose }) => {
     }
 
     try {
-      await api.put(`/historial-entradas/${id}`, { cantidad: cantidadNumerica });
+      await api.put(`/historial_entradas/${id}`, { cantidad: cantidadNumerica });
       onClose();  // Cierra el modal
       toast.success('La entrada ha sido actualizada exitosamente.');
     } catch (error) {
