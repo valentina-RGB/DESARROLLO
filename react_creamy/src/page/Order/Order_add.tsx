@@ -601,7 +601,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
       {/* Modal para personalizar producto */}
       {modalAbierto && (
         <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-50">
-          <div className="tw-p-4 tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-w-full tw-max-w-[95%] lg:tw-max-w-[80%] tw-mx-auto tw-h-[90vh] tw-overflow-y-auto">
+          <div className="tw-p-4 tw-bg-white tw-rounded-lg tw-border tw-border-gray-200 tw-w-full tw-max-w-[95%] lg:tw-max-w-[80%] tw-mx-auto tw-h-[80vh] tw-overflow-y-auto">
             <h3 className="tw-text-lg page-heading tw-mb-6">
               Configuración de {productoActual}
             </h3>

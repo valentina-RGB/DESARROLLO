@@ -5,7 +5,7 @@ import api from '../../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus, faBoxOpen, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-hot-toast';  
+import { toast } from 'react-hot-toast';
 import AddUsuario from './CreateUsuario';
 import EditUsuario from './EditUsuario';
 /* import usuarioDetails from './UsuarioDetails'; */
@@ -56,9 +56,9 @@ const UsuarioList: React.FC = () => {
     const nuevoEstado = estadoActual === 'A' ? 'D' : 'A';
 
     try {
-      await api.put(`/usuarios/${id}`, { estado_usuario: nuevoEstado });
+      await api.put(`/usuarios/${id}`, { estado: nuevoEstado });
       setUsuarios(usuarios.map(usuario =>
-        usuario.ID_usuario === id ? { ...usuario, estado_usuario: nuevoEstado } : usuario
+        usuario.ID_usuario === id ? { ...usuario, estado: nuevoEstado } : usuario
       ));
       toast.success('El estado del usuario ha sido actualizado.');
     } catch (error) {
@@ -88,6 +88,11 @@ const UsuarioList: React.FC = () => {
     handleCloseModal();
     await fetchUsuarios(); // Actualiza la lista después de agregar/editar entrada
   };
+
+  const [isClientesModalOpen, setIsClientesModalOpen] = useState(false);
+
+  const clientes = useMemo(() => usuarios.filter(usuario => usuario.ID_rol === 3), [usuarios]);
+
 
   const columns = useMemo<MRT_ColumnDef<Usuario>[]>(
     () => [
@@ -144,12 +149,7 @@ const UsuarioList: React.FC = () => {
             <button onClick={() => handleDelete(row.original.ID_usuario)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-            <button
-              onClick={() => handleViewDetails(row.original.ID_usuario)}
-              className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
-            >
-              <FontAwesomeIcon icon={faSignInAlt} />
-            </button>
+            
           </div>
         ),
       },
@@ -159,10 +159,19 @@ const UsuarioList: React.FC = () => {
 
   return (
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
-     <h1 className="page-heading">usuarios</h1>
+      <h1 className="page-heading">usuarios</h1>
       <button onClick={handleAddusuario} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
         <FontAwesomeIcon icon={faPlus} /> Agregar usuario
       </button>
+
+      <button
+        onClick={() => setIsClientesModalOpen(true)}
+        className="tw-bg-green-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-ml-4 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300"
+      >
+        Ver clientes
+      </button>
+
+
       <MaterialReactTable columns={columns} data={usuarios} />
       <Modal
         isOpen={isModalOpen}
@@ -171,9 +180,37 @@ const UsuarioList: React.FC = () => {
         overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
       >
         {modalType === 'add' && <AddUsuario onClose={handleModalCloseAndFetch} />}
-        {modalType === 'edit' && selectedUsuarioId !== null && <EditUsuario id={selectedUsuarioId} onClose={handleModalCloseAndFetch} />}
+        {modalType === 'edit' && selectedUsuarioId !== null && <EditUsuario id={selectedUsuarioId} onClose ={handleModalCloseAndFetch} />}
         {/* {modalType === 'detail' && selectedusuarioId !== null && <usuarioDetails id={selectedusuarioId} onClose={handleModalCloseAndFetch} />} */}
       </Modal>
+      <Modal
+  isOpen={isClientesModalOpen}
+  onRequestClose={() => setIsClientesModalOpen(false)}
+  className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
+  overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+>
+  <div className="tw-p-4">
+    <h2 className="tw-text-xl tw-font-bold tw-mb-4">Clientes</h2>
+    {clientes.length > 0 ? (
+      <ul>
+        {clientes.map(cliente => (
+          <li key={cliente.ID_usuario} className="tw-mb-2">
+            {cliente.nombre} - {cliente.email}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>Cargando clientes...</p>
+    )}
+    <button
+      onClick={() => setIsClientesModalOpen(false)}
+      className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mt-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
+    >
+      Cerrar
+    </button>
+  </div>
+</Modal>
+
     </div>
   );
 };

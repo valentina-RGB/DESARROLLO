@@ -122,9 +122,9 @@ const handleDelete = async (id: number) => {
         ),
       },
       {
-        accessorKey: 'ID_permiso',
+        accessorKey: 'ID_permiso.descripcion',
         header: 'permiso',
-        Cell: ({ cell }) => cell.getValue<number>() ?? 'N/A',
+        Cell: ({ cell }) => cell.getValue<String>() ?? 'N/A',
       },
       {
         id: 'acciones',
@@ -136,12 +136,6 @@ const handleDelete = async (id: number) => {
             </button>
             <button onClick={() => handleDelete(row.original.ID_rol)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
-            </button>
-            <button
-              onClick={() => handleViewDetails(row.original.ID_rol)}
-              className="tw-bg-gray-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-gray-600 tw-transition-all tw-duration-300"
-            >
-              <FontAwesomeIcon icon={faSignInAlt} />
             </button>
           </div>
         ),

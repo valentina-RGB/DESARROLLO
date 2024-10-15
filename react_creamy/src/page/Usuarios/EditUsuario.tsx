@@ -1,40 +1,82 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/api";
-import { useNavigate } from "react-router-dom";
 
-const EditUsuario: React.FC = () => {
+interface EditUsuarioProps {
+  id: number;  
+  onClose: () => void;
+}
+
+const EditUsuario: React.FC<EditUsuarioProps> = ({ id, onClose }) => {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [ID_rol, setIDRol] = useState("");
+  const [rol, setRol] = useState<number | string>(""); 
+  const [roles, setRoles] = useState<Array<{ ID_rol: number, descripcion: string }>>([]); // Lista de roles
   
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+
+  // Efecto para cargar los datos del usuario
+  useEffect(() => {
+    const fetchUsuario = async () => {
+      try {
+        const response = await api.get(`/usuarios/${id}`);
+        const usuario = response.data;
+        setNombre(usuario.nombre);
+        setEmail(usuario.email);
+        setPassword(usuario.password); // Esto depende de si permites cambiar la contraseña
+        setTelefono(usuario.telefono);
+        setRol(usuario.ID_rol);  // Asignamos el rol del usuario
+      } catch (error) {
+        console.error("Error al obtener el usuario:", error);
+        setError("No se pudo cargar la información del usuario");
+      }
+    };
+
+    if (id) {
+      fetchUsuario();
+    }
+  }, [id]);
+
+  // Efecto para cargar los roles desde la API
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await api.get("/roles");
+        setRoles(response.data);
+      } catch (error) {
+        console.error("Error al cargar los roles:", error);
+        setError("No se pudo cargar la lista de roles");
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nombre || !email || !password || !telefono || !ID_rol) {
+    if (!nombre || !email || !password || !telefono || !rol) {
       setError("Por favor, completa todos los campos.");
       return;
     }
 
     try {
-      await api.put("/usuarios", {
+      await api.put(`/usuarios/${id}`, {
         nombre,
         email,
         password,
         telefono,
-        ID_rol,
+        ID_rol: Number(rol), // Convertimos el rol seleccionado a número
         estado: "A",
       });
-      navigate("/Usuarios");
+      // Solo cerramos el modal después de una actualización exitosa
+      onClose();
     } catch (error: any) {
-      console.error("Error al Actualizar el usuario:", error);
+      console.error("Error al actualizar el usuario:", error);
       setError(
-        "Error al Actualizar el usuario: " +
-          (error.response?.data?.message || "Error desconocido")
+        "Error al actualizar el usuario: " +
+        (error.response?.data?.message || "Error desconocido")
       );
     }
   };
@@ -55,12 +97,12 @@ const EditUsuario: React.FC = () => {
               Nombre
             </label>
             <input
-              type="nombre"
+              type="text"
               id="nombre"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
-              placeholder="Correo electrónico"
+              placeholder="Nombre"
               required
             />
           </div>
@@ -86,7 +128,7 @@ const EditUsuario: React.FC = () => {
               htmlFor="password"
               className="tw-block tw-text-gray-700 tw-font-semibold"
             >
-              Constraseña
+              Contraseña
             </label>
             <input
               type="password"
@@ -120,17 +162,20 @@ const EditUsuario: React.FC = () => {
               htmlFor="ID_rol"
               className="tw-block tw-text-gray-700 tw-font-semibold"
             >
-              ID Rol
+              Rol
             </label>
-            <input
-              type="text"
+            <select
               id="ID_rol"
-              value={ID_rol}
-              onChange={(e) => setIDRol(e.target.value)}
-              className="tw-mt-1 tw-block tw-w-full tw-border-gray-300 tw-rounded-md tw-shadow-sm tw-focus:ring-indigo-500 tw-focus:border-indigo-500"
-              placeholder="ID del Rol"
+              value={rol}
+              onChange={(e) => setRol(e.target.value)}
+              className="tw-mt-1 tw-w-full tw-px-4 tw-py-2 tw-border tw-border-gray-300 tw-rounded-lg focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 tw-transition"
               required
-            />
+            >
+              <option value="" disabled>Selecciona el rol</option>
+              {roles.map(tipo => (
+                <option key={tipo.ID_rol} value={tipo.ID_rol}>{tipo.descripcion}</option>
+              ))}
+            </select>
           </div>
           <button
             type="submit"

@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx';
+import { ThemeProvider } from "@material-tailwind/react";
+
 // import 'react-data-table-component'
 // import 'datatables.net-dt'
 import './datatables.css';
