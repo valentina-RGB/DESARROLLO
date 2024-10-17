@@ -14,7 +14,11 @@ const Configuracion = db.Configuraciones;
     getConfiguracionID = async (id) => {
     const configuracion = await Configuracion.findByPk(id);
         return configuracion;
+
+    
     } ,
+
+
 
     CreateConfiguracion = async (datos) => {
         const configuracion = await Configuracion.create(datos);
