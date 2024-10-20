@@ -157,6 +157,8 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
                   }
                 }
               }
+
+              console.log(ProductosLista)
             }else{
             
               return {status: 400, message: 'No se creo la tabla de normalización' || 'Error no especificado' }

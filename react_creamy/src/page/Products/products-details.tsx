@@ -115,7 +115,7 @@ const ProductosDetail: React.FC<Props> = ({ id, onClose }) => {
       
         </div>
         <p className="tw-text-base tw-text-[#4b5563] tw-mb-6">
-           Descripción del producto: {Productos.descripcion}
+            Descripción del producto: {Productos.descripcion}
         </p>
         <div className="accordion accordion-flush tw-max-h-60 tw-overflow-y-auto " id="accordionFlushExample">
           {Productos.Insumos.map((insumos) => (
