@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { HomeIcon, ChartBarIcon, CogIcon, DocumentChartBarIcon, ClipboardDocumentIcon, UsersIcon, CubeIcon } from "@heroicons/react/24/outline"; // Importar iconos de Heroicons
+import { HomeIcon, ChartBarIcon, CogIcon, DocumentChartBarIcon, ClipboardDocumentIcon, UsersIcon, CubeIcon, CurrencyDollarIcon, ClipboardDocumentListIcon } from "@heroicons/react/24/outline"; // Importar iconos de Heroicons
 
 const Menu: React.FC = () => {
   return (
@@ -47,7 +47,7 @@ const Menu: React.FC = () => {
               to="/Pedidos"
               className="tw-flex tw-items-center tw-px-3 tw-py-2 tw-text-gray-600 tw-transition-colors tw-duration-300 tw-transform tw-rounded-lg dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-800 dark:hover:tw-text-gray-200 hover:tw-text-gray-700"
             >
-              <ChartBarIcon className="tw-w-5 tw-h-5" />
+              <ClipboardDocumentListIcon className="tw-w-5 tw-h-5" />
               <span className="tw-mx-2 tw-text-sm tw-font-medium">Pedidos</span>
             </Link>
 
@@ -55,7 +55,7 @@ const Menu: React.FC = () => {
               to="/Ventas"
               className="tw-flex tw-items-center tw-px-3 tw-py-2 tw-text-gray-600 tw-transition-colors tw-duration-300 tw-transform tw-rounded-lg dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-800 dark:hover:tw-text-gray-200 hover:tw-text-gray-700"
             >
-              <ChartBarIcon className="tw-w-5 tw-h-5" />
+              <CurrencyDollarIcon className="tw-w-5 tw-h-5" />
               <span className="tw-mx-2 tw-text-sm tw-font-medium">Ventas</span>
             </Link>
 

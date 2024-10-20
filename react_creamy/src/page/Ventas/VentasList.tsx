@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import Modal from 'react-modal';
 import AddVenta from './CreateVenta';
 import VentaDetails from './VentaDetail';
+import Skeleton from '@mui/material/Skeleton';
 
 export interface EstadoVenta {
   ID_estado_venta: number;
@@ -22,6 +23,7 @@ const VentasList: React.FC = () => {
   const [selectedVentaId, setSelectedVentaId] = useState<number | null>(null);
   const [estadosVenta, setEstadosVenta] = useState<EstadoVenta[]>([]);
 
+  const [loading, setLoading] = useState(true);
   // Función para obtener las ventas
   const fetchVentas = async () => {
     try {
@@ -29,6 +31,8 @@ const VentasList: React.FC = () => {
       setVentas(response.data);
     } catch (error) {
       console.error('Error al obtener las ventas:', error);
+     } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -223,7 +227,21 @@ const VentasList: React.FC = () => {
       >
         <FontAwesomeIcon icon={faPlus} /> Agregar una venta
       </button>
-      <MaterialReactTable columns={columns} data={ventas} />
+      {/* Skeleton Loader cuando loading es true */}
+      {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
+        <MaterialReactTable columns={columns} data={ventas} />
+      )}
       <Modal
         isOpen={isAddVentaModalOpen || isVentaDetailsModalOpen}
         onRequestClose={() => {

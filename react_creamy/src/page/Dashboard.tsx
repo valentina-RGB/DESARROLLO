@@ -2,7 +2,7 @@
 // type Props = {}
 export default function Dashboard() {
 return(
-<section className="mb-3 mb-lg-5">
+<section className="mb-3 mb-lg-5 pt-5">
     <div className="row mb-3">
          {/* Widget 1  */}
           <div className="mb-4 col-sm-6 col-lg-3 mb-4">

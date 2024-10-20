@@ -11,6 +11,7 @@ import { Categoria } from '../../types/Categoria';
 import AddCategories from './categories-add';
 import EditCategoria from './categories-edit';
 import CategoriaDetail from './categories-details';
+import Skeleton from '@mui/material/Skeleton';
 
 
 Modal.setAppElement('#root');
@@ -21,13 +22,15 @@ const Categories: React.FC = () => {
   const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'|'imagen'| null; id: number | null }>({ type: null, id: null });
 
 
-  
+  const [loading, setLoading] = useState(true);
   const fetchCategorias = async () => {
     try {
       const response = await api.get('/categorias');
       setCategorias(response.data);
     } catch (error) {
       console.error('Error al obtener las categorías:', error);
+    } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -156,7 +159,21 @@ const Categories: React.FC = () => {
          <button onClick={()=>handleModal('add')} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
            <FontAwesomeIcon icon={faPlus} /> Agregar categoría
          </button>
-         <MaterialReactTable columns={columns} data={categorias} />
+          {/* Skeleton Loader cuando loading es true */}
+       {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
+        <MaterialReactTable columns={columns} data={categorias} />
+      )}
 
          <Modal
            isOpen={isModalOpen}

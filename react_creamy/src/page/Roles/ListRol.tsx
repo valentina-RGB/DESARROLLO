@@ -10,7 +10,7 @@ import AddRol from './CreateRol';
 import EditRol from './EditRol';
 /* import RolDetails from './RolDetails'; */
 import Modal from 'react-modal';
-
+import Skeleton from '@mui/material/Skeleton';
 
 Modal.setAppElement('#root');
 
@@ -23,7 +23,7 @@ const RolList: React.FC = () => {
   useEffect(() => {
     fetchRol();
   }, []);
-
+  const [loading, setLoading] = useState(true);
   const fetchRol = async () => {
     try {
       const response = await api.get('/roles');
@@ -31,6 +31,8 @@ const RolList: React.FC = () => {
       setRol(response.data);
     } catch (error) {
       console.error('Error al obtener los roles:', error);
+    } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -46,7 +48,7 @@ const handleDelete = async (id: number) => {
     toast.success('¡El rol ha sido eliminado!');
     fetchRol();
   } catch (error) {
-    if (error.response && error.response.status === 500) {
+    if ((error as any).response && (error as any).response.status === 500) {
       toast.error('No se puede eliminar el rol porque está siendo referenciado en otra parte.');
     } else {
       toast.error('Hubo un problema al eliminar el rol.');
@@ -131,7 +133,7 @@ const handleDelete = async (id: number) => {
         header: 'Acciones',
         Cell: ({ row }) => (
           <div className="tw-flex tw-justify-center tw-gap-2">
-            <button onClick={() => handleEdit(row.original.ID_rol)} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
+            <button onClick={() => handleEdit(Number(row.original.ID_rol))} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faEdit} />
             </button>
             <button onClick={() => handleDelete(row.original.ID_rol)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
@@ -150,7 +152,21 @@ const handleDelete = async (id: number) => {
       <button onClick={handleAddRol} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
         <FontAwesomeIcon icon={faPlus} /> Agregar Rol
       </button>
-      <MaterialReactTable columns={columns} data={roles} />
+      {/* Skeleton Loader cuando loading es true */}
+      {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
+        <MaterialReactTable columns={columns} data={roles} />
+      )}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}

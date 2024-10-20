@@ -7,12 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus, faToggleOn, faToggleOff,faEye  } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';  
 import Modal from 'react-modal';
-
 import { Producto } from '../../types/Producto';
 import AddProductos from './products-add';
 import EditProductos from './products-edit';
 import ProductosDetail from './products-details';
-
+import Skeleton from '@mui/material/Skeleton';
 
 
 Modal.setAppElement('#root');
@@ -23,13 +22,15 @@ const Productos: React.FC = () => {
   const [modalConfig, setModalConfig] = useState<{ type: 'add' | 'edit' | 'entry'|'detail'| null; id: number | null }>({ type: null, id: null });
   // const [isModalOpen2, setIsModalOpen2] = useState(false);
 
-  
+  const [loading, setLoading] = useState(true);
   const fetchProducto = async () => {
     try {
       const response = await api.get('/productos');
       setProductos(response.data);
     } catch (error) {
       console.error('Error al obtener los productos:', error);
+    } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -201,7 +202,21 @@ const Productos: React.FC = () => {
          <button onClick={()=>handleModal('add')} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
            <FontAwesomeIcon icon={faPlus} /> Agregar producto
          </button>
-         <MaterialReactTable columns={columns} data={productos} /> 
+          {/* Skeleton Loader cuando loading es true */}
+       {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
+        <MaterialReactTable columns={columns} data={productos} />
+      )}
          <Modal
            isOpen={isModalOpen}
            onRequestClose={handleCloseModal}

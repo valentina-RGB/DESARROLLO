@@ -37,6 +37,7 @@
     "postcss": "^8.4.41",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
+    "react-content-loader": "^7.0.2",
     "react-data-table-component": "^7.6.2",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",

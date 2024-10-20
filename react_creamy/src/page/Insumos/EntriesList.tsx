@@ -9,6 +9,8 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';
 import EditEntry from './EditEntry'; // Asegúrate de tener este componente
 import DeleteEntry from './DeleteEntry'; // Asegúrate de tener este componente
+import Skeleton from '@mui/material/Skeleton';
+
 
 Modal.setAppElement('#root');
 
@@ -23,9 +25,11 @@ const EntriesList: React.FC = () => {
   useEffect(() => {
     fetchEntries();
   }, []);
+  const [loading, setLoading] = useState(true);
 
   // Función que realiza la petición a la API
   const fetchEntries = async () => {
+    setLoading(true);
     try {
       const response = await api.get('/historial_entradas'); // Asegúrate de que la URL sea correcta
       if (response && response.data) {
@@ -35,6 +39,8 @@ const EntriesList: React.FC = () => {
       }
     } catch (error) {
       console.error('Error al obtener las entradas:', error);
+    } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -128,6 +134,7 @@ const EntriesList: React.FC = () => {
   );
 
   return (
+    <section className="mb-3 mb-lg-5 pt-5">
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Historial de Entradas</h1>
 
@@ -139,9 +146,21 @@ const EntriesList: React.FC = () => {
         Volver a Insumos
       </button>
 
-      {/* Tabla de historial de entradas */}
-      <MaterialReactTable columns={columns} data={entries} />
-
+       {/* Skeleton Loader cuando loading es true */}
+       {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
+        <MaterialReactTable columns={columns} data={entries} />
+      )}
       {/* Modal */}
       <Modal
         isOpen={isModalOpen}
@@ -159,6 +178,7 @@ const EntriesList: React.FC = () => {
         )}
       </Modal>
     </div>
+    </section>
   );
 };
 

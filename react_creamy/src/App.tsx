@@ -27,7 +27,7 @@ const App: React.FC = () => {
         <Menu />
 
         {/* Contenido principal con suficiente padding-top */}
-        <div className="tw-page-holder tw-w-full tw-pt-16"> {/* Añadimos tw-pt-16 para que el contenido no se superponga */}
+        <div className="tw-page-holder tw-w-full tw-pt"> {/* Añadimos tw-pt-16 para que el contenido no se superponga */}
           <div className="tw-container-fluid tw-px-lg-4 tw-px-xl-5">
             {/* Definición de rutas */}
             <Routes>

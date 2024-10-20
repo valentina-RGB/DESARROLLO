@@ -19,6 +19,7 @@ import { Pedido } from "../../types/Pedido";
 // import AddCategories from './categories-add';
 // import EditCategoria from './categories-edit';
 import { Link } from "react-router-dom";
+import Skeleton from '@mui/material/Skeleton';
 
 export interface Estado {
   ID_estado_pedido: number;
@@ -37,12 +38,15 @@ const Pedidos: React.FC = () => {
   const [estadosPedido, setEstadosPedido] = useState<Estado[]>([]);
   // const [Categoria, setCategoria] = useState<Categoria | null>(null);
 
+  const [loading, setLoading] = useState(true);
   const fetchPedido = async () => {
     try {
       const response = await api.get("/pedidos");
       setPedidos(response.data);
     } catch (error) {
       console.error("Error al obtener el pedido:", error);
+    } finally {
+      setLoading(false); // Finaliza el estado de carga
     }
   };
 
@@ -298,6 +302,7 @@ const Pedidos: React.FC = () => {
   return (
     <>
       <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+      <h1 className="page-heading">Pedidos</h1>
         <Link to="/Agregar-pedidos">
           <button
             className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
@@ -305,9 +310,21 @@ const Pedidos: React.FC = () => {
             <FontAwesomeIcon icon={faPlus} /> Agregar un pedido
           </button>
         </Link>
-        <h1 className="page-heading">Pedidos</h1>
-
+         {/* Skeleton Loader cuando loading es true */}
+       {loading ? (
+        <div className="w-full max-w-md mx-auto p-9">
+          {/* Aquí usas el Skeleton para el título */}
+          <Skeleton className="h-6 w-52" />
+          
+          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+          <Skeleton className="h-4 w-48 mt-6" />
+          <Skeleton className="h-4 w-full mt-4" />
+          <Skeleton className="h-4 w-64 mt-4" />
+          <Skeleton className="h-4 w-4/5 mt-4" />
+        </div>
+      ) : (
         <MaterialReactTable columns={columns} data={pedidos} />
+      )}
         <Modal
           isOpen={isModalOpen}
           onRequestClose={handleCloseModal}
