@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import api from "../../api/api";
 import { toast } from "react-hot-toast";
+import Productos from "../Products/products-list";
 
 // const saboresDisponibles = [
 //   "Vainilla", "Chocolate", "Fresa", "Menta", "Dulce de Leche",
@@ -41,6 +42,9 @@ type Adiciones = {
   insumos: Insumo_adicion[];
 };
 
+
+
+
 type Insumos = {
   ID_insumo: number;
   descripcion_insumo: string;
@@ -51,25 +55,24 @@ type Insumos = {
 };
 
 type Producto = {
-  ID_producto: number;
+  ID_producto: number|null;
   nombre: string;
-  descripcion: string;
+  // descripcion: string;
   precio_neto: number;
-  estado_productos: string;
-  ID_tipo_productos: number | string;
-  ID_categorias: null | string;
-  imagen: string;
-  ID_estado_productos: number | string;
+  // estado_productos: string;
+  // ID_tipo_productos: number | string;
+  // ID_categorias: null | string;
+  // imagen: string;
+  // ID_estado_productos: number | string;
   Producto_Pedidos: {
     cantidad: number;
     precio_neto: number;
     sub_total: number;
   };
-  Insumos: Insumos[];
-  adicion: Adiciones[];
+  adicion: Insumo_adicion[];
 };
 
-type Pedido = {
+type Pedido= {
   fecha: string;
   ID_clientes: number | string;
   precio_total: number;
@@ -83,14 +86,15 @@ export default function OrderAdd() {
 
   const [productoActual, setProductoActual] = useState<string | null>(null);
   const [IDActual, SetIDActual] = useState<number | null>(null);
-
+  const [precioNeto, SetIPrecioNeto] = useState<number | null>(0);
+  // const [productosActual, setProductoActual] = useState<Producto[]>([]);
   const [modalAbierto, setModalAbierto] = useState(false);
 
   //PRODUCTOS
   const [searchTerm, setSearchTerm] = useState("");
   const [busqueda, setBusqueda] = useState<Producto[]>([]);
   const [productosAgregados, setProductosAgregados] = useState<Producto[]>([]);
-
+  // const [agregados, setAgregados] = useState<[]>([]);
   const [TerminosHelado, setTerminosHelado] = useState("");
   const [buscarHelado, setBuscarHelado] = useState<Insumo_adicion[]>([]);
   const [insumosAgregados, setInsumoAgregados] = useState<Insumo_adicion[]>([]);
@@ -163,7 +167,7 @@ export default function OrderAdd() {
           producto.nombre
             .toLowerCase()
             .includes(debouncedSearchTerm.toLowerCase()) ||
-          producto.ID_producto.toString().includes(
+          (producto.ID_producto?.toString() ?? "").includes(
             debouncedSearchTerm.toLowerCase()
           )
       );
@@ -294,9 +298,7 @@ export default function OrderAdd() {
         },
       ];
 
-      setadiciones(nuevo);
-
-      // console.log(adiciones)
+      setadiciones(nuevo)
       return adiciones;
     }
   };
@@ -366,37 +368,90 @@ const generalizarItems = (array: Insumo_adicion[]) => {
 };
 
 
-
-
-
-
-
-
- 
-
   // const calcularPrecioTotal = () => {
   //   const precioBase = precios[tamaño]
   //   const precioExtra = Math.max(0, saboresSeleccionados.length - 2) * 0.5
   //   return precioBase + precioExtra
   // }
 
+// const ID = (Productos: Producto)=>{
+//     console.log(Productos)
+//     if(Productos){
+//       const nuevo:Producto = {
+//         ID_producto: Productos.ID_producto,
+//         nombre: Productos.nombre,
+//         precio_neto: Productos.precio_neto,
+//         Producto_Pedidos: {
+//           cantidad: 1,
+//           precio_neto: Productos.precio_neto ,
+//           sub_total: Productos.precio_neto * 1},
+//         adicion: insumosAgregados,
+//       }
+//       console.log (nuevo)
+//       setProductosAgregados((prev) => [...prev, nuevo]);
+      
+//       setProductoActual(null);
+//       console.log(productosAgregados)
+//       setModalAbierto(false);
+//     }
+//   }
+    
+
+
+
+
   const agregarProducto = () => {
-    if (productoActual) {
-      const nuevoProducto: Producto = {
-        ID_producto: IDActual,
-        nombre: productoActual,
-        sabores: saboresSeleccionados,
-        ID_tipo_productos: 1,
-        precio: calcularPrecioTotal(),
-        cantidad: 1,
-      };
-      setProductosAgregados((prev) => [...prev, nuevoProducto]);
+   
+     if(productoActual){
+    
+      setProductosAgregados([
+        ...productosAgregados,{
+          ID_producto: IDActual,
+          nombre: productoActual??"",
+          precio_neto: precioNeto??0,
+          Producto_Pedidos: {
+            cantidad: 1,
+            precio_neto: precioNeto??0,
+            sub_total: precioNeto??0 * 1},
+          adicion: insumosAgregados,
+          
+        }
+      ]);
       setModalAbierto(false);
       setProductoActual(null);
-      setSaboresSeleccionados([]);
-      //   setTamaño('mediano')
+      return productosAgregados
+     }
+    
     }
-  };
+    
+    
+    console.log(productosAgregados)
+      
+  
+  const order = async() => {
+    const pedido: Pedido = {
+      fecha: new Date().toISOString(),
+      ID_clientes: 1,
+      precio_total: totalPedido,
+      ID_estado_pedido: 1,
+      ProductosLista: productosAgregados,
+    };
+    console.log(pedido);
+    const url_order = `/pedidos`;
+    
+   try{
+    await api.post(url_order,pedido, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    toast.success("El pedido ha sido agregado exitosamente.");
+   }catch{
+    toast.error(
+      "No se pudo agregar la categoría. Por favor, intente nuevamente."
+    );
+   }
+  } 
 
   const eliminarHelado = (index: number) => {
     setInsumoAgregados((prev) => prev.filter((_, i) => i !== index));
@@ -471,10 +526,13 @@ const generalizarItems = (array: Insumo_adicion[]) => {
         i === index
           ? {
               ...producto,
-              cantidad: Math.max(
+              Producto_Pedidos: {
+               ...producto.Producto_Pedidos,
+               cantidad: Math.max(
                 1,
                 producto.Producto_Pedidos.cantidad + incremento
-              ),
+              )
+              }
             }
           : producto
       )
@@ -486,7 +544,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
   };
 
   const totalPedido = productosAgregados.reduce(
-    (sum, producto) => sum + producto.precio * producto.cantidad,
+    (sum, producto) => sum + producto.precio_neto * producto.Producto_Pedidos.cantidad,
     0
   );
 
@@ -530,6 +588,8 @@ const generalizarItems = (array: Insumo_adicion[]) => {
                   onClick={() => {
                     setProductoActual(producto.nombre);
                     SetIDActual(producto.ID_producto);
+                    SetIPrecioNeto(producto.precio_neto);
+                    // ID(producto);
                     setModalAbierto(true);
                   }}
                 >
@@ -592,7 +652,9 @@ const generalizarItems = (array: Insumo_adicion[]) => {
               ${totalPedido.toFixed(2)}
             </span>
           </div>
-          <button className="tw-w-full tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-mt-4 tw-rounded-md tw-flex tw-items-center tw-justify-center">
+          <button onClick={order} className="tw-w-full tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-mt-4 tw-rounded-md tw-flex tw-items-center tw-justify-center">
+            
+            
             <ShoppingCart className="tw-mr-2 tw-h-4 tw-w-4 " /> Realizar Pedido
           </button>
         </div>
@@ -845,8 +907,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
               </button>
               <button
                 onClick={agregarProducto}
-                className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-rounded-md"
-              >
+                className="tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-px-4 tw-py-2 tw-rounded-md">
                 Agregar al pedido
               </button>
             </div>

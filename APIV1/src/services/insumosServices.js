@@ -5,6 +5,7 @@ const StockInsumo = require('../models/StockInsumo');
 const getInsumoById = async (id) => {
     try {
         const insumo = await Insumo.findByPk(id);
+        
         if (!insumo) {
             throw {status: 404, message: 'Insumo not found' };
         }
@@ -12,6 +13,8 @@ const getInsumoById = async (id) => {
     } catch (error) {
         throw { status: 500, message: 'Error fetching insumo' };
     }
+
+    I
 };
 
 

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false,
     });
 
-    Estado_producto.associate = function(models) {
-        Estado_producto.hasMany(models.Productos, { foreignKey: 'ID_estado_productos' });
-    };
+    // Estado_producto.associate = function(models) {
+    //     Estado_producto.hasMany(models.Productos, { foreignKey: 'ID_estado_productos' });
+    // };
 
     Estado_producto.sync({ force: false }) // Usa 'force: false' para no sobreescribir la tabla si ya existe
   .then(async () => {

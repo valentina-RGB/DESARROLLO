@@ -183,7 +183,6 @@ const AddProductos: React.FC<AddCategories> = ({ onClose }) => {
     const newErrors = { nombre: "", insumos:"", categorias:""};
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre del producto es obligatorio";
-     
     }
 
     if (!formData.ID_categorias) {
@@ -327,7 +326,6 @@ useEffect(() => {
         return input;
       });
       setInputs(newInputs);
-     
     };
 
     const calcularSumaTotalPrecios = () => {
@@ -345,25 +343,7 @@ useEffect(() => {
       const newInputs = inputs.filter((input) => input.ID_insumo !== id);
       setInputs(newInputs);
     };
-     setSearchTerm
-
- 
-
-
-    
-
-
-
-    // Para verificar en la consola
-// useEffect(() => {
-//   console.log("Resultados de búsqueda actualizados:", searchResults);
-// }, [searchResults]);
-  
-
-     // Función para manejar la selección de un insumo
-  // const handleSelectInsumo = (insumo: Insumo) => {
-  //   setSelectedInsumo(insumo);
-  // };
+    setSearchTerm
 
 
   const resetFormInsumos = () => {
@@ -385,7 +365,7 @@ useEffect(() => {
   
   return (
     <>
-    {/* <p>{error}</p> */}
+    <p>{error?.toString()}</p>
       <div className="tw-bg-[#f8faf] dark:tw-bg-[#f5f3ff] tw-p-6 tw-rounded-lg tw-shadow-lg">
         <form onSubmit={handleSubmit}>
           <div className="tw-mb-4">
@@ -717,7 +697,7 @@ useEffect(() => {
     </>
   );
 }
-function MinusIcon(props) {
+function MinusIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -736,7 +716,7 @@ function MinusIcon(props) {
   );
 }
 
-function PlusIcon(props) {
+function PlusIcon(props:React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -756,7 +736,7 @@ function PlusIcon(props) {
   );
 }
 
-function XIcon(props) {
+function XIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
