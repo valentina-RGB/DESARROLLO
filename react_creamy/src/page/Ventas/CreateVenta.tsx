@@ -78,8 +78,8 @@ type Pedido = {
 };
 
 
-export default function OrderAdd() {
-  // const [Pedidos, setPedidos] = useState<Pedido[]>([]);
+ export default function OrderAdd() {
+//   // const [Pedidos, setPedidos] = useState<Pedido[]>([]);
 
   const [productoActual, setProductoActual] = useState<string | null>(null);
   const [IDActual, SetIDActual] = useState<number | null>(null);
@@ -376,23 +376,23 @@ const generalizarItems = (array: Insumo_adicion[]) => {
   //   return precioBase + precioExtra
   // }
 
-  const agregarProducto = () => {
-    if (productoActual) {
-      const nuevoProducto: Producto = {
-        ID_producto: IDActual,
-        nombre: productoActual,
-        sabores: saboresSeleccionados,
-        ID_tipo_productos: 1,
-        precio: calcularPrecioTotal(),
-        cantidad: 1,
-      };
-      setProductosAgregados((prev) => [...prev, nuevoProducto]);
-      setModalAbierto(false);
-      setProductoActual(null);
-      setSaboresSeleccionados([]);
-      //   setTamaño('mediano')
-    }
-  };
+  // const agregarProducto = () => {
+  //   if (productoActual) {
+  //     const nuevoProducto: Producto = {
+  //       ID_producto: IDActual,
+  //       nombre: productoActual,
+  //       sabores: saboresSeleccionados,
+  //       ID_tipo_productos: 1,
+  //       precio: calcularPrecioTotal(),
+  //       cantidad: 1,
+  //     };
+  //     setProductosAgregados((prev) => [...prev, nuevoProducto]);
+  //     setModalAbierto(false);
+  //     setProductoActual(null);
+  //     setSaboresSeleccionados([]);
+  //     //   setTamaño('mediano')
+  //   }
+  // };
 
   const eliminarHelado = (index: number) => {
     setInsumoAgregados((prev) => prev.filter((_, i) => i !== index));
@@ -481,10 +481,10 @@ const generalizarItems = (array: Insumo_adicion[]) => {
     setProductosAgregados((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const totalPedido = productosAgregados.reduce(
-    (sum, producto) => sum + producto.precio * producto.cantidad,
-    0
-  );
+  // const totalPedido = productosAgregados.reduce(
+  //   (sum, producto) => sum + producto.precio * producto.cantidad,
+  //   0
+  // );
 
   
   
@@ -521,7 +521,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
                   <span>{producto.ID_producto}</span>
                   <span>{producto.nombre}</span>
                 </div>
-                <button
+                {/* <button
                   className=" tw-bg-[#6b46c1] hover:tw-bg-[#553c9a] tw-text-white tw-border tw-px-4 tw-py-2 tw-rounded-md tw-text-sm  "
                   onClick={() => {
                     setProductoActual(producto.nombre);
@@ -530,7 +530,7 @@ const generalizarItems = (array: Insumo_adicion[]) => {
                   }}
                 >
                   Agregar
-                </button>
+                </button> */}
               </div>
             ))}
           </div>
@@ -851,4 +851,4 @@ const generalizarItems = (array: Insumo_adicion[]) => {
       )}
     </div>
   );
-}
+ }

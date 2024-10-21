@@ -15,7 +15,7 @@ import Productos from './page/Products/products-list';
 import Pedidos from './page/Order/Order_list';
 import Login from './page/Acceso/login';
 import SignUp from './page/Acceso/signUp';
-import OrderAdd from './page/Ventas/CreateVenta';
+import OrderAdd from './page/Order/Order_add';
 
 const App: React.FC = () => {
   return (
