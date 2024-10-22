@@ -7,6 +7,7 @@ import Categorias from "./page/Categories/Categories-list";
 import Insumos from "./page/Insumos/Insumos-list";
 import EntriesList from "./page/Insumos/EntriesList";
 import Ventas from "./page/Ventas/VentasList";
+import Ventasadd from "./page/Ventas/CreateVenta";
 import ListarRoles from './page/Roles/ListRol';
 import AddCliente from './page/Clientes/CreateCliente';
 import ListarClientes from './page/Clientes/ListCliente';
@@ -46,6 +47,7 @@ const App: React.FC = () => {
               <Route path="/Login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/Agregar-pedidos" element={<OrderAdd />} />
+              <Route path="/Agregar-ventas" element={<Ventasadd />} />
             </Routes>
             <footer className="footer tw-bg-white tw-shadow tw-align-self-end tw-py-3 tw-px-xl-5 tw-w-full">
               <div className="tw-container-fluid">

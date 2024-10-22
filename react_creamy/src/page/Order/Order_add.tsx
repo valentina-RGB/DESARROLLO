@@ -29,11 +29,11 @@ type Insumo_adicion = {
 };
 
 
-// type Configuracion = {
-//   cantidad: number;
-//   total: number;
-//   Insumos: Insumos[];
-// };
+type Configuracion = {
+  cantidad: number;
+  total: number;
+  Insumos: Insumos[];
+};
 
 
 
@@ -54,11 +54,11 @@ type Insumo_adicion = {
 //   insumos: Insumo_adicion[];
 // };
 
-// type Insumos = {
-//   ID_insumo: number;
-//   descripcion_insumo: string;
-//   precio: number;
-// };
+type Insumos = {
+  ID_insumo: number;
+  descripcion_insumo: string;
+  precio: number;
+};
 
 type Producto = {
   ID_producto: number | null;
@@ -94,7 +94,7 @@ export default function OrderAdd() {
   const [productosAgregados, setProductosAgregados] = useState<Producto[]>([]);
 
 
-  // const [configuracion, setConfiguracion] = useState<Configuracion[]>([]);
+  const [configuracion, setConfiguracion] = useState<Configuracion[]>([]);
   // const [saboresSeleccionados, SetsaboresSeleccionados] = useState<[]>([]);
   const [TerminosHelado, setTerminosHelado] = useState("");
   const [buscarHelado, setBuscarHelado] = useState<Insumo_adicion[]>([]);
@@ -782,7 +782,6 @@ export default function OrderAdd() {
                         className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
                       />
                     </div>
-                    <p>Holaa</p>
                   </div>
                   <div className="tw-h-60 tw-overflow-y-auto tw-border tw-rounded-md tw-p-2">
                     {buscarHelado.map((sabor) => (

@@ -9,6 +9,7 @@ import Modal from 'react-modal';
 import AddVenta from './CreateVenta';
 import VentaDetails from './VentaDetail';
 import Skeleton from '@mui/material/Skeleton';
+import { Link } from 'react-router-dom';
 
 export interface EstadoVenta {
   ID_estado_venta: number;
@@ -221,12 +222,13 @@ const VentasList: React.FC = () => {
   return (
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Ventas</h1>
+      <Link to="/Agregar-ventas">
       <button
-        onClick={handleOpenAddVentaModal}
         className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
       >
         <FontAwesomeIcon icon={faPlus} /> Agregar una venta
       </button>
+      </Link>
       {/* Skeleton Loader cuando loading es true */}
       {loading ? (
         <div className="w-full max-w-md mx-auto p-9">
@@ -248,12 +250,12 @@ const VentasList: React.FC = () => {
           if (isAddVentaModalOpen) handleCloseAddVentaModal();
           if (isVentaDetailsModalOpen) handleCloseVentaDetailsModal();
         }}
-        className="tw-bg-white tw-p-0 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto tw-mt-12"
-        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50"
+        className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
+          overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
       >
-        {isAddVentaModalOpen && (
+  {/*     {isAddVentaModalOpen && (
           <AddVenta isOpen={isAddVentaModalOpen} onClose={handleCloseAddVentaModal} onVentaCreated={handleCloseAddVentaModal} />
-        )}
+        )} */}
         {isVentaDetailsModalOpen && selectedVentaId !== null && (
           <VentaDetails isOpen={isVentaDetailsModalOpen} onClose={handleCloseVentaDetailsModal} ventaId={selectedVentaId} />
         )}
