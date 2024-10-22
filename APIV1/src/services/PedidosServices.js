@@ -7,7 +7,6 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
 
 
     const 
-
     getPedidos = async (res,req) => {
         const pedidos = await Pedidos.findAll({
             include: [
@@ -116,11 +115,13 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
         }
       }
 
-      
-
       if(!bandera){
 
         let totalPedido = 0;
+
+        let TotalAdiciones = 0;
+
+        let cantidad = 0;
         
         const Nuevopedido = await Pedidos.create({
           fecha: Date.now(),
@@ -129,17 +130,17 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
           ID_estado_pedido: ID_estado_pedido
         });
 
+       
 
-      
         if (Array.isArray(ProductosLista)) {
         
           for (const productos of ProductosLista) {
+
+             console.log('holaaaa', ProductosLista)
             
             if (productos && productos.Producto_Pedidos) {
-              // Calcula el subtotal del producto
 
-              console.log('holaaaa', ID_clientes, productos.Producto_Pedidos.adicion)
-              const subTotal = productos.precio_neto * productos.Producto_Pedidos.cantidad;
+              const subTotal = productos.precio_neto * productos.Producto_Pedidos.cantidad 
         
               // Añade el subtotal al total del pedido
               totalPedido += subTotal;
@@ -150,55 +151,67 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
                 ID_productos: productos.ID_producto,
                 cantidad: productos.Producto_Pedidos.cantidad,
                 precio_neto: productos.precio_neto,
-                sub_total: subTotal,
+                sub_total: subTotal + productos.adicion.Adiciones_Insumos,
               });
+
+
+              // const NuevaAdicion = await Adiciones.create({
+              //   cantidad:0,
+              //   total: 0
+              // });
         
-              // Manejo de adiciones, si aplica
-              if (Array.isArray( productos.Producto_Pedidos.adicion)) {
-                for (const adicion of  productos.Producto_Pedidos.adicion) {
-                  if (adicion && adicion.Adiciones_Insumos) {
+            
+            }
+          
+          
+          
+          // Manejo de adiciones, si aplica
+          if (Array.isArray( productos.adicion)) {
+            for (const adicion of  productos.adicion) {
 
+              if (adicion && adicion.Adiciones_Insumos) {
 
+                // const subTotalAdiciones =  adicion.Adiciones_Insumos.cantidad * adicion.Adiciones_Insumos.total;
 
-                    const TotalAdiciones =  adicion.Adiciones_Insumos.cantidad
-                    console.log("AQUI ESTOY!! ")
+                // const cantidadAdiciones = adicion.Adiciones_Insumos.cantidad;
+                // // console.log("AQUI ESTOY!! ")
+                // TotalAdiciones += subTotalAdiciones;
 
-                    const NuevaAdicion = await Adiciones.create({
-                      cantidad: adicion.Adiciones_Insumos.cantidad,
-                      total: adicion.Adiciones_Insumos.total* adicion.Adiciones_Insumos.total
-                    });
-                   
-        
-                    await Productos_adiciones.create({
-                      ID_Producto_adicion: productos.ID_producto,
-                      ID_adiciones: NuevaAdicion.ID_adicion,
-                      cantidad: adicion.Adiciones_Insumos.cantidad,
-                      total: adicion.Adiciones_Insumos.total,
-                    });
+                // cantidad += cantidadAdiciones;
+                
+                // await Productos_adiciones.create({
+                //   ID_Producto_adicion: productos.ID_producto,
+                //   ID_adiciones: NuevaAdicion.ID_adicion,
+                //   cantidad: adicion.Adiciones_Insumos.cantidad,
+                //   total: adicion.Adiciones_Insumos.total,
+                // });
 
-                    await Adiciones_Insumos.create({
-                      ID_adicion_p: NuevaAdicion.ID_adicion,
-                      ID_insumo_p:adicion.Adiciones_Insumos.ID_insumo,
-                      cantidad: adicion.Adiciones_Insumos.cantidad,
-                      total: adicion.Adiciones_Insumos.total,
-                    });
+                // await Adiciones_Insumos.create({
+                //   ID_adicion_p: NuevaAdicion.ID_adicion,
+                //   ID_insumo_p: adicion.ID_insumo,
+                //   cantidad: adicion.Adiciones_Insumos.cantidad,
+                //   total: adicion.precio * adicion.Adiciones_Insumos.cantidad ,
+                // });
 
-        
-                    // // // Añadir el total de la adición al total del pedido
-                     totalPedido += (adicion.Adiciones_Insumos.total * productos.Producto_Pedidos.cantidad);
-                  }
-                }
+                 totalPedido += (adicion.Adiciones_Insumos.total * productos.Producto_Pedidos.cantidad);
               }
             }
           }
+          }
+
+            
         }
+
         console.log(`TOTAL: ${totalPedido}`)
 
         await Nuevopedido.update({
           precio_total: totalPedido
         });
 
-        
+        // await NuevaAdicion.update({
+        //   cantidad:cantidad,
+        //   total:TotalAdiciones
+        // });
 
         return  { status: 201, message:'Se a creado el pedido', Nuevopedido};
       } else{
@@ -206,12 +219,8 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
     }
     
 
-      
-       
-
     },
 
-   
 
 // Crear un nuevo pedido y detalles del pedido
 //     CrearPedidos = async (req, res) => {

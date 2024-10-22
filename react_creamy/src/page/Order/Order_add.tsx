@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import api from "../../api/api";
 import { toast } from "react-hot-toast";
-import Productos from "../Products/products-list";
+// import Productos from "../Products/products-list";
 // import Productos from "../Products/products-list";
 
 // const saboresDisponibles = [
@@ -27,6 +27,17 @@ type Insumo_adicion = {
     total: number;
   };
 };
+
+
+// type Configuracion = {
+//   cantidad: number;
+//   total: number;
+//   Insumos: Insumos[];
+// };
+
+
+
+
 
 // type Tipo_Insumo = {
 //   ID_tipo_Insumo : number,
@@ -47,23 +58,17 @@ type Insumo_adicion = {
 //   ID_insumo: number;
 //   descripcion_insumo: string;
 //   precio: number;
-//   Producto_insumos: {
-//     cantidad: number;
-//   };
 // };
 
 type Producto = {
   ID_producto: number | null;
   nombre: string;
-
   precio_neto: number;
-
   Producto_Pedidos: {
     cantidad: number;
-    precio_neto: number;
     sub_total: number;
-    adicion: Insumo_adicion[];
   };
+  adicion: Insumo_adicion[];
 };
 
 type Pedido = {
@@ -87,6 +92,9 @@ export default function OrderAdd() {
   const [searchTerm, setSearchTerm] = useState("");
   const [busqueda, setBusqueda] = useState<Producto[]>([]);
   const [productosAgregados, setProductosAgregados] = useState<Producto[]>([]);
+
+
+  // const [configuracion, setConfiguracion] = useState<Configuracion[]>([]);
   // const [saboresSeleccionados, SetsaboresSeleccionados] = useState<[]>([]);
   const [TerminosHelado, setTerminosHelado] = useState("");
   const [buscarHelado, setBuscarHelado] = useState<Insumo_adicion[]>([]);
@@ -367,30 +375,79 @@ export default function OrderAdd() {
     }, []);
   };
 
+  // const agregarProducto = () => {
+  //   if (productoActual) {
+  //     // Actualiza el estado con los nuevos productos agregados
+  //     setProductosAgregados((prevProductos) => [
+  //       ...prevProductos,
+  //       {
+  //         ID_producto: IDActual,
+  //         nombre: productoActual ?? "",
+  //         precio_neto: precioNeto ?? 0,
+  //         Producto_Pedidos: {
+  //           cantidad: 1,
+  //           precio_neto: precioNeto ?? 0,
+  //           sub_total: (precioNeto ?? 0) * 1,    
+  //         },
+  //         adicion: General.length > 0 ? General : []
+  //       },
+  //     ]);
+
+  //     // Cierra el modal y restablece el producto actual
+  //     setModalAbierto(false);
+  //     setProductoActual(null);
+  //   }
+  // };
+
   const agregarProducto = () => {
     if (productoActual) {
-      // Actualiza el estado con los nuevos productos agregados
-      setProductosAgregados((prevProductos) => [
-        ...prevProductos,
-        {
-          ID_producto: IDActual,
-          nombre: productoActual ?? "",
-          precio_neto: precioNeto ?? 0,
-          Producto_Pedidos: {
-            cantidad: 1,
-            precio_neto: precioNeto ?? 0,
-            sub_total: (precioNeto ?? 0) * 1,
-            adicion: General.length > 0 ? General : [],
-          },
-        },
-      ]);
-
+      setProductosAgregados((prevProductos) => {
+        // Buscamos si ya existe el producto en la lista
+        const productoExistente = prevProductos.find(
+          (producto) => producto.ID_producto === IDActual
+        );
+  
+        if (productoExistente) {
+          // Si existe, actualizamos su cantidad y subtotal
+          return prevProductos.map((producto) =>
+            producto.ID_producto === IDActual
+              ? {
+                  ...producto,
+                  Producto_Pedidos: {
+                    ...producto.Producto_Pedidos,
+                    cantidad: producto.Producto_Pedidos.cantidad + 1,
+                    sub_total:
+                      (producto.Producto_Pedidos.cantidad + 1) *
+                      producto.precio_neto,
+                  },
+                  adicion: General.length > 0 ? General : producto.adicion,
+                }
+              : producto
+          );
+        } else {
+          // Si no existe, lo añadimos como un nuevo producto
+          return [
+            ...prevProductos,
+            {
+              ID_producto: IDActual,
+              nombre: productoActual ?? "",
+              precio_neto: precioNeto ?? 0,
+              Producto_Pedidos: {
+                cantidad: 1,
+                precio_neto: precioNeto ?? 0,
+                sub_total: (precioNeto ?? 0) * 1,
+              },
+              adicion: General.length > 0 ? General : [],
+            },
+          ];
+        }
+      });
+  
       // Cierra el modal y restablece el producto actual
       setModalAbierto(false);
       setProductoActual(null);
     }
   };
-
   console.log(insumosAgregados);
   console.log(productosAgregados);
 
@@ -640,7 +697,7 @@ export default function OrderAdd() {
       
             <p className="tw-text-sm">
               Adiciones:{" "}
-              {producto.Producto_Pedidos.adicion.map((adicion) => (
+              {producto.adicion.map((adicion) => (
                 <span key={adicion.ID_insumo}>{adicion.descripcion_insumo}, </span>
               ))}
             </p>
@@ -650,7 +707,7 @@ export default function OrderAdd() {
               Subtotal: $
               {(
                 producto.precio_neto * producto.Producto_Pedidos.cantidad +
-                producto.Producto_Pedidos.adicion.reduce(
+                producto.adicion.reduce(
                   (sum, adicion) => sum + adicion.precio * producto.Producto_Pedidos.cantidad,
                   0
                 )
@@ -957,3 +1014,4 @@ export default function OrderAdd() {
     </div>
   );
 }
+
