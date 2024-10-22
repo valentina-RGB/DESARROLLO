@@ -782,7 +782,7 @@ export default function OrderAdd() {
                         className="tw-flex-1 tw-border-[#ff6b00] tw-border tw-p-2 tw-rounded-lg focus:tw-ring-[#ff6b00]"
                       />
                     </div>
-                    <p>Hola</p>
+                    <p>Holaa</p>
                   </div>
                   <div className="tw-h-60 tw-overflow-y-auto tw-border tw-rounded-md tw-p-2">
                     {buscarHelado.map((sabor) => (
