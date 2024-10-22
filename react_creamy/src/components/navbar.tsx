@@ -69,32 +69,6 @@ const Navbar = () => {
             }`}
           >
             <div className="tw-flex tw-flex-col -tw-mx-6 tw-lg:flex-row tw-lg:items-center tw-lg:mx-8">
-              <a
-                href="#"
-                className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
-              >
-                Join Slack
-              </a>
-              <a
-                href="#"
-                className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
-              >
-                Browse Topics
-              </a>
-              <a
-                href="#"
-                className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
-              >
-                Random Item
-              </a>
-              <a
-                href="#"
-                className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
-              >
-                Experts
-              </a>
-            </div>
-
             <div className="tw-flex tw-items-center tw-mt-4 tw-lg:mt-0">
               <button
                 className="tw-hidden tw-mx-4 tw-text-gray-600 tw-transition-colors tw-duration-300 tw-transform tw-lg:block dark:tw-text-gray-200 hover:tw-text-gray-700 dark:hover:tw-text-gray-400 focus:tw-text-gray-700 dark:focus:tw-text-gray-400 focus:tw-outline-none"
@@ -130,10 +104,54 @@ const Navbar = () => {
                 </div>
 
                 <h3 className="tw-mx-2 tw-text-gray-700 dark:tw-text-gray-200 tw-lg:hidden">
-                  Khatab wedaa
+                  Perfil
                 </h3>
               </button>
             </div>
+                <a
+                  href="#"
+                  className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="tw-inline-block tw-w-5 tw-h-5 tw-mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H4a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  Salir
+                </a>
+                <a
+                  href="#"
+                  className="tw-px-3 tw-py-2 tw-mx-3 tw-mt-2 tw-text-gray-700 tw-transition-colors tw-duration-300 tw-transform tw-rounded-md tw-lg:mt-0 dark:tw-text-gray-200 hover:tw-bg-gray-100 dark:hover:tw-bg-gray-700"
+                >
+                  <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="tw-inline-block tw-w-5 tw-h-5 tw-mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5V12m0 0v7.5m0-7.5H4.5m7.5 0h7.5"
+                  />
+                  </svg>
+                  Configuración
+                </a>
+
+            </div>
+
+            
           </div>
         </div>
       </div>

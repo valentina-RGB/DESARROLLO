@@ -215,6 +215,7 @@ const fetchInsumos = async () => {
   );
 
   return (
+    <section className="mb-3 mb-lg-5">
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Insumos</h1>
   
@@ -257,7 +258,9 @@ const fetchInsumos = async () => {
         {modalType === 'detail' && selectedInsumoId !== null && <InsumoDetails id={selectedInsumoId} onClose={handleModalCloseAndFetch} />}
       </Modal>
     </div>
+    </section>
   );
+  
 };
 
 export default InsumosList;
