@@ -9,9 +9,10 @@ import {
   faTrash,
   faPlus,
   faBoxOpen,
-  faToggleOn,
-  faToggleOff,
-  faSyncAlt,
+  // faToggleOn,
+  // faToggleOff,
+  //faRightToBracket,
+  //faSyncAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-hot-toast";
 import Modal from "react-modal";
@@ -58,17 +59,17 @@ const Pedidos: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  //   const handleDelete = useCallback(async(id: number)=>{
-  //     toast.promise(api.delete(`pedidos/${id}`),
-  //       {
-  //         loading: 'Eliminando orden...',
-  //         success: '¡La orden ha sido eliminada!',
-  //         error: 'Hubo un problema al eliminar el pedido.',
-  //       }
-  //     ).then(() => {
-  //       fetchPedido(); // Actualiza la lista después de eliminar
-  //     });
-  //   },[]);
+    const handleDelete = useCallback(async(id: number)=>{
+      toast.promise(api.delete(`pedidos/${id}`),
+        {
+          loading: 'Eliminando orden...',
+          success: '¡La orden ha sido eliminada!',
+          error: 'Hubo un problema al eliminar el pedido.',
+        }
+      ).then(() => {
+        fetchPedido(); // Actualiza la lista después de eliminar
+      });
+    },[]);
 
   const handleToggleEstado = useCallback(
     async (id: number, estadoActual: number) => {
@@ -238,11 +239,7 @@ const Pedidos: React.FC = () => {
           return (
             <div className="tw-flex tw-items-center">
               {/* Mostrar el nombre del estado en lugar del ID */}
-              <span
-                className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${color}`}
-              >
-                {nombreEstado}
-              </span>
+              
               <button
                 onClick={() =>
                   handleToggleEstado(
@@ -250,12 +247,17 @@ const Pedidos: React.FC = () => {
                     cell.getValue<number>()
                   )
                 }
-                className="tw-ml-2 tw-text-gray-700 tw-transition-colors hover:tw-text-gray-900"
+                
+                //className="tw-ml-2 tw-text-gray-700 tw-transition-colors hover:tw-text-gray-900">
+                //{/* <FontAwesomeIcon
+                  // icon= {faRightToBracket} size="xs" style={{color: "#B197FC",}} // Ícono para cambiar el estado
+                  //className="tw-text-2xl"
+               // /> */}
+
+                className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${color}`}
               >
-                <FontAwesomeIcon
-                  icon={faSyncAlt} // Ícono para cambiar el estado
-                  className="tw-text-2xl"
-                />
+                {nombreEstado}
+             
               </button>
             </div>
           );
@@ -286,9 +288,9 @@ const Pedidos: React.FC = () => {
             >
               <FontAwesomeIcon icon={faEdit} />
             </button>
-            {/* <button onClick={() => handleDelete(row.original.ID_pedido)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
+            <button onClick={() => handleDelete(row.original.ID_pedido)} className="tw-bg-red-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-red-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faTrash} />
-            </button> */}
+            </button>
             <button className="tw-bg-green-500 tw-text-white tw-rounded-full tw-p-2 tw-shadow-md tw-hover:bg-green-600 tw-transition-all tw-duration-300">
               <FontAwesomeIcon icon={faBoxOpen} />
             </button>
