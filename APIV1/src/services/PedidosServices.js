@@ -136,7 +136,7 @@ const {Productos_adiciones, Pedidos, Producto_Pedidos,Producto_insumos, Adicione
         
           for (const productos of ProductosLista) {
 
-             console.log('holaaaa', ProductosLista)
+             console.log('holaaaaaaa', ProductosLista, productos.adicion )
             
             if (productos && productos.Producto_Pedidos) {
 
