@@ -1,3 +1,4 @@
+const producto_ventas = require("./producto_ventas");
 module.exports = (sequelize, DataTypes) => {
     const Ventas = sequelize.define('Ventas', {
       ID_venta: {
@@ -14,16 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-          model: 'Clientes',
-          key: 'ID_cliente', 
+            model: 'Clientes',
+            key: 'ID_cliente',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-      },
-      precio_total: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-      },
+        comment: 'Por favor ingrese el cliente',
+    },
+    precio_total: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+  },
       ID_estado_venta: {
         type: DataTypes.INTEGER,
         references: {
@@ -36,16 +38,12 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     });
   
-    Ventas.associate = (models) => {
-      Ventas.belongsTo(models.Clientes, { foreignKey: 'ID_cliente' });  
-      Ventas.belongsTo(models.Estado_ventas, { foreignKey: 'ID_estado_venta' });
-      Ventas.belongsToMany(models.Productos, { 
-        through: 'Producto_Ventas', 
-        foreignKey: 'ID_venta', 
-        otherKey: 'ID_producto',
-        as: 'Productos'
-      });
-    };
+    Ventas.associate = function(models) {
+      
+      //RELACION  MUCHO A MUCHOS
+      Ventas.belongsToMany(models.Productos, { through:models.Producto_Ventas, foreignKey: 'ID_venta', otherKey: 'ID_productos', as: 'ProductosLista' });
+ 
+ }
   
     return Ventas;
   };

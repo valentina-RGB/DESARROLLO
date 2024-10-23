@@ -35,7 +35,7 @@ const ListarClientes: React.FC = () => {
   }
 
   return (
-    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
+    <div className="tw-rounded-lg tw-p-6 tw-bg-gray-50 tw-min-h-screen">
       <div className="tw-max-w-4xl tw-mx-auto">
         <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Lista de Clientes</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}

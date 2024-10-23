@@ -134,7 +134,7 @@ const EntriesList: React.FC = () => {
   );
 
   return (
-    <section className="mb-3 mb-lg-5 pt-5">
+    <section className="mb-3 mb-lg-5 pt-5 tw-rounded-lg">
     <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Historial de Entradas</h1>
 

@@ -14,11 +14,6 @@ module.exports = (sequelize, DataTypes) => {
           unique: true,
           allowNull: true,
         },
-        // telefono: {
-        //   type: DataTypes.STRING(11),
-        //   unique: true,
-        //   allowNull: true,
-        // },
         documento: {
           type: DataTypes.BIGINT,
           unique: true,
@@ -42,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Clientes.associate = function(models) {
       Clientes.hasMany(models.Pedidos, { foreignKey: 'ID_clientes' });
+      Clientes.hasMany(models.Ventas, { foreignKey: 'ID_clientes' });
       }
       
       return Clientes;

@@ -220,7 +220,7 @@ const VentasList: React.FC = () => {
   ], [handleToggleEstado, estadosVenta, ventas]);
 
   return (
-    <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+    <div className=" tw-rounded-lg tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Ventas</h1>
       <Link to="/Agregar-ventas">
       <button

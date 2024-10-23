@@ -303,7 +303,7 @@ const Pedidos: React.FC = () => {
 
   return (
     <>
-      <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+      <div className="tw-rounded-lg tw-p-6 tw-bg-gray-100 tw-min-h-screen">
       <h1 className="page-heading">Pedidos</h1>
         <Link to="/Agregar-pedidos">
           <button

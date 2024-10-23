@@ -703,7 +703,7 @@ export default function OrderAdd() {
             </p>
       
             {/* Calculo del subtotal para cada producto */}
-            <p className="tw-text-sm">
+            {/* <p className="tw-text-sm">
               Subtotal: $
               {(
                 producto.precio_neto * producto.Producto_Pedidos.cantidad +
@@ -712,7 +712,7 @@ export default function OrderAdd() {
                   0
                 )
               ).toFixed(2)}
-            </p>
+            </p> */}
       
             <div className="tw-flex tw-items-center tw-space-x-2">
               <button
