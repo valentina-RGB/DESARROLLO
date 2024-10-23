@@ -56,7 +56,7 @@ const Layout: React.FC = () => {
               <Route path="/Agregar-pedidos" element={<OrderAdd />} />
               <Route path="/Agregar-ventas" element={<Ventasadd />} />
             </Routes>
-            <footer className="footer tw-bg-white tw-shadow tw-align-self-end tw-py-3 tw-px-xl-5 tw-w-full">
+            <footer className="footer tw-bg-white tw-shadow tw-align-self-end tw-py-3 tw-px-xl-2 tw-w-full">
               <div className="tw-container-fluid">
                 <div className="tw-row">
                   <div className="tw-col-md-6 tw-text-center tw-text-md-start tw-fw-bold">

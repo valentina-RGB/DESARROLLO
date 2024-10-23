@@ -162,8 +162,8 @@ const UsuarioList: React.FC = () => {
   );
 
   return (
-    <section className="mb-3 mb-lg-5 pt-5">
-      <div className="tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+    <section className="tw-rounded-lg mb-3 mb-lg-5 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+<div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
         <h1 className="page-heading">usuarios</h1>
         <button onClick={handleAddusuario} className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300">
           <FontAwesomeIcon icon={faPlus} /> Agregar usuario
