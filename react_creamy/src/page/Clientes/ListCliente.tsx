@@ -35,7 +35,9 @@ const ListarClientes: React.FC = () => {
   }
 
   return (
-    <div className="tw-rounded-lg tw-p-6 tw-bg-gray-50 tw-min-h-screen">
+    <section className="tw-rounded-lg mb-3 mb-lg-5 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+
+    <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
       <div className="tw-max-w-4xl tw-mx-auto">
         <h2 className="tw-text-3xl tw-font-bold tw-mb-6 tw-text-gray-900">Lista de Clientes</h2>
         {error && <p className="tw-text-red-500 tw-mb-4">{error}</p>}
@@ -84,6 +86,7 @@ const ListarClientes: React.FC = () => {
         </table>
       </div>
     </div>
+    </section>
   );
 };
 

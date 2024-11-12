@@ -39,7 +39,7 @@ const Layout: React.FC = () => {
           <div className="tw-container-fluid tw-px-lg-4 tw-px-xl-5 tw-border-spacing-4 tw-border-gray-300 tw-rounded-lg tw-shadow-md">
             {/* Definición de rutas */}
             <Routes>
-              <Route path="/" element={<Navigate to="/Dashboard" />} />
+              <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />

@@ -17,7 +17,7 @@ const Menu = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
       className={`tw-flex tw-flex-col tw-w-64 tw-h-screen tw-px-5 tw-py-8 tw-overflow-y-auto tw-bg-white tw-border-r dark:tw-bg-gray-900 dark:tw-border-gray-700 tw-pt-3
         ${isMenuOpen ? "tw-absolute tw-block" : "tw-hidden"} lg:${isMenuOpen ? "tw-block" : "tw-hidden"} lg:tw-static 
         tw-rounded-lg tw-shadow-lg`} // Bordes redondeados y sombra
-      style={{ zIndex: 1000 }} // Asegura que esté sobre otros elementos en vista móvil
+      style={{ zIndex: 10 }} // Asegura que esté sobre otros elementos en vista móvil
     >
       <div className="tw-flex tw-flex-col tw-justify-between tw-flex-1 tw-mt-6">
         <nav className="-tw-mx-3 tw-space-y-6">
@@ -32,7 +32,7 @@ const Menu = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
               <HomeIcon className="tw-w-6 tw-h-6 tw-text-indigo-600" />
               <span className="tw-mx-3 tw-text-sm tw-font-medium">Dashboard</span>
             </Link>
-
+            <label className="tw-px-3 tw-text-xs tw-text-gray-500 tw-uppercase dark:tw-text-gray-400">Compras</label>
             <Link
               to="/Insumos"
               className="tw-flex tw-items-center tw-px-3 tw-py-2 tw-text-gray-600 tw-transition-colors tw-duration-300 tw-transform tw-rounded-lg 
@@ -41,6 +41,16 @@ const Menu = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
               <ClipboardDocumentIcon className="tw-w-6 tw-h-6 tw-text-indigo-600" />
               <span className="tw-mx-3 tw-text-sm tw-font-medium">Insumos</span>
             </Link>
+            <Link
+              to="/historial-entradas"
+              className="tw-flex tw-items-center tw-px-3 tw-py-2 tw-text-gray-600 tw-transition-colors tw-duration-300 tw-transform tw-rounded-lg 
+              dark:tw-text-gray-200 hover:tw-bg-gray-200 dark:hover:tw-bg-gray-800 dark:hover:tw-text-gray-200 hover:tw-text-gray-700"
+            >
+              <ClipboardDocumentIcon className="tw-w-6 tw-h-6 tw-text-indigo-600" />
+              <span className="tw-mx-3 tw-text-sm tw-font-medium">Entradas</span>
+            </Link>
+
+            <label className="tw-px-3 tw-text-xs tw-text-gray-500 tw-uppercase dark:tw-text-gray-400">Ventas</label>
 
             <Link
               to="/Categorias"

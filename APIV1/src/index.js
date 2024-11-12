@@ -22,9 +22,12 @@ const pedidosRouters = require('./v1/routers/pedidos');
 const VentasRouters = require('./v1/routers/ventasRoutes');
 const EstadoVentasRouters = require('./v1/routers/estado_ventas')
 const Tipo_productoRouters = require('./v1/routers/tipo_productos')
+const Access = require('./v1/routers/access')
 const PI = require('./v1/routers/productos_insumos')
 const bodyParser = require('body-parser'); // Corregir nombre
 const Joi = require('joi');
+const controllerAccess = require('../src/controllers/autenticacion');
+
 
 class Server {
   constructor() {
@@ -50,7 +53,7 @@ class Server {
    syncDatabase =async()=> {
       try {
           // await db.sequelize.sync({ force: true }); 
-           await db.sequelize.sync({ alter: true });
+          //  await db.sequelize.sync({ alter: true });
         console.log('Todas las tablas han sido sincronizadas o creadas.');
     
       } catch (error) {
@@ -63,6 +66,12 @@ class Server {
 
     
       .use('/producto_insumos',PI)
+
+       
+      // .use('/',Access)
+
+      .post('/login',controllerAccess.Iniciar_sesion, controllerAccess.authenticateToken)
+      .post('/signup', controllerAccess.registrar)
       // Rutas de productos
       .use('/productos', routerProduct)
       // Rutas de categorías

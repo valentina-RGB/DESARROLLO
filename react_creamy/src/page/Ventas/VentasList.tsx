@@ -32,7 +32,7 @@ const VentasList: React.FC = () => {
       setVentas(response.data);
     } catch (error) {
       console.error('Error al obtener las ventas:', error);
-     } finally {
+    } finally {
       setLoading(false); // Finaliza el estado de carga
     }
   };
@@ -122,7 +122,7 @@ const VentasList: React.FC = () => {
         </div>,
         { duration: 8000 }
       );
-      
+
       return;
     }
 
@@ -183,9 +183,9 @@ const VentasList: React.FC = () => {
         const nombreEstado = estado ? estado.descripcion : 'Desconocido';
         const color = estado
           ? {
-              'Pagado': 'tw-bg-green-100 tw-text-green-800',
-              'Cancelado': 'tw-bg-red-100 tw-text-red-800',
-            }[estado.descripcion]
+            'Pagado': 'tw-bg-green-100 tw-text-green-800',
+            'Cancelado': 'tw-bg-red-100 tw-text-red-800',
+          }[estado.descripcion]
           : 'tw-bg-gray-100 tw-text-gray-800';
 
         return (
@@ -220,21 +220,22 @@ const VentasList: React.FC = () => {
   ], [handleToggleEstado, estadosVenta, ventas]);
 
   return (
-    <div className=" tw-rounded-lg tw-p-6 tw-bg-gray-100 tw-min-h-screen">
+    <section className="tw-rounded-lg mb-3 mb-lg-5 p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+      <div className="tw-p-6 tw-bg-gray-50 tw-min-h-screen">
       <h1 className="page-heading">Ventas</h1>
       <Link to="/Agregar-ventas">
-      <button
-        className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
-      >
-        <FontAwesomeIcon icon={faPlus} /> Agregar una venta
-      </button>
+        <button
+          className="tw-bg-blue-500 tw-text-white tw-rounded-full tw-px-4 tw-py-2 tw-mb-4 tw-shadow-md tw-hover:bg-blue-600 tw-transition-all tw-duration-300"
+        >
+          <FontAwesomeIcon icon={faPlus} /> Agregar una venta
+        </button>
       </Link>
       {/* Skeleton Loader cuando loading es true */}
       {loading ? (
         <div className="w-full max-w-md mx-auto p-9">
           {/* Aquí usas el Skeleton para el título */}
           <Skeleton className="h-6 w-52" />
-          
+
           {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
           <Skeleton className="h-4 w-48 mt-6" />
           <Skeleton className="h-4 w-full mt-4" />
@@ -251,9 +252,9 @@ const VentasList: React.FC = () => {
           if (isVentaDetailsModalOpen) handleCloseVentaDetailsModal();
         }}
         className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
-          overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
+        overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
       >
-  {/*     {isAddVentaModalOpen && (
+        {/*     {isAddVentaModalOpen && (
           <AddVenta isOpen={isAddVentaModalOpen} onClose={handleCloseAddVentaModal} onVentaCreated={handleCloseAddVentaModal} />
         )} */}
         {isVentaDetailsModalOpen && selectedVentaId !== null && (
@@ -261,6 +262,7 @@ const VentasList: React.FC = () => {
         )}
       </Modal>
     </div>
+      </section>
   );
 };
 

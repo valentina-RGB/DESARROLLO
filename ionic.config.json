@@ -1,0 +1,7 @@
+{
+  "name": "CREAMY-PRUEBA-MOVIL",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
