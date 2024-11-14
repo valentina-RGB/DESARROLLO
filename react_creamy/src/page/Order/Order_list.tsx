@@ -235,25 +235,15 @@ const Pedidos: React.FC = () => {
                 // Agregar más estados y colores aquí
               }[estado.descripcion]
             : "tw-bg-gray-100 tw-text-gray-800";
-
           return (
-            <div className="tw-flex tw-items-center">
-              {/* Mostrar el nombre del estado en lugar del ID */}
-              
+            <div className="tw-flex tw-items-center">    
               <button
                 onClick={() =>
                   handleToggleEstado(
                     row.original.ID_pedido,
                     cell.getValue<number>()
                   )
-                }
-                
-                //className="tw-ml-2 tw-text-gray-700 tw-transition-colors hover:tw-text-gray-900">
-                //{/* <FontAwesomeIcon
-                  // icon= {faRightToBracket} size="xs" style={{color: "#B197FC",}} // Ícono para cambiar el estado
-                  //className="tw-text-2xl"
-               // /> */}
-
+                }             
                 className={`tw-inline-block tw-text-xs tw-font-semibold tw-rounded-full tw-py-1 tw-px-2 ${color}`}
               >
                 {nombreEstado}
@@ -312,13 +302,9 @@ const Pedidos: React.FC = () => {
             <FontAwesomeIcon icon={faPlus} /> Agregar un pedido
           </button>
         </Link>
-         {/* Skeleton Loader cuando loading es true */}
        {loading ? (
-        <div className="w-full max-w-md mx-auto p-9">
-          {/* Aquí usas el Skeleton para el título */}
-          <Skeleton className="h-6 w-52" />
-          
-          {/* Usas Skeleton para los diferentes campos que imitarán las filas de la tabla */}
+        <div className="w-full max-w-md mx-auto p-9">        
+          <Skeleton className="h-6 w-52" />          
           <Skeleton className="h-4 w-48 mt-6" />
           <Skeleton className="h-4 w-full mt-4" />
           <Skeleton className="h-4 w-64 mt-4" />
@@ -333,14 +319,9 @@ const Pedidos: React.FC = () => {
           className="tw-bg-white tw-p-0 tw-mb-12 tw-rounded-lg tw-border tw-border-gray-300 tw-max-w-lg tw-w-full tw-mx-auto"
           overlayClassName="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-40 tw-z-50 tw-flex tw-justify-center tw-items-center"
         >
-          {/* {modalConfig.type === 'add' && <AddCategories onClose={handleCloseModal} />}
-           {modalConfig.type === 'edit' && modalConfig.id !== null && <EditCategoria id={modalConfig.id} onClose={handleCloseModal} />} */}
-          {/* {modalType === 'entry' && selectedCategoriaId !== null && <AddEntry id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />}
-           {modalType === 'detail' && selectedCategoriaId !== null && <InsumoDetails id={selectedCategoriaId} onClose={handleModalCloseAndFetch} />} */}
         </Modal>
       </div>
     </>
   );
 };
-
 export default Pedidos;
