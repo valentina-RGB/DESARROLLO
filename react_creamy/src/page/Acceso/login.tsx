@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import { redirect } from 'react-router-dom';
-import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import App from '../../App';
-import toast from 'react-hot-toast';
-Modal.setAppElement('#root');
+import toast, { Toaster } from 'react-hot-toast';
+// import { Link } from "react-router-dom";
+// import { Layout } from 'lucide-react';
 
+Modal.setAppElement('#root');
 const API_URL = 'http://localhost:3300';
 
 const AuthPage: React.FC = () => {
@@ -16,8 +17,7 @@ const AuthPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [token, setToken] = useState<string | null>(null);
-  
-  
+  const navigate = useNavigate();
 
   const handleSwitchAuthMode = () => {
     setIsLogin((prev) => !prev);
@@ -28,7 +28,6 @@ const AuthPage: React.FC = () => {
 
   const handleForgotPassword = () => {
     setIsForgotPasswordOpen(true);
-
   };
 
   const handleCloseForgotPassword = () => {
@@ -36,8 +35,6 @@ const AuthPage: React.FC = () => {
   };
 
   const handleAuthSubmit = async (event: React.FormEvent) => {
-    // const navigate = useNavigate();
-
     event.preventDefault();
     try {
       if (isLogin) {
@@ -46,11 +43,18 @@ const AuthPage: React.FC = () => {
           password: password,
         });
         setToken(response.data.token);
-        // redirect('');
-        // navigate('/Dashboard');
-    
-         
-        toast.success('Inicio de sesión exitoso', {duration: 2000});
+
+//Alejo es un crack fgfgdgf
+
+        if (response.data.resUser[0].ID_rol === 2) {
+          toast.success('Inicio de sesión exitoso', { duration: 2000 });
+          navigate("/principal");
+          
+          // navega manualmente
+          
+        } else {
+          toast.error('No tienes permisos para esta acción', { duration: 2000 });
+        }
       } else {
         if (password !== confirmPassword) {
           toast.error('Las contraseñas no coinciden');
@@ -65,9 +69,9 @@ const AuthPage: React.FC = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.error || 'Error en la autenticación',{duration: 2000});
+        toast.error(error.response?.data?.error || 'Error en la autenticación', { duration: 2000 });
       } else {
-        toast.success('Error desconocido',{duration: 1500});
+        toast.error('Error desconocido', { duration: 1500 });
       }
     }
   };
@@ -111,11 +115,14 @@ const AuthPage: React.FC = () => {
               className="tw-border tw-rounded tw-p-2 tw-w-full"
             />
           )}
-         
+          
           <button type="submit" className="tw-bg-blue-500 tw-text-white tw-py-2 tw-rounded tw-w-full">
             {isLogin ? 'Iniciar Sesión' : 'Registrar'}
-            
-          </button>    
+
+          </button>
+          {/* <Link to= '/Principal'>
+            <p>hola</p>
+          </Link> */}
           
           {isLogin && (
             <button
@@ -168,3 +175,6 @@ const AuthPage: React.FC = () => {
 };
 
 export default AuthPage;
+
+
+

@@ -9,11 +9,11 @@ const helmet = require('helmet');
 const app = express();
 
 // app.use(express.json());
-app.use(helmet()); 
+app.use(helmet());
 // app.use(cors()); 
 
 // Simulación de base de datos
-const {  Usuarios } = require("../../models");
+const { Usuarios } = require("../../models");
 
 const JWT_SECRET = crypto.randomBytes(64).toString('hex');
 
@@ -38,9 +38,9 @@ const registrar = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { nombre, email, telefono,password,ID_rol,estado} = req.body;
+  const { nombre, email, telefono, password, ID_rol, estado } = req.body;
 
-  console.log(nombre, email, telefono,password,ID_rol,estado)
+  console.log(nombre, email, telefono, password, ID_rol, estado)
 
 
 
@@ -60,13 +60,13 @@ const registrar = async (req, res) => {
       email: email,
       telefono: telefono,
       password: hashedPassword,
-      ID_rol: ID_rol,
+      ID_rol: ID_rol || 7,
       estado: estado || 'A'
     });
 
 
 
-    
+
 
 
     res.status(201).json({ message: 'Usuario registrado exitosamente' });
@@ -81,7 +81,11 @@ const Iniciar_sesion = async (req, res) => {
 
   try {
     // Encuentra el usuario por email
-    const user = await Usuarios.findOne({ where: { email: email} });
+    const user = await Usuarios.findOne(
+      {
+        attributes: ["ID_usuario", "email", "password"],
+        where: { email: email }
+      });
 
     if (!user) {
       return res.status(400).json({ error: 'Usuario no encontrado' });
@@ -92,7 +96,15 @@ const Iniciar_sesion = async (req, res) => {
     if (isPasswordCorrect) {
       // Genera el token JWT
       const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
+      // filtro donde retires la contraseña del usuario
+
+      const resUser = await Usuarios.findAll(
+        {
+          attributes: ["ID_usuario", "nombre", "email", "telefono", "ID_rol", "estado"],
+          where: { ID_usuario: user.ID_usuario }
+        });
+
+      res.json({ token, resUser }); ///////
     } else {
       res.status(400).json({ error: 'Contraseña incorrecta' });
     }

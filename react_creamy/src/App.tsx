@@ -1,3 +1,4 @@
+
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from "./components/navbar_prueba"; // Asegúrate de que el path sea correcto
@@ -18,7 +19,10 @@ import Login from './page/Acceso/login';
 import SignUp from './page/Acceso/signUp';
 import OrderAdd from './page/Order/Order_add';
 import { useState } from 'react';
+import AuthPage from './page/Acceso/login';
 
+import { useAuth } from './page/Acceso/AuhtContex'; // Importamos el hook de autenticación
+import ProtectedRoute from './page/Acceso/ProtecdRouted'; // Importamos el componente de ruta protegida
 const Layout: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -39,7 +43,7 @@ const Layout: React.FC = () => {
           <div className="tw-container-fluid tw-px-lg-4 tw-px-xl-5 tw-border-spacing-4 tw-border-gray-300 tw-rounded-lg tw-shadow-md">
             {/* Definición de rutas */}
             <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/" element={<AuthPage/>} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Categorias" element={<Categorias />} />
               <Route path="/Insumos" element={<Insumos />} />
@@ -55,6 +59,8 @@ const Layout: React.FC = () => {
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/Agregar-pedidos" element={<OrderAdd />} />
               <Route path="/Agregar-ventas" element={<Ventasadd />} />
+
+
             </Routes>
             <footer className="footer tw-bg-white tw-shadow tw-align-self-end tw-py-3 tw-px-xl-2 tw-w-full">
               <div className="tw-container-fluid">
@@ -79,10 +85,39 @@ const Layout: React.FC = () => {
 
 const App: React.FC = () => {
   return (
+    <>
+    {/* <Routes>
+        <Route path="/" element={<AuthPage/>} />
+        <Route path="/principal" element={<Layout/>} />
+    </Routes>      */}
     <Router>
-      <Layout />
+    <Routes>
+        {/* Ruta de la página de autenticación */}
+        <Route path="/" element={<AuthPage />} />
+        {/* Ruta para la página principal */}
+        <Route path="/principal" element={<Layout />} />
+        {/* Página de Dashboard como ruta principal */}
+        <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/Categorias" element={<Categorias />} />
+              <Route path="/Insumos" element={<Insumos />} />
+              <Route path="/historial-entradas" element={<EntriesList />} />
+              <Route path="/Ventas" element={<Ventas />} />
+              <Route path="/Productos" element={<Productos />} />
+              <Route path="/Pedidos" element={<Pedidos />} />
+              <Route path="/roles" element={<ListarRoles />} />
+              <Route path="/Clientes" element={<ListarClientes />} />
+              <Route path="/agregar-cliente" element={<AddCliente />} />
+              <Route path="/Usuarios" element={<ListarUsuarios />} />
+              <Route path="/Login" element={<Login />} />
+              <Route path="/SignUp" element={<SignUp />} />
+              <Route path="/Agregar-pedidos" element={<OrderAdd />} />
+              <Route path="/Agregar-ventas" element={<Ventasadd />} />
+      </Routes>
       <Toaster position="top-right" reverseOrder={false} />
+    
     </Router>
+      
+    </>
   );
 };
 

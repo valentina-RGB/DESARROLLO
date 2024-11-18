@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, PlusCircle, RefreshCw, X, ChevronRight } from 'lucide-react';
 import axios from 'axios';
+import Navbar from '../components/Navbar'
 
 interface Pedido {
   ID_pedido: number;
@@ -17,12 +18,11 @@ const PedidosList = () => {
   const [loading, setLoading] = useState(false);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
 
-  // Cargar los pedidos desde la API
   const fetchPedidos = async () => {
     setLoading(true);
     try {
       const response = await axios.get('http://localhost:3300/pedidos');
-      setPedidos(response.data); // Almacena los datos de la API en el estado
+      setPedidos(response.data);
     } catch (error) {
       console.error("Error al obtener pedidos:", error);
     } finally {
@@ -34,7 +34,6 @@ const PedidosList = () => {
     fetchPedidos();
   }, []);
 
-  // Filtrar los pedidos según el texto de búsqueda
   const filteredData = pedidos.filter((pedido) =>
     (pedido.clientName?.toLowerCase().includes(searchText.toLowerCase()) || 
     pedido.ID_pedido.toString().includes(searchText))
@@ -43,13 +42,13 @@ const PedidosList = () => {
   const getStatusColor = (estado: string) => {
     switch (estado) {
       case 'Pagado':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 border border-green-200';
       case 'Cancelado':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 border border-red-200';
       case 'Pendiente':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-purple-100 text-purple-800 border border-purple-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 border border-gray-200';
     }
   };
 
@@ -65,20 +64,22 @@ const PedidosList = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      fetchPedidos(); // Vuelve a cargar los pedidos
+      fetchPedidos();
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white shadow">
+      <div className="sticky top-0 z-10 bg-white shadow-md">
         <div className="max-w-3xl mx-auto px-4">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+              Pedidos
+            </h1>
             <button
               onClick={handleRefresh}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              className="p-2 hover:bg-purple-50 rounded-full transition-colors duration-200 text-purple-600"
             >
               <RefreshCw className="w-5 h-5" />
             </button>
@@ -86,11 +87,11 @@ const PedidosList = () => {
           {/* Search Bar */}
           <div className="pb-4 relative">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Buscar por cliente o número..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-purple-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
@@ -102,22 +103,20 @@ const PedidosList = () => {
       {/* Pedidos List */}
       <div className="max-w-3xl mx-auto px-4 py-6">
         {loading ? (
-          // Skeleton Loading
           Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="bg-white rounded-lg shadow mb-4 p-4">
+            <div key={index} className="bg-white rounded-lg shadow-md mb-4 p-4">
               <div className="animate-pulse space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-4 bg-purple-100 rounded w-3/4"></div>
+                <div className="h-4 bg-purple-100 rounded w-1/2"></div>
+                <div className="h-4 bg-purple-100 rounded w-1/4"></div>
               </div>
             </div>
           ))
         ) : (
-          // Pedidos Cards
           filteredData.map((pedido, index) => (
             <div
               key={pedido.ID_pedido}
-              className="bg-white rounded-lg shadow mb-4 transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer active:scale-98"
+              className="bg-white rounded-lg shadow-md mb-4 transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer active:scale-98 border border-purple-100"
               style={{
                 animation: `fadeInUp 0.5s ease-out forwards ${index * 0.1}s`
               }}
@@ -132,17 +131,17 @@ const PedidosList = () => {
                     <h3 className="text-lg font-semibold text-gray-900">
                       #{pedido.ID_pedido} - {pedido.clientName || 'Cliente Desconocido'}
                     </h3>
-                    <p className="text-gray-600">{formatDate(pedido.fecha)}</p>
+                    <p className="text-purple-600">{formatDate(pedido.fecha)}</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(pedido.estado)}`}>
                       {pedido.estado}
                     </span>
-                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                    <ChevronRight className="w-5 h-5 text-purple-400" />
                   </div>
                 </div>
                 <div className="mt-2">
-                  <p className="text-gray-900 font-semibold">{pedido.precio_total}</p>
+                  <p className="text-purple-700 font-semibold">{pedido.precio_total}</p>
                 </div>
               </div>
             </div>
@@ -154,31 +153,31 @@ const PedidosList = () => {
       {showModal && selectedPedido && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div
-            className="bg-white rounded-lg max-w-md w-full transform transition-all duration-300"
+            className="bg-white rounded-lg max-w-md w-full transform transition-all duration-300 shadow-xl"
             style={{ animation: 'modalEnter 0.3s ease-out forwards' }}
           >
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-bold">Detalles del Pedido #{selectedPedido.ID_pedido}</h2>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+                  Detalles del Pedido #{selectedPedido.ID_pedido}
+                </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  className="p-1 hover:bg-purple-50 rounded-full transition-colors duration-200"
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X className="w-5 h-5 text-purple-500" />
                 </button>
               </div>
               <div className="space-y-3">
-                <p><span className="font-semibold">Cliente:</span> {selectedPedido.clientName || 'Cliente Desconocido'}</p>
-                <p><span className="font-semibold">Fecha:</span> {formatDate(selectedPedido.fecha)}</p>
-                <p><span className="font-semibold">Estado:</span> {selectedPedido.estado}</p>
-                <p><span className="font-semibold">Monto:</span> {selectedPedido.precio_total}</p>
+                <p><span className="font-semibold text-purple-700">Cliente:</span> {selectedPedido.clientName || 'Cliente Desconocido'}</p>
+                <p><span className="font-semibold text-purple-700">Fecha:</span> {formatDate(selectedPedido.fecha)}</p>
+                <p><span className="font-semibold text-purple-700">Estado:</span> {selectedPedido.estado}</p>
+                <p><span className="font-semibold text-purple-700">Monto:</span> {selectedPedido.precio_total}</p>
               </div>
             </div>
           </div>
         </div>
       )}
-
-    
 
       <style>{`
         @keyframes fadeInUp {
@@ -203,7 +202,7 @@ const PedidosList = () => {
           }
         }
 
-        .active\:scale-98:active {
+        .active\\:scale-98:active {
           transform: scale(0.98);
         }
       `}</style>
